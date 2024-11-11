@@ -1,0 +1,21 @@
+{
+  "version": "0.1.0",
+  "configurations": [
+    {
+      "name": "WASender App dev",
+      "request": "launch",
+      "type": "dart",
+      "toolArgs": [
+        "--dart-define-from-file=.env/dev.json"
+      ]
+    },
+    {
+      "name": "WASender App prod",
+      "request": "launch",
+      "type": "dart",
+      "toolArgs": [
+        "--dart-define-from-file=.env/prod.json"
+      ]
+    }
+  ]
+}
