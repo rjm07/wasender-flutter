@@ -3,10 +3,10 @@ import 'package:provider/provider.dart';
 import 'package:wasender/app/ui/pages/feature_main/feature_pages/menu/feature_dashboard/feature_profile/profile_screen.dart';
 import 'package:wasender/app/ui/shared/widgets/dashboard_cards.dart';
 
+import '../../../../../../core/services/auth.dart';
 import '../../../../../../core/services/perangkat_saya/perangkat_saya.dart';
 import '../../../../../../core/services/preferences.dart';
 import '../../../../../../utils/lang/images.dart';
-import '../../../../../../utils/snackbar/snackbar.dart';
 
 class DashboardScreen extends StatefulWidget {
   const DashboardScreen({super.key});
@@ -33,12 +33,16 @@ class _DashboardScreenState extends State<DashboardScreen> {
     final String? tokenBearer = await LocalPrefs.getBearerToken();
     debugPrint("tokenBearer: $tokenBearer");
     if (tokenBearer != null) {
-      devices.updateDeviceListFuture(
-        tokenBearer,
-        showErrorSnackbar: (String errorMessage) {
-          SnackbarUtil.showErrorSnackbar(context, errorMessage);
-        },
-      );
+      devices.updateDeviceListFuture(tokenBearer, showErrorSnackbar: (String errorMessage) {
+        if (errorMessage.contains("Error: 401 - UNAUTHORIZED")) {
+          // Handle unauthorized error by showing logout confirmation
+          final auth = Provider.of<Auth>(context, listen: false);
+          _confirmLogout(context, auth);
+        } else {
+          // Show the error as a snackbar
+          debugPrint("Error: $errorMessage");
+        }
+      });
     }
   }
 
@@ -200,6 +204,31 @@ class _DashboardScreenState extends State<DashboardScreen> {
           ),
         ),
       ),
+    );
+  }
+
+  void _confirmLogout(BuildContext context, Auth auth) {
+    showDialog(
+      context: context,
+      barrierDismissible: false, // Prevent dismissing the dialog by tapping outside
+      builder: (BuildContext context) {
+        return PopScope(
+          canPop: false, // Disable the back button
+          child: AlertDialog(
+            title: const Text("Session expired"),
+            content: const Text("Please log in again."),
+            actions: <Widget>[
+              TextButton(
+                child: const Text("Okay"),
+                onPressed: () {
+                  Navigator.of(context).pop(); // Close the dialog
+                  auth.logout(); // Call the logout method
+                },
+              ),
+            ],
+          ),
+        );
+      },
     );
   }
 }

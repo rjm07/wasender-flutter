@@ -1,5 +1,6 @@
 class CustomIcons {
   static String iconAccountSettings = "assets/icons/icon_account_settings.png";
+  static String iconAddContact = "assets/icons/icon_add_contact.png";
   static String iconBantuan = "assets/icons/icon_bantuan.png";
   static String iconBerlanggan = "assets/icons/icon_berlanggan.png";
   static String iconBurgerMenu = "assets/icons/icon_burger_menu.png";
@@ -31,6 +32,7 @@ class CustomIcons {
   static String iconTambahPerangkat = "assets/icons/icon_tambah_perangkat.png";
   static String iconTimAgen = "assets/icons/icon_tim_agen.png";
   static String iconMoreVertical = "assets/icons/icon_vertical_more.png";
+  static String iconViewContact = "assets/icons/icon_view_contact.png";
   static String iconViewProfile = "assets/icons/icon_profile.png";
   static String iconViewProfileFill = "assets/icons/icon_profile_fill.png";
   static String iconWhatsAppGeneric = "assets/icons/icon_whatsapp_generic.png";

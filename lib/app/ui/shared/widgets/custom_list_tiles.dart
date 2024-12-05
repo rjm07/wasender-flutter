@@ -53,25 +53,31 @@ class ChatUserListTile extends StatelessWidget {
     String formattedDate = DateFormat('MMM d').format(dateTime);
     String formattedTime = DateFormat('H:mm a').format(dateTime);
 
-    return Padding(
-      padding: const EdgeInsets.only(left: 16.0, right: 16.0, top: 0.0, bottom: 0.0),
-      child: ListTile(
-        leading: AvatarWithInitials(
-          fullName: fullName, // Provide image URL if available, else null
+    return ListTile(
+      leading: SizedBox(
+        width: 60, // Set a fixed width
+        height: 60, // Set a fixed height
+        child: AvatarWithInitials(
+          fullName: (fullName.isEmpty || double.tryParse(fullName) != null) ? 'Whatup Sender' : fullName,
+          imageUrl: null,
         ),
-        title: Text(fullName),
-        subtitle: Text(
-          description,
-          style: TextStyle(fontSize: 13, color: Colors.black54),
-        ),
-        trailing: Column(
-          children: [
-            Text(formattedDate, style: const TextStyle(fontSize: 12, color: Colors.black54)),
-            Text(formattedTime, style: const TextStyle(fontSize: 12, color: Colors.black54)),
-          ],
-        ),
-        onTap: onTap,
       ),
+      title: Text(fullName),
+      subtitle: Text(
+        description,
+        maxLines: 1,
+        overflow: TextOverflow.ellipsis,
+        style: TextStyle(fontSize: 13, color: Colors.black54),
+      ),
+      trailing: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.end,
+        children: [
+          Text(formattedDate, style: const TextStyle(fontSize: 12, color: Colors.black54)),
+          Text(formattedTime, style: const TextStyle(fontSize: 12, color: Colors.black54)),
+        ],
+      ),
+      onTap: onTap,
     );
   }
 }

@@ -2,16 +2,26 @@ import 'package:flutter/material.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
 import 'package:wasender/app/app.dart';
+import 'dart:io';
 
 import 'core/services/auth.dart';
 import 'core/services/local_notifications/local_notifications.dart';
 import 'core/services/perangkat_saya/perangkat_saya.dart';
 import 'core/services/pesan/pesan.dart';
 
+class MyHttpOverrides extends HttpOverrides {
+  @override
+  HttpClient createHttpClient(SecurityContext? context) {
+    return super.createHttpClient(context)
+      ..badCertificateCallback = (X509Certificate cert, String host, int port) => true;
+  }
+}
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Permission.notification.request();
   await LocalNotificationsServices.init();
+  HttpOverrides.global = MyHttpOverrides();
 
   runApp(
     MultiProvider(

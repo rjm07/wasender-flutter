@@ -2,7 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-import 'package:wasender/app/core/providers/token.dart';
+//import 'package:wasender/app/core/providers/token.dart';
 
 import '../../utils/lang/strings.dart';
 import '../models/login/api_response.dart';
@@ -18,9 +18,9 @@ class Auth extends ChangeNotifier {
   }
 
   Future<void> login(String username, String password) async {
-    final String sequence = password + username;
-    final ({int requestId, String token}) generated = TokenGenerator.generate(sequence);
-    debugPrint("Generated Token: $generated");
+    // final String sequence = password + username;
+    //final ({int requestId, String token}) generated = TokenGenerator.generate(sequence);
+    // debugPrint("Generated Token: $generated");
 
     final Uri loginUri = Uri.parse("${API.baseUrl}${API.loginUrl}");
     debugPrint("Login URI: $loginUri");
@@ -29,8 +29,8 @@ class Auth extends ChangeNotifier {
       ..fields['username'] = username
       ..fields['password'] = password
       ..headers.addAll({
-        "RequestId": generated.requestId.toString(),
-        "token": generated.token,
+        // "RequestId": generated.requestId.toString(),
+        // "token": generated.token,
       });
 
     try {
@@ -45,6 +45,7 @@ class Auth extends ChangeNotifier {
         if ((loginResponse.messageData as Map<String, dynamic>).isNotEmpty) {
           final User user = User.fromJson(loginResponse.messageData);
           await LocalPrefs.saveToken(user.accessToken);
+          await LocalPrefs.saveFKUserID(user.fkUserID);
           updateBrandIdFuture();
         } else {
           throw loginResponse.messageDesc;
@@ -61,6 +62,9 @@ class Auth extends ChangeNotifier {
 
   Future<void> logout() async {
     await LocalPrefs.clearToken();
+    await LocalPrefs.clearDeviceKey();
+    await LocalPrefs.clearFKUserID();
+    await LocalPrefs.clearWhatsappNumber();
     updateBrandIdFuture();
   }
 }
