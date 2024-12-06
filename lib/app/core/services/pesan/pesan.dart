@@ -31,6 +31,7 @@ class PesanServices extends ChangeNotifier {
   }
 
   Future<void> updateChatBoxListFuture(
+    String status,
     String token,
     String deviceKey, {
     bool isPagination = false,
@@ -39,16 +40,42 @@ class PesanServices extends ChangeNotifier {
     if (!isPagination) {
       resetPage();
     }
-    final chatBoxDataDetail = await getChatBoxList(
-      token,
-      deviceKey,
-      page,
-      perPage,
-    );
-    if (isPagination) {
-      chatBoxDataDetails.addAll(chatBoxDataDetail);
-    } else {
-      chatBoxDataDetails = chatBoxDataDetail;
+    if (status == 'active') {
+      final chatBoxDataDetail = await getActiveChatBoxList(
+        token,
+        deviceKey,
+        page,
+        perPage,
+      );
+      if (isPagination) {
+        chatBoxDataDetails.addAll(chatBoxDataDetail);
+      } else {
+        chatBoxDataDetails = chatBoxDataDetail;
+      }
+    } else if (status == 'closed') {
+      final chatBoxDataDetail = await getClosedChatBoxList(
+        token,
+        deviceKey,
+        page,
+        perPage,
+      );
+      if (isPagination) {
+        chatBoxDataDetails.addAll(chatBoxDataDetail);
+      } else {
+        chatBoxDataDetails = chatBoxDataDetail;
+      }
+    } else if (status == 'open') {
+      final chatBoxDataDetail = await getOpenChatBoxList(
+        token,
+        deviceKey,
+        page,
+        perPage,
+      );
+      if (isPagination) {
+        chatBoxDataDetails.addAll(chatBoxDataDetail);
+      } else {
+        chatBoxDataDetails = chatBoxDataDetail;
+      }
     }
     notifyListeners();
   }
@@ -101,6 +128,157 @@ class PesanServices extends ChangeNotifier {
     }
   }
 
+  //MARK: Get Active Conversation
+  Future<List<ChatBoxDataList>> getActiveChatBoxList(
+    String token,
+    String deviceKey,
+    int page,
+    int perPage,
+  ) async {
+    final queryParams = {
+      'page': page,
+      'per_page': perPage,
+    };
+    final keys = queryParams.keys.toList()..sort();
+    String sequence = keys.map((key) => queryParams[key]!).join();
+    if (sequence.isEmpty) {
+      sequence = "NA";
+    }
+
+    final Uri uri = Uri.parse('${API.baseUrl}/api/v1/message/$deviceKey/inbox?status=active');
+
+    debugPrint("Calling $uri");
+    try {
+      final response = await http.get(
+        uri,
+        headers: {
+          "Authorization": "Bearer $token",
+        },
+      );
+
+      debugPrint(response.body);
+      showSpinner(false);
+      if (response.statusCode == 200) {
+        final Map<String, dynamic> json = jsonDecode(response.body);
+        final ChatBoxResponse chatBoxResponse = ChatBoxResponse.fromJson(json);
+
+        if (chatBoxResponse.messageData.data.isNotEmpty) {
+          List<ChatBoxDataList> chatBoxList = chatBoxResponse.messageData.data;
+          return chatBoxList;
+        } else {
+          throw Exception(chatBoxResponse.messageDesc);
+        }
+      } else {
+        throw Exception('Error: ${response.statusCode} - ${response.reasonPhrase}');
+      }
+    } catch (error, stackTrace) {
+      debugPrintStack(stackTrace: stackTrace);
+      throw Exception(error.toString());
+    }
+  }
+
+//MARK: Get Closed Conversation
+  Future<List<ChatBoxDataList>> getClosedChatBoxList(
+    String token,
+    String deviceKey,
+    int page,
+    int perPage,
+  ) async {
+    final queryParams = {
+      'page': page,
+      'per_page': perPage,
+    };
+    final keys = queryParams.keys.toList()..sort();
+    String sequence = keys.map((key) => queryParams[key]!).join();
+    if (sequence.isEmpty) {
+      sequence = "NA";
+    }
+
+    final Uri uri = Uri.parse('${API.baseUrl}/api/v1/message/$deviceKey/inbox?status=close');
+
+    debugPrint("Calling $uri");
+    try {
+      final response = await http.get(
+        uri,
+        headers: {
+          "Authorization": "Bearer $token",
+        },
+      );
+
+      debugPrint(response.body);
+      showSpinner(false);
+      if (response.statusCode == 200) {
+        final Map<String, dynamic> json = jsonDecode(response.body);
+        final ChatBoxResponse chatBoxResponse = ChatBoxResponse.fromJson(json);
+
+        if (chatBoxResponse.messageData.data.isNotEmpty) {
+          List<ChatBoxDataList> chatBoxList = chatBoxResponse.messageData.data;
+          return chatBoxList;
+        } else {
+          // Log or handle empty data instead of throwing an exception
+          debugPrint("ChatBox list is empty.");
+          return [];
+        }
+      } else {
+        throw Exception('Error: ${response.statusCode} - ${response.reasonPhrase}');
+      }
+    } catch (error, stackTrace) {
+      debugPrintStack(stackTrace: stackTrace);
+      throw Exception(error.toString());
+    }
+  }
+
+//MARK: Get Open Conversation
+  Future<List<ChatBoxDataList>> getOpenChatBoxList(
+    String token,
+    String deviceKey,
+    int page,
+    int perPage,
+  ) async {
+    final queryParams = {
+      'page': page,
+      'per_page': perPage,
+    };
+    final keys = queryParams.keys.toList()..sort();
+    String sequence = keys.map((key) => queryParams[key]!).join();
+    if (sequence.isEmpty) {
+      sequence = "NA";
+    }
+
+    final Uri uri = Uri.parse('${API.baseUrl}/api/v1/message/$deviceKey/inbox?status=open');
+
+    debugPrint("Calling $uri");
+    try {
+      final response = await http.get(
+        uri,
+        headers: {
+          "Authorization": "Bearer $token",
+        },
+      );
+
+      debugPrint(response.body);
+      showSpinner(false);
+      if (response.statusCode == 200) {
+        final Map<String, dynamic> json = jsonDecode(response.body);
+        final ChatBoxResponse chatBoxResponse = ChatBoxResponse.fromJson(json);
+
+        if (chatBoxResponse.messageData.data.isNotEmpty) {
+          List<ChatBoxDataList> chatBoxList = chatBoxResponse.messageData.data;
+          return chatBoxList;
+        } else {
+          throw Exception(chatBoxResponse.messageDesc);
+        }
+      } else {
+        throw Exception('Error: ${response.statusCode} - ${response.reasonPhrase}');
+      }
+    } catch (error, stackTrace) {
+      debugPrintStack(stackTrace: stackTrace);
+      throw Exception(error.toString());
+    }
+  }
+
+  //MARK: Get Conversation
+
   Future<List<Conversation>> getChatBoxConversation(
     String token,
     String deviceKey,
@@ -138,6 +316,7 @@ class PesanServices extends ChangeNotifier {
     }
   }
 
+//MARK: Send Message
   Future<SendMessageData> sendMessage(
     String token,
     String deviceKey,
