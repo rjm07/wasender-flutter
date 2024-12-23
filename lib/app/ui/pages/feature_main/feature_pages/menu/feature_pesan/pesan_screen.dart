@@ -8,7 +8,8 @@ import '../../../../../../utils/lang/images.dart';
 import 'chats/chat_categories/active_chat_screen.dart';
 
 class PesanScreen extends StatefulWidget {
-  const PesanScreen({super.key});
+  final int initialPageIndex;
+  const PesanScreen({super.key, this.initialPageIndex = 0});
 
   @override
   State<PesanScreen> createState() => _PesanScreenState();
@@ -17,6 +18,10 @@ class PesanScreen extends StatefulWidget {
 class _PesanScreenState extends State<PesanScreen> with SingleTickerProviderStateMixin {
   late PageController _pageController = PageController();
   late TabController _tabController;
+  int activeBadgeCount = 0; // Example badge counts
+  int closedBadgeCount = 0;
+  int openBadgeCount = 0;
+
   final logger = Logger();
   late socket_io.Socket? socket;
   final SocketService socketService = SocketService();
@@ -67,6 +72,35 @@ class _PesanScreenState extends State<PesanScreen> with SingleTickerProviderStat
     ClosedChatScreen(),
     BotChatScreen(),
   ];
+
+  Widget buildBadge(int count) {
+    if (count == 0) return SizedBox.shrink();
+    return Positioned(
+      right: 10,
+      top: 14,
+      child: Container(
+        padding: EdgeInsets.all(4),
+        decoration: BoxDecoration(
+          color: Colors.red,
+          shape: BoxShape.circle,
+        ),
+        child: Text(
+          count.toString(),
+          style: TextStyle(color: Colors.white, fontSize: 10),
+        ),
+      ),
+    );
+  }
+
+  Widget tabWithBadge(String title, int badgeCount) {
+    return Stack(
+      clipBehavior: Clip.none,
+      children: [
+        Center(child: Text(title)),
+        if (badgeCount > 0) buildBadge(badgeCount),
+      ],
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -120,10 +154,10 @@ class _PesanScreenState extends State<PesanScreen> with SingleTickerProviderStat
                     indicatorWeight: 3.0,
                     indicatorSize: TabBarIndicatorSize.tab,
                     labelStyle: TextStyle(fontSize: 14),
-                    tabs: const [
-                      Tab(text: "Active"),
-                      Tab(text: "Closed"),
-                      Tab(text: "Open (Bot)"),
+                    tabs: [
+                      tabWithBadge("Active", activeBadgeCount),
+                      tabWithBadge("Closed", closedBadgeCount),
+                      tabWithBadge("Open (Bot)", openBadgeCount),
                     ],
                   ),
                 ),

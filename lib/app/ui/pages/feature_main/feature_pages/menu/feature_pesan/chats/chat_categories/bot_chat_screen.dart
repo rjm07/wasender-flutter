@@ -30,11 +30,11 @@ class _BotChatScreenState extends State<BotChatScreen> {
   void initState() {
     super.initState();
 
-    socket = socketService.initializeSocket();
-    socket?.onConnect((_) {
-      // debugPrint('Socket connected.');
-      listenToIncomingMessages();
-    });
+    // socket = socketService.initializeSocket();
+    // socket?.onConnect((_) {
+    //   // debugPrint('Socket connected.');
+    //   listenToIncomingMessages();
+    // });
 
     //listenToIncomingMessages();
 
@@ -63,55 +63,55 @@ class _BotChatScreenState extends State<BotChatScreen> {
       );
 
       // Assign the fetched data to userChatBox
-      setState(() {
-        userChatBox = devices.chatBoxDataDetails;
-      });
-    }
-  }
-
-  void listenToIncomingMessages() async {
-    try {
-      final String? deviceKey = await LocalPrefs.getDeviceKey();
-      final String? fkUserID = await LocalPrefs.getFKUserID();
-
-      if (deviceKey == null || fkUserID == null) {
-        throw Exception("DeviceKey or FKUserID is null");
-      }
-
-      if (socket == null) {
-        throw Exception("Socket is not initialized");
-      }
-
-      socket!.onConnect((_) {
-        debugPrint('Connection Established');
-        final channel = "popup:${fkUserID}_$deviceKey";
-        socket!.on(channel, (msg) {
-          logger.i("Socket: Listening on $channel");
-          debugPrint(channel);
-          handleIncomingMessage(msg);
+      if (mounted) {
+        setState(() {
+          userChatBox = devices.chatBoxDataDetails;
         });
-      });
-    } catch (e) {
-      logger.e("Error in listenToIncomingMessages: $e");
+      }
     }
   }
 
-  void handleIncomingMessage(dynamic data) {
-    try {
-      // Parse the incoming data
-      final Map<String, dynamic> response = Map<String, dynamic>.from(data);
+  // void listenToIncomingMessages() async {
+  //   try {
+  //     final String? deviceKey = await LocalPrefs.getDeviceKey();
+  //     final String? fkUserID = await LocalPrefs.getFKUserID();
+  //
+  //     if (deviceKey == null || fkUserID == null) {
+  //       throw Exception("DeviceKey or FKUserID is null");
+  //     }
+  //
+  //     if (socket == null) {
+  //       throw Exception("Socket is not initialized");
+  //     }
+  //
+  //     socket!.onConnect((_) {
+  //       debugPrint('Connection to bot server Established');
+  //       final channel = "bot_$deviceKey";
+  //       socket!.on(channel, (msg) {
+  //         logger.i("Socket: Listening on $channel");
+  //         debugPrint(channel);
+  //         handleIncomingMessage(msg);
+  //       });
+  //     });
+  //   } catch (e) {
+  //     logger.e("Error in listenToIncomingMessages: $e");
+  //   }
+  // }
 
-      final String senderName = response['sender_name'] ?? '';
-      final String messageText = response['message']['text'] ?? '';
-
-      final String timestamp = response['messageTimestamp_str'] ?? '';
-
-      debugPrint('Message from $senderName: $messageText at $timestamp');
-      getChatBoxList();
-    } catch (e) {
-      debugPrint('Error processing incoming message: $e');
-    }
-  }
+  // void handleIncomingMessage(dynamic data) {
+  //   try {
+  //     // Parse the incoming data
+  //     final Map<String, dynamic> response = Map<String, dynamic>.from(data);
+  //     final String senderName = response['sender_name'] ?? '';
+  //     final String messageText = response['message']['text'] ?? '';
+  //     final String timestamp = response['messageTimestamp_str'] ?? '';
+  //
+  //     debugPrint('Message from $senderName: $messageText at $timestamp');
+  //     //getChatBoxList();
+  //   } catch (e) {
+  //     debugPrint('Error processing incoming message: $e');
+  //   }
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -143,7 +143,7 @@ class _BotChatScreenState extends State<BotChatScreen> {
                               padding: const EdgeInsets.symmetric(vertical: 6.0),
                               child: ChatUserListTile(
                                 title: chatData.messages.senderName,
-                                fullName: chatData.messages.senderName == ''
+                                fullName: chatData.messages.senderName.isEmpty
                                     ? chatData.messages.senderNumber
                                     : chatData.messages.senderName,
                                 description: chatData.messages.message.text ?? '',
@@ -156,6 +156,7 @@ class _BotChatScreenState extends State<BotChatScreen> {
                                         senderNumber: chatData.messages.senderNumber,
                                         fullName: chatData.messages.senderName,
                                         timestamp: chatData.messages.messageTimestampStr,
+                                        statusIsOpen: true,
                                       ),
                                     ),
                                   );

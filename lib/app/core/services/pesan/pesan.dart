@@ -5,9 +5,11 @@ import 'package:flutter/cupertino.dart';
 import '../../../utils/lang/strings.dart';
 import 'package:http/http.dart' as http;
 
+import '../../models/pesan/handle_ticket.dart';
 import '../../models/pesan/pesan.dart';
 import '../../models/pesan/pesan_conversation.dart';
 import '../../models/pesan/chat/pesan_send_chat.dart';
+import '../preferences.dart';
 
 class PesanServices extends ChangeNotifier {
   int page = 1;
@@ -117,7 +119,9 @@ class PesanServices extends ChangeNotifier {
           List<ChatBoxDataList> chatBoxList = chatBoxResponse.messageData.data;
           return chatBoxList;
         } else {
-          throw Exception(chatBoxResponse.messageDesc);
+          debugPrint("ChatBox list is empty.");
+          chatBoxDataDetails = chatBoxDataDetails;
+          return [];
         }
       } else {
         throw Exception('Error: ${response.statusCode} - ${response.reasonPhrase}');
@@ -166,7 +170,9 @@ class PesanServices extends ChangeNotifier {
           List<ChatBoxDataList> chatBoxList = chatBoxResponse.messageData.data;
           return chatBoxList;
         } else {
-          throw Exception(chatBoxResponse.messageDesc);
+          debugPrint("ChatBox list is empty.");
+          chatBoxDataDetails = chatBoxDataDetails;
+          return [];
         }
       } else {
         throw Exception('Error: ${response.statusCode} - ${response.reasonPhrase}');
@@ -215,8 +221,8 @@ class PesanServices extends ChangeNotifier {
           List<ChatBoxDataList> chatBoxList = chatBoxResponse.messageData.data;
           return chatBoxList;
         } else {
-          // Log or handle empty data instead of throwing an exception
           debugPrint("ChatBox list is empty.");
+          chatBoxDataDetails = chatBoxDataDetails;
           return [];
         }
       } else {
@@ -266,7 +272,9 @@ class PesanServices extends ChangeNotifier {
           List<ChatBoxDataList> chatBoxList = chatBoxResponse.messageData.data;
           return chatBoxList;
         } else {
-          throw Exception(chatBoxResponse.messageDesc);
+          debugPrint("ChatBox list is empty.");
+          chatBoxDataDetails = chatBoxDataDetails;
+          return [];
         }
       } else {
         throw Exception('Error: ${response.statusCode} - ${response.reasonPhrase}');
@@ -318,13 +326,13 @@ class PesanServices extends ChangeNotifier {
 
 //MARK: Send Message
   Future<SendMessageData> sendMessage(
-    String token,
-    String deviceKey,
     String roomChat,
     String sender,
     String receiver,
     String message,
   ) async {
+    final String? tokenBearer = await LocalPrefs.getBearerToken();
+    final String? deviceKey = await LocalPrefs.getDeviceKey();
     final Uri uri = Uri.parse("${API.baseUrl}/api/v1/chat/text/$deviceKey");
 
     debugPrint("Calling $uri");
@@ -345,7 +353,7 @@ class PesanServices extends ChangeNotifier {
     final response = await http.post(
       uri,
       headers: {
-        "Authorization": "Bearer $token",
+        "Authorization": "Bearer $tokenBearer",
         "Content-Type": "application/json",
       },
       body: jsonEncode(payload),
@@ -358,6 +366,104 @@ class PesanServices extends ChangeNotifier {
 
       // Parsing the response into the SendMessageResponse model
       return SendMessageData.fromJson(json);
+    } else {
+      throw Exception('Error: ${response.statusCode} - ${response.reasonPhrase}');
+    }
+  }
+
+  //MARK: Send Media
+  Future<SendMessageData> sendMedia(
+    String type,
+    String roomChat,
+    String sender,
+    String receiver,
+    String caption,
+    String filePath,
+  ) async {
+    final String? tokenBearer = await LocalPrefs.getBearerToken();
+    final String? deviceKey = await LocalPrefs.getDeviceKey();
+    final Uri uri = Uri.parse("${API.baseUrl}/api/v1/chat/media/$deviceKey");
+
+    debugPrint("Calling \$uri");
+
+    // Creating multipart request
+    final request = http.MultipartRequest('POST', uri)
+      ..headers['Authorization'] = 'Bearer $tokenBearer'
+      ..fields['room_chat'] = roomChat
+      ..fields['sender'] = sender
+      ..fields['receiver'] = receiver
+      ..fields['caption'] = caption
+      ..fields['type'] = type;
+
+    // Adding file to the request
+    request.files.add(await http.MultipartFile.fromPath('images', filePath));
+
+    debugPrint('room chat: \$roomChat');
+    debugPrint('sender: \$sender');
+    debugPrint('receiver: \$receiver');
+    debugPrint('caption: \$caption');
+    debugPrint('type: \$type');
+    debugPrint('file path: \$filePath');
+
+    try {
+      final streamedResponse = await request.send();
+      final response = await http.Response.fromStream(streamedResponse);
+
+      debugPrint(response.body);
+
+      if (response.statusCode == 200) {
+        final Map<String, dynamic> json = jsonDecode(response.body);
+
+        // Parsing the response into the SendMessageResponse model
+        return SendMessageData.fromJson(json);
+      } else {
+        throw Exception('Error: \${response.statusCode} - \${response.reasonPhrase}');
+      }
+    } catch (e) {
+      debugPrint('Error occurred while sending media: \$e');
+      throw Exception('Failed to send media.');
+    }
+  }
+
+//MARK: Handle Ticket
+  Future<HandleTicketMessageData> assignTicket(
+    String roomChat,
+    String customerWhatsapp,
+  ) async {
+    final Uri uri = Uri.parse("${API.baseUrl}/api/v1/assign/ticket");
+
+    debugPrint("Calling $uri");
+
+    final String? tokenBearer = await LocalPrefs.getBearerToken();
+    final String? deviceKey = await LocalPrefs.getDeviceKey();
+
+    // Constructing the JSON payload
+    final Map<String, dynamic> payload = {
+      "device_pkey": deviceKey,
+      "room_chat": roomChat,
+      "customer_whatsapp": customerWhatsapp,
+    };
+
+    debugPrint('room chat: $roomChat');
+    debugPrint('deviceKey: $deviceKey');
+    debugPrint('customer whatsapp: $customerWhatsapp');
+
+    final response = await http.post(
+      uri,
+      headers: {
+        "Authorization": "Bearer $tokenBearer",
+        "Content-Type": "application/json",
+      },
+      body: jsonEncode(payload),
+    );
+
+    debugPrint(response.body);
+
+    if (response.statusCode == 200) {
+      final Map<String, dynamic> json = jsonDecode(response.body);
+
+      // Parsing the response into the SendMessageResponse model
+      return HandleTicketMessageData.fromJson(json);
     } else {
       throw Exception('Error: ${response.statusCode} - ${response.reasonPhrase}');
     }

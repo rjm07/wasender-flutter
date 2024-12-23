@@ -9,6 +9,11 @@ class CustomIcons {
   static String iconEditCircle = "assets/icons/icon_edit.png";
   static String iconFloatingActionButtonWhite = "assets/icons/icon_floating_action_button_white.png";
   static String iconGearGreen = "assets/icons/icon_gear_green.png";
+  static String iconHandleTicket = "assets/icons/icon_handle_ticket.png";
+  static String iconHTAttention = "assets/icons/icon_ht_attention.png";
+  static String iconHTClock = "assets/icons/icon_ht_clock.png";
+  static String iconHTIncomingEmail = "assets/icons/icon_ht_incoming_email.png";
+  static String iconHTStatus = "assets/icons/icon_ht_status.png";
   static String iconInbox = "assets/icons/icon_inbox.png";
   static String iconKeluar = "assets/icons/icon_keluar.png";
   static String iconKontak = "assets/icons/icon_kontak.png";

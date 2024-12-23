@@ -67,6 +67,16 @@ class LocalPrefs {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     prefs.remove(_LocalPrefKeys.fkUserID);
   }
+
+  static Future<void> saveFCMToken(String fcmToken) async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.setString(_LocalPrefKeys.fcmToken, fcmToken);
+  }
+
+  static Future<String?> getFCMToken() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    return prefs.getString(_LocalPrefKeys.fcmToken);
+  }
 }
 
 class _LocalPrefKeys {
@@ -75,4 +85,5 @@ class _LocalPrefKeys {
   static String deviceKey = "DEVICE_KEY";
   static String fkUserID = "FK_USER_ID";
   static String whatsappNumber = "WHATSAPP_NUMBER";
+  static String fcmToken = "FCM_TOKEN";
 }

@@ -186,12 +186,20 @@ class Message {
   final dynamic quotedMessage;
   final dynamic stanzaId;
   final String? text;
+  final String? name;
+  final dynamic file;
+  final dynamic thumb;
+  final String? caption;
 
   Message({
     this.mentionedJid,
     this.quotedMessage,
     this.stanzaId,
     required this.text,
+    this.name,
+    this.file,
+    this.thumb,
+    this.caption,
   });
 
   factory Message.fromJson(Map<String, dynamic> json) {
@@ -200,6 +208,10 @@ class Message {
       quotedMessage: json['quotedMessage'],
       stanzaId: json['stanzaId'],
       text: json['text'] as String?,
+      name: json['name'] as String?,
+      file: json['file'],
+      thumb: json['thumb'],
+      caption: json['caption'] as String?,
     );
   }
 
@@ -208,6 +220,10 @@ class Message {
         'quotedMessage': quotedMessage,
         'stanzaId': stanzaId,
         'text': text,
+        'name': name,
+        'file': file,
+        'thumb': thumb,
+        'caption': caption,
       };
 }
 

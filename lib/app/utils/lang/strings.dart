@@ -17,6 +17,9 @@ class API {
 
   //SALES FUNNEL
   static String salesFunnelUrl = "/v2/sales-funnel";
+
+  //SOCKET IO
+  static String socketUrl = const String.fromEnvironment("SOCKET_API");
 }
 
 class FirebaseConstants {

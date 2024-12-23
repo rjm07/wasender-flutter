@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
 import 'package:wasender/app/app.dart';
+import 'package:wasender/app/core/services/firebase/cloud_messaging.dart';
 import 'dart:io';
 
 import 'core/services/auth.dart';
@@ -19,8 +19,11 @@ class MyHttpOverrides extends HttpOverrides {
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Permission.notification.request();
+
   await LocalNotificationsServices.init();
+
+  await FirebaseCloudMessagingService.init();
+
   HttpOverrides.global = MyHttpOverrides();
 
   runApp(
