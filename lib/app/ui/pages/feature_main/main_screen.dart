@@ -1,13 +1,16 @@
 import 'dart:io' show Platform; // Import Platform for OS detection
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
+import 'package:wasender/app/core/services/firebase/cloud_messaging.dart';
 import 'package:wasender/app/ui/pages/feature_main/feature_pages/menu/feature_kontak/kontak_screen.dart';
 import 'package:wasender/app/ui/pages/feature_main/feature_pages/menu/feature_pembayaran/pembayaran_screen.dart';
 import 'package:wasender/app/ui/pages/feature_main/feature_pages/menu/feature_pengguna/pengguna_screen.dart';
 import 'package:wasender/app/ui/pages/feature_main/feature_pages/menu/feature_perangkat_saya/perangkat_saya_screen.dart';
 import 'package:wasender/app/ui/pages/feature_main/feature_pages/menu/feature_pesan/pesan_screen.dart';
 import 'package:wasender/app/ui/pages/feature_main/menu/sidebar_menu_screen.dart';
+import '../../../utils/lang/colors.dart';
 import '../../../utils/lang/images.dart';
 import 'feature_pages/menu/feature_dashboard/dashboard_screen.dart';
 import 'feature_pages/menu/feature_tim_agen/tim_agen_screen.dart';
@@ -73,6 +76,16 @@ class _MainScreenState extends State<MainScreen> {
     ),
   ];
 
+  void requestNotificationPermission() async {
+    await FirebaseCloudMessagingService.requestPermission();
+  }
+
+  @override
+  void initState() {
+    requestNotificationPermission();
+    super.initState();
+  }
+
   @override
   void dispose() {
     _pageController.dispose(); // Dispose the controller when not needed
@@ -86,8 +99,9 @@ class _MainScreenState extends State<MainScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(_pageTitles[_currentPage], style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w400)),
-      ),
+          title: Text(_pageTitles[_currentPage] == 'Dashboard' ? '' : _pageTitles[_currentPage],
+              style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w400)),
+          backgroundColor: _pageTitles[_currentPage] == 'Dashboard' ? AppColors.navBarColor : AppColors.primary),
       // Conditionally display Drawer for Android
       drawer: isIOS ? null : SideBarMenuScreen(pageController: _pageController),
       // Conditionally display BottomNavigationBar for iOS
@@ -117,7 +131,7 @@ class _MainScreenState extends State<MainScreen> {
       floatingActionButton: SpeedDial(
         // Initial FAB with four squares icon like in the first image
         icon: Icons.apps_rounded,
-        backgroundColor: Colors.green.shade700,
+        backgroundColor: AppColors.primary,
         activeIcon: Icons.close,
         activeBackgroundColor: Colors.blue,
         spacing: 12,
@@ -135,7 +149,7 @@ class _MainScreenState extends State<MainScreen> {
                 color: Colors.transparent,
               ),
             ],
-            backgroundColor: Colors.green,
+            backgroundColor: AppColors.primary,
             onTap: () {
               //print('Tambah Perangkat pressed');
             },
@@ -150,7 +164,7 @@ class _MainScreenState extends State<MainScreen> {
                 color: Colors.transparent,
               ),
             ],
-            backgroundColor: Colors.green,
+            backgroundColor: AppColors.primary,
             onTap: () {
               if (kDebugMode) {
                 print('Berlangganan pressed');

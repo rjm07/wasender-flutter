@@ -13,8 +13,8 @@ class WaSenderApp extends StatelessWidget {
       title: "",
       debugShowCheckedModeBanner: false,
       themeMode: ThemeMode.light, //or ThemeMode.dark
-      theme: GlobalThemeData.lightThemeData,
-      darkTheme: GlobalThemeData.darkThemeData,
+      theme: CustomTheme.lightTheme,
+      darkTheme: CustomTheme.darkTheme,
       home: const AuthWrapper(),
     );
   }
