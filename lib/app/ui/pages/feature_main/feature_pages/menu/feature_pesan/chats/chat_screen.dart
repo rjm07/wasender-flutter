@@ -53,9 +53,9 @@ class _ChatScreenState extends State<ChatScreen> {
     debugPrint('status ${widget.statusIsOpen}');
     socket = socketService.initializeSocket();
 
-    listenToIncomingMessages();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       getChatBoxConversation();
+      listenToIncomingMessages();
     });
   }
 
@@ -76,30 +76,26 @@ class _ChatScreenState extends State<ChatScreen> {
   }
 
   void listenToIncomingMessages() async {
-    try {
-      final String? deviceKey = await LocalPrefs.getDeviceKey();
-      final String? fkUserID = await LocalPrefs.getFKUserID();
+    final String? deviceKey = await LocalPrefs.getDeviceKey();
+    final String? fkUserID = await LocalPrefs.getFKUserID();
 
-      if (deviceKey == null || fkUserID == null) {
-        throw Exception("DeviceKey or FKUserID is null");
-      }
-
-      if (socket == null) {
-        throw Exception("Socket is not initialized");
-      }
-
-      socket!.onConnect((_) {
-        debugPrint('Connection Established');
-        final channel = "popup:${fkUserID}_$deviceKey";
-        socket!.on(channel, (msg) {
-          logger.i("Socket: Listening (1) on $channel");
-          debugPrint(channel);
-          handleIncomingMessage(msg);
-        });
-      });
-    } catch (e) {
-      logger.e("Error in listenToIncomingMessages: $e");
+    if (deviceKey == null || fkUserID == null) {
+      throw Exception("DeviceKey or FKUserID is null");
     }
+
+    if (socket == null) {
+      throw Exception("Socket is not initialized");
+    }
+
+    socket!.onConnect((_) {
+      debugPrint('Connection Established');
+      final channel = "popup:${fkUserID}_$deviceKey";
+      socket!.on(channel, (msg) {
+        logger.i("Socket: Listening (1) on $channel");
+        debugPrint(channel);
+        handleIncomingMessage(msg);
+      });
+    });
   }
 
   void handleIncomingMessage(dynamic data) {
