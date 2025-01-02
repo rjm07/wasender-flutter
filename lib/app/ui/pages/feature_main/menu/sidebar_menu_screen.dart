@@ -32,13 +32,10 @@ class _SideBarMenuScreenState extends State<SideBarMenuScreen> {
           children: [
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 32.0),
-              child: Center(
-                child: Image.asset(
-                  CustomImages.imageWaSenderLogoSlogan,
-                  height: 180,
-                  width: double.infinity,
-                  fit: BoxFit.contain,
-                ),
+              child: Image.asset(
+                CustomImages.imageWaSenderLogo,
+                height: 180,
+                width: MediaQuery.of(context).size.width / 2.25,
               ),
             ),
             const Padding(

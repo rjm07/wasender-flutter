@@ -12,6 +12,9 @@ class FirebaseCloudMessagingService {
     String? fcmToken = await _firebaseMessaging.getToken();
 
     if (fcmToken != null) {
+      if (kDebugMode) {
+        print('FCM Token: $fcmToken');
+      }
       LocalPrefs.saveFCMToken(fcmToken);
     }
   }
@@ -48,5 +51,9 @@ class FirebaseCloudMessagingService {
     if (messageTitle != null && messageBody != null) {
       LocalNotificationsServices().showNotification(messageTitle, messageBody);
     }
+  }
+
+  static Future<void> requestPermission() async {
+    await _firebaseMessaging.requestPermission();
   }
 }

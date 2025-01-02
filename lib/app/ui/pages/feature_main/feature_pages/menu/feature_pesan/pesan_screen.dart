@@ -4,6 +4,7 @@ import 'package:socket_io_client/socket_io_client.dart' as socket_io;
 import 'package:wasender/app/ui/pages/feature_main/feature_pages/menu/feature_pesan/chats/chat_categories/bot_chat_screen.dart';
 import 'package:wasender/app/ui/pages/feature_main/feature_pages/menu/feature_pesan/chats/chat_categories/close_chat_screen.dart';
 import '../../../../../../core/services/socket_io/socket.dart';
+import '../../../../../../utils/lang/colors.dart';
 import '../../../../../../utils/lang/images.dart';
 import 'chats/chat_categories/active_chat_screen.dart';
 
@@ -106,8 +107,21 @@ class _PesanScreenState extends State<PesanScreen> with SingleTickerProviderStat
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('WASenderApp'),
-        backgroundColor: Colors.white,
+        title: Row(
+          children: [
+            GestureDetector(
+              onTap: () {
+                // Add logic for logo tap
+              },
+              child: Image.asset(
+                CustomImages.imageWaSenderLogo, // Replace with your logo asset path
+                height: 30,
+              ),
+            ),
+            const SizedBox(width: 8),
+          ],
+        ),
+        backgroundColor: AppColors.navBarColor,
         centerTitle: false,
         actions: [
           Padding(
@@ -117,15 +131,15 @@ class _PesanScreenState extends State<PesanScreen> with SingleTickerProviderStat
                 GestureDetector(
                     onTap: () {},
                     child: Image.asset(
-                      color: Colors.green,
+                      color: AppColors.primary,
                       CustomIcons.iconViewContact,
                       height: 20,
                       width: 20,
                     )),
                 const SizedBox(width: 28),
-                GestureDetector(onTap: () {}, child: const Icon(Icons.add_box_outlined, color: Colors.green)),
+                GestureDetector(onTap: () {}, child: const Icon(Icons.add_box_outlined, color: AppColors.primary)),
                 const SizedBox(width: 18),
-                GestureDetector(onTap: () {}, child: const Icon(Icons.more_vert_rounded, color: Colors.green)),
+                GestureDetector(onTap: () {}, child: const Icon(Icons.more_vert_rounded, color: AppColors.primary)),
                 const SizedBox(width: 16),
               ],
             ),
@@ -137,7 +151,7 @@ class _PesanScreenState extends State<PesanScreen> with SingleTickerProviderStat
         children: [
           // Filter buttons row
           Padding(
-            padding: const EdgeInsets.symmetric(vertical: 4),
+            padding: const EdgeInsets.only(bottom: 4),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.start,
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -148,9 +162,9 @@ class _PesanScreenState extends State<PesanScreen> with SingleTickerProviderStat
                   child: TabBar(
                     dividerHeight: 0,
                     controller: _tabController,
-                    labelColor: Colors.green,
+                    labelColor: AppColors.primary,
                     unselectedLabelColor: Colors.black45,
-                    indicatorColor: Colors.green,
+                    indicatorColor: AppColors.primary,
                     indicatorWeight: 3.0,
                     indicatorSize: TabBarIndicatorSize.tab,
                     labelStyle: TextStyle(fontSize: 14),

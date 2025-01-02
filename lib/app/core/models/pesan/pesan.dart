@@ -68,7 +68,7 @@ class ChatBoxDataList {
 }
 
 class Messages {
-  final String agentId;
+  final String? agentId;
   final String agentName;
   final dynamic broadcast;
   final String category;
@@ -90,7 +90,7 @@ class Messages {
   final String type;
 
   Messages({
-    required this.agentId,
+    this.agentId,
     required this.agentName,
     required this.broadcast,
     required this.category,
@@ -114,7 +114,7 @@ class Messages {
 
   factory Messages.fromJson(Map<String, dynamic> json) {
     return Messages(
-      agentId: json['agent_id'] as String,
+      agentId: json['agent_id'] as String?,
       agentName: json['agent_name'] as String,
       broadcast: json['broadcast'],
       category: json['category'] as String,

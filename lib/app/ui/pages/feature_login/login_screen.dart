@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:wasender/app/utils/lang/images.dart';
 
 import '../../../core/services/auth.dart';
+import '../../../utils/lang/colors.dart';
 import '../../shared/widgets/custom_button.dart';
 import '../../shared/widgets/custom_textfield.dart';
 
@@ -66,16 +67,19 @@ class _LoginScreenState extends State<LoginScreen> {
     }
 
     return Scaffold(
-      appBar: AppBar(title: const Text(''), actions: const [
-        Spacer(),
-        Padding(
-          padding: EdgeInsets.only(right: 40.0),
-          child: Text(
-            'v1.0.0.0',
-            style: TextStyle(fontSize: 14.0, fontWeight: FontWeight.w200, color: Colors.black87),
-          ),
-        ),
-      ]),
+      appBar: AppBar(
+          title: const Text(''),
+          actions: const [
+            Spacer(),
+            Padding(
+              padding: EdgeInsets.only(right: 40.0),
+              child: Text(
+                'v1.0.0.0',
+                style: TextStyle(fontSize: 14.0, fontWeight: FontWeight.w200, color: Colors.black87),
+              ),
+            ),
+          ],
+          backgroundColor: AppColors.navBarColor),
       body: Form(
         key: formKey,
         autovalidateMode: AutovalidateMode.onUserInteraction,
@@ -93,18 +97,17 @@ class _LoginScreenState extends State<LoginScreen> {
                   const SizedBox(
                     height: 44,
                   ),
-                  Image.asset(
-                    CustomImages.imageWaSenderLogo,
-                    height: 180,
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 100, vertical: 60.0),
+                    child: Image.asset(
+                      CustomImages.imageWaSenderLogo,
+                      height: MediaQuery.of(context).size.height / 12,
+                    ),
                   ),
                   const Column(children: [
                     Text(
-                      'Sign In',
-                      style: TextStyle(fontSize: 24.0, fontWeight: FontWeight.bold, color: Colors.black87),
-                    ),
-                    Text(
-                      'WhatsApp Sender',
-                      style: TextStyle(fontSize: 14.0, fontWeight: FontWeight.w300, color: Colors.black87),
+                      'Please sign in with WhatUp',
+                      style: TextStyle(fontSize: 16.0, fontWeight: FontWeight.w400, color: Colors.black87),
                     ),
                   ]),
                   const SizedBox(
