@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:wasender/app/ui/shared/widgets/wrappers/auth_wrapper.dart';
 import 'package:wasender/app/utils/lang/theme.dart';
 
-class WaSenderApp extends StatelessWidget {
-  const WaSenderApp({
+class WhatUpApp extends StatelessWidget {
+  const WhatUpApp({
     super.key,
   });
 

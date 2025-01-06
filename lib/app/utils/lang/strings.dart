@@ -3,7 +3,7 @@ class API {
   // static String socomSec = const String.fromEnvironment("socomSec");
   // static String hashKey = const String.fromEnvironment("hashKey");
 
-  static String baseUrl = const String.fromEnvironment("BASE_URL");
+  static String baseUrl = const String.fromEnvironment("baseUrl");
   static String loginUrl = "/api/v1/oauth";
 
   //DASHBOARD APIS
@@ -19,7 +19,7 @@ class API {
   static String salesFunnelUrl = "/v2/sales-funnel";
 
   //SOCKET IO
-  static String socketUrl = const String.fromEnvironment("SOCKET_API");
+  static String socketUrl = const String.fromEnvironment("socketURL");
 }
 
 class FirebaseConstants {

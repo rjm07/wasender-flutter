@@ -24,7 +24,7 @@ class HandleTicketResponse {
 class HandleTicketMessageData {
   final String? customerWhatsapp;
   final String? message;
-  final String notification;
+  final String? notification;
   final String roomChat;
   final bool? success;
   final List<String> ticketNumber;
@@ -32,7 +32,7 @@ class HandleTicketMessageData {
   HandleTicketMessageData({
     this.customerWhatsapp,
     required this.message,
-    required this.notification,
+    this.notification,
     required this.roomChat,
     required this.success,
     required this.ticketNumber,
@@ -42,7 +42,7 @@ class HandleTicketMessageData {
     return HandleTicketMessageData(
       customerWhatsapp: json['customer_whatsapp'] as String?,
       message: json['message'] as String?,
-      notification: json['notification'] as String,
+      notification: json['notification'] as String?,
       roomChat: json['room_chat'] as String,
       success: json['success'] as bool?,
       ticketNumber: (json['ticket_number'] as List).map((item) => item as String).toList(),

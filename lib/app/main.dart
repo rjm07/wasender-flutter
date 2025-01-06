@@ -39,7 +39,7 @@ void main() async {
           create: (_) => PesanServices(),
         ),
       ],
-      child: const WaSenderApp(),
+      child: const WhatUpApp(),
     ),
   );
 }
