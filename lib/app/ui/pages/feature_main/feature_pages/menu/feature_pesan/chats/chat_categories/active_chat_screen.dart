@@ -81,21 +81,26 @@ class _ActiveChatScreenState extends State<ActiveChatScreen> {
   }
 
   void handleIncomingMessage(dynamic data) {
-    // Parse the incoming data
-    final Map<String, dynamic> response = Map<String, dynamic>.from(data);
-    final ChatBoxDataList conversation = ChatBoxDataList.fromJson(response);
-    debugPrint('response: $response');
+    try {
+      // Parse the incoming data
+      final Map<String, dynamic> response = Map<String, dynamic>.from(data);
+      final ChatBoxDataList conversation = ChatBoxDataList.fromJson(response!);
+      debugPrint('response: $response');
 
-    final String? senderName = response['sender_name'] ?? '';
-    final String? messageText = response['messages']['message']['text'] ?? '';
-    final String? timestamp = response['messages']['messageTimestamp_str'] ?? '';
+      if (mounted) {
+        setState(() {
+          userChatBox.add(conversation);
+        });
+      }
 
-    debugPrint('Message from $senderName: $messageText at $timestamp');
+      final String? senderName = response['sender_name'] ?? '';
+      final String? messageText = response['message']['text'] ?? '';
+      final String? timestamp = response['messageTimestamp_str'] ?? '';
 
-    // Insert the conversation at the beginning of the list
-    setState(() {
-      userChatBox.insert(0, conversation);
-    });
+      debugPrint('Message from $senderName: $messageText at $timestamp');
+    } catch (e) {
+      debugPrint('Error processing incoming message: $e');
+    }
   }
 
   @override
