@@ -31,6 +31,8 @@ class _BotChatScreenState extends State<BotChatScreen> {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       getChatBoxList();
     });
+    final socketService = SocketService();
+    socketService.listen(true, onConnectActive);
   }
 
   Future<void> getChatBoxList() async {
@@ -59,6 +61,34 @@ class _BotChatScreenState extends State<BotChatScreen> {
         });
       }
     }
+  }
+
+  void onConnectActive(dynamic data) {
+    logger.i("Socket: Listening to active $data");
+
+    if (data == null) {
+      logger.e("Received null message");
+      return;
+    }
+    handleIncomingMessage(data);
+  }
+
+  void handleIncomingMessage(dynamic data) {
+    // Parse the incoming data
+    final Map<String, dynamic> response = Map<String, dynamic>.from(data);
+    final ChatBoxDataList conversation = ChatBoxDataList.fromJson(response);
+    debugPrint('response: $response');
+
+    final String? senderName = response['sender_name'] ?? '';
+    final String? messageText = response['messages']['message']['text'] ?? '';
+    final String? timestamp = response['messages']['messageTimestamp_str'] ?? '';
+
+    debugPrint('Message from $senderName: $messageText at $timestamp');
+
+    // Insert the conversation at the beginning of the list
+    setState(() {
+      userChatBox.insert(0, conversation);
+    });
   }
 
   @override

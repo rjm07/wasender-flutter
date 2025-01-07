@@ -53,7 +53,11 @@ class _ChatScreenState extends State<ChatScreen> {
       getChatBoxConversation();
     });
     final socketService = SocketService();
-    socketService.listen(false, onConnectActive);
+    if (widget.statusIsOpen == true) {
+      socketService.listen(true, onConnectActive);
+    } else {
+      socketService.listen(false, onConnectActive);
+    }
   }
 
   Future<void> getChatBoxConversation() async {

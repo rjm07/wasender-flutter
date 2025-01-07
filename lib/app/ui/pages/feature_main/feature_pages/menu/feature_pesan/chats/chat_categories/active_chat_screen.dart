@@ -29,12 +29,13 @@ class _ActiveChatScreenState extends State<ActiveChatScreen> {
   void initState() {
     super.initState();
     //Initiate socket connection
-    final socketService = SocketService();
-    socketService.listen(false, onConnectActive);
+
     WidgetsBinding.instance.addPostFrameCallback((_) {
       getChatBoxList();
       //listenToIncomingMessages();
     });
+    final socketService = SocketService();
+    socketService.listen(false, onConnectActive);
   }
 
   Future<void> getChatBoxList() async {
@@ -80,20 +81,21 @@ class _ActiveChatScreenState extends State<ActiveChatScreen> {
   }
 
   void handleIncomingMessage(dynamic data) {
-    try {
-      // Parse the incoming data
-      final Map<String, dynamic> response = Map<String, dynamic>.from(data);
-      final ChatBoxDataList conversation = ChatBoxDataList.fromJson(response);
-      debugPrint('response: $response');
+    // Parse the incoming data
+    final Map<String, dynamic> response = Map<String, dynamic>.from(data);
+    final ChatBoxDataList conversation = ChatBoxDataList.fromJson(response);
+    debugPrint('response: $response');
 
-      final String? senderName = response['sender_name'] ?? '';
-      final String? messageText = response['messages']['message']['text'] ?? '';
-      final String? timestamp = response['messages']['messageTimestamp_str'] ?? '';
+    final String? senderName = response['sender_name'] ?? '';
+    final String? messageText = response['messages']['message']['text'] ?? '';
+    final String? timestamp = response['messages']['messageTimestamp_str'] ?? '';
 
-      debugPrint('Message from $senderName: $messageText at $timestamp');
-    } catch (e) {
-      debugPrint('Error processing incoming message: $e');
-    }
+    debugPrint('Message from $senderName: $messageText at $timestamp');
+
+    // Insert the conversation at the beginning of the list
+    setState(() {
+      userChatBox.insert(0, conversation);
+    });
   }
 
   @override
