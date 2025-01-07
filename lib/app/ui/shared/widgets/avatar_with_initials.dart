@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../../../utils/lang/colors.dart';
+
 class AvatarWithInitials extends StatelessWidget {
   final String fullName;
   final String? imageUrl;
@@ -22,7 +24,7 @@ class AvatarWithInitials extends StatelessWidget {
   Widget build(BuildContext context) {
     return CircleAvatar(
       radius: 30, // Adjust the size of the avatar
-      backgroundColor: Colors.green.shade700, // Background color for initials
+      backgroundColor: AppColors.primary, // Background color for initials
       backgroundImage: imageUrl != null ? NetworkImage(imageUrl!) : null, // Load image if available
       child: imageUrl == null
           ? Text(

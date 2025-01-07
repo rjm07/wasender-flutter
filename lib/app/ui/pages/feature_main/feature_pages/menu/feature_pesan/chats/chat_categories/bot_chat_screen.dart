@@ -21,22 +21,12 @@ class BotChatScreen extends StatefulWidget {
 
 class _BotChatScreenState extends State<BotChatScreen> {
   final logger = Logger();
-  late socket_io.Socket? socket;
-  final SocketService socketService = SocketService();
   late String pKey = 'pKey';
   List<ChatBoxDataList> userChatBox = [];
 
   @override
   void initState() {
     super.initState();
-
-    // socket = socketService.initializeSocket();
-    // socket?.onConnect((_) {
-    //   // debugPrint('Socket connected.');
-    //   listenToIncomingMessages();
-    // });
-
-    //listenToIncomingMessages();
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
       getChatBoxList();
@@ -70,48 +60,6 @@ class _BotChatScreenState extends State<BotChatScreen> {
       }
     }
   }
-
-  // void listenToIncomingMessages() async {
-  //   try {
-  //     final String? deviceKey = await LocalPrefs.getDeviceKey();
-  //     final String? fkUserID = await LocalPrefs.getFKUserID();
-  //
-  //     if (deviceKey == null || fkUserID == null) {
-  //       throw Exception("DeviceKey or FKUserID is null");
-  //     }
-  //
-  //     if (socket == null) {
-  //       throw Exception("Socket is not initialized");
-  //     }
-  //
-  //     socket!.onConnect((_) {
-  //       debugPrint('Connection to bot server Established');
-  //       final channel = "bot_$deviceKey";
-  //       socket!.on(channel, (msg) {
-  //         logger.i("Socket: Listening on $channel");
-  //         debugPrint(channel);
-  //         handleIncomingMessage(msg);
-  //       });
-  //     });
-  //   } catch (e) {
-  //     logger.e("Error in listenToIncomingMessages: $e");
-  //   }
-  // }
-
-  // void handleIncomingMessage(dynamic data) {
-  //   try {
-  //     // Parse the incoming data
-  //     final Map<String, dynamic> response = Map<String, dynamic>.from(data);
-  //     final String senderName = response['sender_name'] ?? '';
-  //     final String messageText = response['message']['text'] ?? '';
-  //     final String timestamp = response['messageTimestamp_str'] ?? '';
-  //
-  //     debugPrint('Message from $senderName: $messageText at $timestamp');
-  //     //getChatBoxList();
-  //   } catch (e) {
-  //     debugPrint('Error processing incoming message: $e');
-  //   }
-  // }
 
   @override
   Widget build(BuildContext context) {

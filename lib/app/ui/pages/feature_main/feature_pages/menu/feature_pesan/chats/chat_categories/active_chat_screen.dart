@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:logger/logger.dart';
 import 'package:socket_io_client/socket_io_client.dart' as socket_io;
@@ -21,22 +22,18 @@ class ActiveChatScreen extends StatefulWidget {
 
 class _ActiveChatScreenState extends State<ActiveChatScreen> {
   final logger = Logger();
-  late socket_io.Socket? socket;
-  final SocketService socketService = SocketService();
   late String pKey = 'pKey';
   List<ChatBoxDataList> userChatBox = [];
 
   @override
   void initState() {
     super.initState();
-
-    // socket = socketService.initializeSocket();
-    // socket?.onConnect((_) {
-    //   listenToIncomingMessages();
-    // });
-
+    //Initiate socket connection
+    final socketService = SocketService();
+    socketService.listen(false, onConnectActive);
     WidgetsBinding.instance.addPostFrameCallback((_) {
       getChatBoxList();
+      //listenToIncomingMessages();
     });
   }
 
@@ -72,40 +69,37 @@ class _ActiveChatScreenState extends State<ActiveChatScreen> {
     }
   }
 
-  // void listenToIncomingMessages() async {
-  //   final String? deviceKey = await LocalPrefs.getDeviceKey();
-  //   final String? fkUserID = await LocalPrefs.getFKUserID();
-  //
-  //   if (deviceKey == null || fkUserID == null) {
-  //     throw Exception("DeviceKey or FKUserID is null");
-  //   }
-  //
-  //   if (socket == null) {
-  //     throw Exception("Socket is not initialized");
-  //   }
-  //
-  //   socket!.onConnect((_) {
-  //     debugPrint('Connection Established');
-  //     final channel = "popup:${fkUserID}_$deviceKey";
-  //     socket!.on(channel, (msg) {
-  //       logger.i("Socket: Listening on $channel");
-  //       debugPrint(channel);
-  //       handleIncomingMessage(msg);
-  //     });
-  //   });
-  // }
+  void onConnectActive(dynamic data) {
+    logger.i("Socket: Listening to active $data");
 
-  // void handleIncomingMessage(dynamic data) {
-  //   // Parse the incoming data
-  //   final Map<String, dynamic> response = Map<String, dynamic>.from(data);
-  //
-  //   final String senderName = response['sender_name'] ?? '';
-  //   final String messageText = response['message']['text'] ?? '';
-  //   final String timestamp = response['messageTimestamp_str'] ?? '';
-  //
-  //   debugPrint('Message from $senderName: $messageText at $timestamp');
-  //   // getChatBoxList();
-  // }
+    if (data == null) {
+      logger.e("Received null message");
+      return;
+    }
+    handleIncomingMessage(data);
+  }
+
+  void handleIncomingMessage(dynamic data) {
+    try {
+      // Parse the incoming data
+      final Map<String, dynamic> response = Map<String, dynamic>.from(data);
+      final ChatBoxDataList conversation = ChatBoxDataList.fromJson(response);
+      debugPrint('response: $response');
+
+      final String? senderName = response['sender_name'] ?? '';
+      final String? messageText = response['messages']['message']['text'] ?? '';
+      final String? timestamp = response['messages']['messageTimestamp_str'] ?? '';
+
+      debugPrint('Message from $senderName: $messageText at $timestamp');
+    } catch (e) {
+      debugPrint('Error processing incoming message: $e');
+    }
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {

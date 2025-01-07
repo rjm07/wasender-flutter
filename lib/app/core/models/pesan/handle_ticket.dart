@@ -25,17 +25,17 @@ class HandleTicketMessageData {
   final String? customerWhatsapp;
   final String? message;
   final String? notification;
-  final String roomChat;
+  final String? roomChat;
   final bool? success;
-  final List<String> ticketNumber;
+  final List<String>? ticketNumber;
 
   HandleTicketMessageData({
     this.customerWhatsapp,
     required this.message,
     this.notification,
-    required this.roomChat,
+    this.roomChat,
     required this.success,
-    required this.ticketNumber,
+    this.ticketNumber,
   });
 
   factory HandleTicketMessageData.fromJson(Map<String, dynamic> json) {
@@ -43,9 +43,9 @@ class HandleTicketMessageData {
       customerWhatsapp: json['customer_whatsapp'] as String?,
       message: json['message'] as String?,
       notification: json['notification'] as String?,
-      roomChat: json['room_chat'] as String,
+      roomChat: json['room_chat'] as String?,
       success: json['success'] as bool?,
-      ticketNumber: (json['ticket_number'] as List).map((item) => item as String).toList(),
+      ticketNumber: (json['ticket_number'] as List?)?.map((item) => item as String).toList(),
     );
   }
 }

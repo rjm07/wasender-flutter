@@ -58,7 +58,7 @@ class ChatUserListTile extends StatelessWidget {
         width: 60, // Set a fixed width
         height: 60, // Set a fixed height
         child: AvatarWithInitials(
-          fullName: (fullName.isEmpty || double.tryParse(fullName) != null) ? 'Whatup Sender' : fullName,
+          fullName: (fullName.isEmpty || double.tryParse(fullName) != null) ? 'Anonymous' : fullName,
           imageUrl: null,
         ),
       ),

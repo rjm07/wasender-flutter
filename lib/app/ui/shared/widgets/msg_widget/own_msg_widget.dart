@@ -4,17 +4,17 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 class OwnMsgWidget extends StatelessWidget {
-  const OwnMsgWidget({super.key, required this.status, required this.time, this.ownMessage, this.filePath});
+  const OwnMsgWidget({super.key, this.status, this.time, this.ownMessage, this.filePath});
 
-  final int status;
-  final String time;
+  final int? status;
+  final String? time;
   final String? ownMessage;
   final String? filePath;
 
   @override
   Widget build(BuildContext context) {
     final double maxWidth = MediaQuery.of(context).size.width * 0.75;
-    DateTime dateTime = DateTime.parse(time);
+    DateTime dateTime = DateTime.parse(time!);
     String formattedDate = DateFormat('MMM d').format(dateTime);
     String formattedTime = DateFormat('H:mm a').format(dateTime);
 
