@@ -436,7 +436,9 @@ void _handleTicket(BuildContext context, PesanServices pesanServices, String roo
                 await pesanServices.assignTicket(roomChat, customerWhatsapp);
                 // Close the dialog and navigate back to ChatScreen
                 Navigator.of(context).pop(); // Close the dialog
-                context.goNamed('chat'); // Navigate to the route
+                Navigator.of(context).popUntil((route) => route.settings.name == 'pesan');
+                // Navigator.of(context).pop(); // Close the dialog
+                // context.goNamed('chat'); // Navigate to the route
               } catch (error) {
                 // Close the dialog and show a SnackBar with the error message
                 Navigator.of(context).pop();

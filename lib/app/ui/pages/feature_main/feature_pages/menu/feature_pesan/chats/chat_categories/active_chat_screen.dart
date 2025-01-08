@@ -4,6 +4,7 @@ import 'package:logger/logger.dart';
 import 'package:socket_io_client/socket_io_client.dart' as socket_io;
 import 'package:provider/provider.dart';
 import '../../../../../../../../core/models/pesan/pesan.dart';
+import '../../../../../../../../core/models/pesan/pesan_conversation.dart';
 import '../../../../../../../../core/services/pesan/pesan.dart';
 import '../../../../../../../../core/services/preferences.dart';
 import '../../../../../../../../core/services/socket_io/socket.dart';
@@ -24,6 +25,7 @@ class _ActiveChatScreenState extends State<ActiveChatScreen> {
   final logger = Logger();
   late String pKey = 'pKey';
   List<ChatBoxDataList> userChatBox = [];
+  List<Conversation> _messages = [];
 
   @override
   void initState() {
@@ -81,15 +83,65 @@ class _ActiveChatScreenState extends State<ActiveChatScreen> {
   }
 
   void handleIncomingMessage(dynamic data) {
+    if (kDebugMode) {
+      print('handleIncomingMessage: $data');
+    }
     try {
-      // Parse the incoming data
-      final Map<String, dynamic>? response = Map<String, dynamic>.from(data);
-      final ChatBoxDataList conversation = ChatBoxDataList.fromJson(response!);
+      // Parse the incoming data into a Map
+      final Map<String, dynamic> response = Map<String, dynamic>.from(data);
+      final Conversation conversation = Conversation.fromJson(response);
       debugPrint('response: $response');
 
       if (mounted) {
         setState(() {
-          userChatBox.add(conversation);
+          // Map the Conversation object into ChatBoxDataList format
+          final ChatBoxDataList newChatData = ChatBoxDataList(
+            roomChat: conversation.roomChat ?? '',
+            notify: conversation.notify ?? '',
+            remoteJid: conversation.senderNumber ?? '',
+            messages: Messages(
+              agentId: conversation.agentId,
+              agentName: conversation.agentName,
+              broadcast: conversation.message?.caption,
+              category: conversation.category ?? '',
+              chat: conversation.chat ?? '',
+              fromMe: conversation.fromMe ?? false,
+              greeting: false, // Assuming greeting is not part of this structure
+              id: conversation.id ?? '',
+              message: MessageContent(
+                caption: conversation.message?.caption,
+                file: conversation.message?.file,
+                name: conversation.message?.name,
+                thumb: conversation.message?.thumb,
+                mentionedJid: conversation.message?.mentionedJid ?? false,
+                quotedMessage: conversation.message?.quotedMessage,
+                stanzaId: conversation.message?.stanzaId,
+                text: conversation.message?.text,
+              ),
+              messageTimestamp: conversation.messageTimestamp ?? 0,
+              messageTimestampStr: conversation.messageTimestampStr ?? '',
+              messageId: conversation.messageId ?? '',
+              receipt: conversation.receipt ?? '',
+              senderName: conversation.senderName ?? '',
+              senderNumber: conversation.senderNumber ?? '',
+              sessionId: conversation.pkey ?? '',
+              status: conversation.status ?? 0,
+              ticketId: conversation.ticketId ?? '',
+              ticketNumber: conversation.ticketNumber ?? '',
+              type: conversation.type ?? '',
+            ),
+          );
+
+          // Check if a ChatBoxDataList with the same pkey exists
+          final existingIndex = userChatBox.indexWhere((chatData) => chatData.roomChat == newChatData.roomChat);
+
+          if (existingIndex != -1) {
+            // Replace the old chat data with the new one
+            userChatBox[existingIndex] = newChatData;
+          } else {
+            // Insert the new chat data at the beginning
+            userChatBox.insert(0, newChatData);
+          }
         });
       }
 

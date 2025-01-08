@@ -38,10 +38,13 @@ final _router = GoRouter(
       path: '/lib/app/ui/pages/feature_main/feature_pages/menu/feature_dashboard/dashboard_screen.dart',
       builder: (context, state) => DashboardScreen(),
     ),
-    GoRoute(
-      name: 'chat',
-      path: '/lib/app/ui/pages/feature_main/feature_pages/menu/feature_pesan/pesan_screen',
-      builder: (context, state) => PesanScreen(),
-    ),
+    GoRoute(name: 'pesan', path: '/pesan', builder: (context, state) => PesanScreen()
+        // {
+        //   return Scaffold(
+        //     appBar: AppBar(title: Text('')),
+        //     body: PesanScreen(),
+        //   );
+        // },
+        ),
   ],
 );
