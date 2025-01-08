@@ -1,7 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:logger/logger.dart';
-import 'package:socket_io_client/socket_io_client.dart' as socket_io;
 import 'package:provider/provider.dart';
 import '../../../../../../../../core/models/pesan/pesan.dart';
 import '../../../../../../../../core/models/pesan/pesan_conversation.dart';

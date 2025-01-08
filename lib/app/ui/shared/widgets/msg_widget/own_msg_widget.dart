@@ -102,7 +102,7 @@ class OwnMsgWidget extends StatelessWidget {
                             ? Icons.check
                             : status == 4
                                 ? Icons.home
-                                : Icons.close, // Default icon for other cases
+                                : Icons.timer_outlined, // Default icon for other cases
                     color: Colors.black38,
                     size: 14,
                   ),
