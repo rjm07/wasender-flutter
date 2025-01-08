@@ -90,24 +90,50 @@ class _ChatScreenState extends State<ChatScreen> {
     handleIncomingMessage(data);
   }
 
-  void handleIncomingMessage(dynamic data) {
+  void handleIncomingMessage(dynamic data) async {
     try {
       // Parse the incoming data
       final Map<String, dynamic> response = Map<String, dynamic>.from(data);
-      final Conversation conversation = Conversation.fromJson(response!);
       debugPrint('response: $response');
 
-      if (mounted) {
-        setState(() {
-          _messages.add(conversation);
-        });
+      // Extract sender_id and compare it with your own ID
+      final String? agentId = response['agent_id'];
+      final String? fkUserID = await LocalPrefs.getFKUserID();
+
+      if (agentId == fkUserID) {
+        final Conversation conversation = Conversation.fromJson(response);
+
+        logger.i('response: $response');
+        logger.e('conversation: $conversation');
+
+        if (mounted) {
+          setState(() {
+            logger.i('setState: $response');
+
+            // Check if an object with the same id exists in the list
+            final int index = _messages.indexWhere((msg) => msg.messageId == conversation.messageId);
+
+            logger.i('index: $index');
+            if (index != -1) {
+              // Replace the existing object with the same ID
+              _messages[index] = conversation;
+              logger.i('Replaced message at index $index');
+            } else {
+              // Add the new object to the list if it doesn't exist
+              _messages.add(conversation);
+              logger.i('Added new message');
+            }
+          });
+        }
+
+        final String? senderName = response['sender_name'] ?? '';
+        final String? messageText = response['message']['text'] ?? '';
+        final String? timestamp = response['messageTimestamp_str'] ?? '';
+
+        debugPrint('Message from $senderName: $messageText at $timestamp');
+      } else {
+        debugPrint('Ignored message from self: $response');
       }
-
-      final String? senderName = response['sender_name'] ?? '';
-      final String? messageText = response['message']['text'] ?? '';
-      final String? timestamp = response['messageTimestamp_str'] ?? '';
-
-      debugPrint('Message from $senderName: $messageText at $timestamp');
     } catch (e) {
       debugPrint('Error processing incoming message: $e');
     }

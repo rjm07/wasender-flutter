@@ -83,7 +83,7 @@ class _ActiveChatScreenState extends State<ActiveChatScreen> {
   void handleIncomingMessage(dynamic data) {
     try {
       // Parse the incoming data
-      final Map<String, dynamic> response = Map<String, dynamic>.from(data);
+      final Map<String, dynamic>? response = Map<String, dynamic>.from(data);
       final ChatBoxDataList conversation = ChatBoxDataList.fromJson(response!);
       debugPrint('response: $response');
 

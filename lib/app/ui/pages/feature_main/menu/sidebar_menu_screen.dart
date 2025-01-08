@@ -68,13 +68,14 @@ class _SideBarMenuScreenState extends State<SideBarMenuScreen> {
                       SMListTiles(
                         image: CustomIcons.iconPesan,
                         title: 'Pesan',
-                        onTap: () {
-                          Navigator.of(context).push(
-                            MaterialPageRoute(
-                              builder: (context) => const PesanScreen(),
-                            ),
-                          );
-                        },
+                        onTap: () => _onTileTap(2),
+                        // {
+                        //   Navigator.of(context).push(
+                        //     MaterialPageRoute(
+                        //       builder: (context) => const PesanScreen(),
+                        //     ),
+                        //   );
+                        // },
                       ),
                       SMListTiles(
                         image: CustomIcons.iconMainDashboard,
