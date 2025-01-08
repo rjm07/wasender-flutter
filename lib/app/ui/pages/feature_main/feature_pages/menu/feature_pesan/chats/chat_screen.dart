@@ -1,8 +1,8 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:logger/logger.dart';
 import 'package:provider/provider.dart';
-import 'package:socket_io_client/socket_io_client.dart' as socket_io;
 import 'package:wasender/app/core/models/pesan/pesan_conversation.dart';
 
 import '../../../../../../../core/services/local_notifications/local_notifications.dart';
@@ -15,7 +15,6 @@ import '../../../../../../shared/widgets/custom_button.dart';
 import '../../../../../../shared/widgets/handle_ticket.dart';
 import '../../../../../../shared/widgets/msg_widget/other_msg_widget.dart';
 import '../../../../../../shared/widgets/msg_widget/own_msg_widget.dart';
-import '../pesan_screen.dart';
 import 'chat_user_profile.dart';
 
 class ChatScreen extends StatefulWidget {
@@ -39,24 +38,25 @@ class ChatScreen extends StatefulWidget {
 
 class _ChatScreenState extends State<ChatScreen> {
   final logger = Logger();
-  late socket_io.Socket? socket;
-  final SocketService socketService = SocketService();
   final TextEditingController _controller = TextEditingController();
 
   List<Conversation> _messages = [];
-  final ScrollController _scrollController = ScrollController(); // Step 1: ScrollController
+  final ScrollController _scrollController = ScrollController();
   bool isExpanded = false;
 
   @override
   void initState() {
     super.initState();
     debugPrint('status ${widget.statusIsOpen}');
-    socket = socketService.initializeSocket();
-
     WidgetsBinding.instance.addPostFrameCallback((_) {
       getChatBoxConversation();
-      listenToIncomingMessages();
     });
+    final socketService = SocketService();
+    if (widget.statusIsOpen == true) {
+      socketService.listen(true, onConnectActive);
+    } else {
+      socketService.listen(false, onConnectActive);
+    }
   }
 
   Future<void> getChatBoxConversation() async {
@@ -75,46 +75,64 @@ class _ChatScreenState extends State<ChatScreen> {
     }
   }
 
-  void listenToIncomingMessages() async {
-    final String? deviceKey = await LocalPrefs.getDeviceKey();
-    final String? fkUserID = await LocalPrefs.getFKUserID();
+  void onConnectActive(dynamic data) {
+    debugPrint("ChatScreen initState called");
+    logger.i("Socket: Listening to active $data");
 
-    if (deviceKey == null || fkUserID == null) {
-      throw Exception("DeviceKey or FKUserID is null");
+    if (kDebugMode) {
+      print('msg: $data');
     }
-
-    if (socket == null) {
-      throw Exception("Socket is not initialized");
+    if (data == null) {
+      logger.e("Received null message");
+      return;
     }
-
-    socket!.onConnect((_) {
-      debugPrint('Connection Established');
-      final channel = "popup:${fkUserID}_$deviceKey";
-      socket!.on(channel, (msg) {
-        logger.i("Socket: Listening (1) on $channel");
-        debugPrint(channel);
-        handleIncomingMessage(msg);
-      });
-    });
+    handleIncomingMessage(data);
   }
 
-  void handleIncomingMessage(dynamic data) {
+  void handleIncomingMessage(dynamic data) async {
     try {
       // Parse the incoming data
       final Map<String, dynamic> response = Map<String, dynamic>.from(data);
-      final Conversation conversation = Conversation.fromJson(response);
       debugPrint('response: $response');
-      if (mounted) {
-        setState(() {
-          _messages.add(conversation);
-        });
+
+      // Extract sender_id and compare it with your own ID
+      final String? agentId = response['agent_id'];
+      final String? fkUserID = await LocalPrefs.getFKUserID();
+
+      if (agentId == fkUserID) {
+        final Conversation conversation = Conversation.fromJson(response);
+
+        logger.i('response: $response');
+        logger.e('conversation: $conversation');
+
+        if (mounted) {
+          setState(() {
+            logger.i('setState: $response');
+
+            // Check if an object with the same id exists in the list
+            final int index = _messages.indexWhere((msg) => msg.messageId == conversation.messageId);
+
+            logger.i('index: $index');
+            if (index != -1) {
+              // Replace the existing object with the same ID
+              _messages[index] = conversation;
+              logger.i('Replaced message at index $index');
+            } else {
+              // Add the new object to the list if it doesn't exist
+              _messages.add(conversation);
+              logger.i('Added new message');
+            }
+          });
+        }
+
+        final String? senderName = response['sender_name'] ?? '';
+        final String? messageText = response['message']['text'] ?? '';
+        final String? timestamp = response['messageTimestamp_str'] ?? '';
+
+        debugPrint('Message from $senderName: $messageText at $timestamp');
+      } else {
+        debugPrint('Ignored message from self: $response');
       }
-
-      final String senderName = response['sender_name'] ?? '';
-      final String messageText = response['message']['text'] ?? '';
-      final String timestamp = response['messageTimestamp_str'] ?? '';
-
-      debugPrint('Message from $senderName: $messageText at $timestamp');
     } catch (e) {
       debugPrint('Error processing incoming message: $e');
     }
@@ -139,12 +157,12 @@ class _ChatScreenState extends State<ChatScreen> {
     _controller.clear();
   }
 
-  // @override
-  // void dispose() {
-  //   // Cancel the listener or subscription here
-  //   socketService.closeSocket();
-  //   super.dispose();
-  // }
+  @override
+  void dispose() {
+    // Cancel the listener or subscription here
+
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -231,13 +249,13 @@ class _ChatScreenState extends State<ChatScreen> {
                     return OwnMsgWidget(
                       status: message.status, // Example status
                       time: message.messageTimestampStr, // Example time
-                      ownMessage: message.message.text,
+                      ownMessage: message.message?.text,
                     );
                   } else {
                     return OthersMsgWidget(
                       status: message.status, // Example status
                       time: message.messageTimestampStr, // Example time
-                      ownMessage: message.message.text,
+                      ownMessage: message.message?.text,
                     );
                   }
                 },
@@ -412,14 +430,24 @@ void _handleTicket(BuildContext context, PesanServices pesanServices, String roo
           ),
           TextButton(
             child: const Text("Yes"),
-            onPressed: () {
-              Navigator.pushReplacement(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => PesanScreen(initialPageIndex: 0),
-                ),
-              );
-              pesanServices.assignTicket(roomChat, customerWhatsapp);
+            onPressed: () async {
+              try {
+                await pesanServices.assignTicket(roomChat, customerWhatsapp);
+                // Close the dialog and navigate back to ChatScreen
+                Navigator.of(context).pop(); // Close the dialog
+                Navigator.of(context).popUntil((route) => route.settings.name == 'pesan');
+                // Navigator.of(context).pop(); // Close the dialog
+                // context.goNamed('chat'); // Navigate to the route
+              } catch (error) {
+                // Close the dialog and show a SnackBar with the error message
+                Navigator.of(context).pop();
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text(error.toString()),
+                    backgroundColor: Colors.red,
+                  ),
+                );
+              }
             },
           ),
         ],

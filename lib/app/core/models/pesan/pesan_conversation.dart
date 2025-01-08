@@ -85,14 +85,14 @@ class Conversation {
   final String? chat;
   final String? category;
   final String? notify;
-  final bool fromMe;
-  final String senderName;
-  final String senderNumber;
+  final bool? fromMe;
+  final String? senderName;
+  final String? senderNumber;
   final int? messageTimestamp;
-  final String messageTimestampStr;
-  final Message message;
+  final String? messageTimestampStr;
+  final Message? message;
   final String? receipt;
-  final int status;
+  final int? status;
   final String? pkey;
   final String? channel;
   final String? roomChat;
@@ -109,14 +109,14 @@ class Conversation {
     this.chat,
     this.category,
     this.notify,
-    required this.fromMe,
-    required this.senderName,
-    required this.senderNumber,
+    this.fromMe,
+    this.senderName,
+    this.senderNumber,
     this.messageTimestamp,
-    required this.messageTimestampStr,
-    required this.message,
+    this.messageTimestampStr,
+    this.message,
     this.receipt,
-    required this.status,
+    this.status,
     this.pkey,
     this.channel,
     this.roomChat,
@@ -130,19 +130,19 @@ class Conversation {
 
   factory Conversation.fromJson(Map<String, dynamic> json) {
     return Conversation(
-      id: json['id'] as String,
+      id: json['id'] as String?,
       type: json['type'] as String?,
       chat: json['chat'] as String?,
-      category: json['category'] as String,
+      category: json['category'] as String?,
       notify: json['notify'] as String?,
-      fromMe: json['from_me'] as bool,
-      senderName: json['sender_name'] as String,
-      senderNumber: json['sender_number'] as String,
+      fromMe: json['from_me'] as bool?,
+      senderName: json['sender_name'] as String?,
+      senderNumber: json['sender_number'] as String?,
       messageTimestamp: json['messageTimestamp'] as int?,
-      messageTimestampStr: json['messageTimestamp_str'] as String,
+      messageTimestampStr: json['messageTimestamp_str'] as String?,
       message: Message.fromJson(json['message']),
-      receipt: json['receipt'] as String,
-      status: json['status'] as int,
+      receipt: json['receipt'] as String?,
+      status: json['status'] as int?,
       pkey: json['pkey'] as String?,
       channel: json['channel'] as String?,
       roomChat: json['room_chat'] as String?,
@@ -151,7 +151,7 @@ class Conversation {
       agentId: json['agent_id'] as String?,
       agentName: json['agent_name'] as String?,
       trigger: json['trigger'] as String?,
-      messageId: json['message_id'] as String,
+      messageId: json['message_id'] as String?,
     );
   }
 
@@ -166,7 +166,7 @@ class Conversation {
         'sender_number': senderNumber,
         'messageTimestamp': messageTimestamp,
         'messageTimestamp_str': messageTimestampStr,
-        'message': message.toJson(),
+        'message': message?.toJson(),
         'receipt': receipt,
         'status': status,
         'pkey': pkey,

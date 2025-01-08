@@ -38,7 +38,7 @@ class CustomIcons {
   static String iconTimAgen = "assets/icons/icon_tim_agen.png";
   static String iconMoreVertical = "assets/icons/icon_vertical_more.png";
   static String iconViewContact = "assets/icons/icon_view_contact.png";
-  static String iconViewProfile = "assets/icons/icon_profile.png";
+  static String iconViewProfile = "assets/icons/icon_view_profile.png";
   static String iconViewProfileFill = "assets/icons/icon_profile_fill.png";
   static String iconWhatsAppGeneric = "assets/icons/icon_whatsapp_generic.png";
   static String iconWhatsAppGeneric2 = "assets/icons/icon_whatsapp_generic_2.png";

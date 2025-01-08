@@ -1,8 +1,9 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:logger/logger.dart';
-import 'package:socket_io_client/socket_io_client.dart' as socket_io;
 import 'package:provider/provider.dart';
 import '../../../../../../../../core/models/pesan/pesan.dart';
+import '../../../../../../../../core/models/pesan/pesan_conversation.dart';
 import '../../../../../../../../core/services/pesan/pesan.dart';
 import '../../../../../../../../core/services/preferences.dart';
 import '../../../../../../../../core/services/socket_io/socket.dart';
@@ -21,8 +22,6 @@ class BotChatScreen extends StatefulWidget {
 
 class _BotChatScreenState extends State<BotChatScreen> {
   final logger = Logger();
-  late socket_io.Socket? socket;
-  final SocketService socketService = SocketService();
   late String pKey = 'pKey';
   List<ChatBoxDataList> userChatBox = [];
 
@@ -30,17 +29,11 @@ class _BotChatScreenState extends State<BotChatScreen> {
   void initState() {
     super.initState();
 
-    // socket = socketService.initializeSocket();
-    // socket?.onConnect((_) {
-    //   // debugPrint('Socket connected.');
-    //   listenToIncomingMessages();
-    // });
-
-    //listenToIncomingMessages();
-
     WidgetsBinding.instance.addPostFrameCallback((_) {
       getChatBoxList();
     });
+    final socketService = SocketService();
+    socketService.listen(true, onConnectActive);
   }
 
   Future<void> getChatBoxList() async {
@@ -71,47 +64,88 @@ class _BotChatScreenState extends State<BotChatScreen> {
     }
   }
 
-  // void listenToIncomingMessages() async {
-  //   try {
-  //     final String? deviceKey = await LocalPrefs.getDeviceKey();
-  //     final String? fkUserID = await LocalPrefs.getFKUserID();
-  //
-  //     if (deviceKey == null || fkUserID == null) {
-  //       throw Exception("DeviceKey or FKUserID is null");
-  //     }
-  //
-  //     if (socket == null) {
-  //       throw Exception("Socket is not initialized");
-  //     }
-  //
-  //     socket!.onConnect((_) {
-  //       debugPrint('Connection to bot server Established');
-  //       final channel = "bot_$deviceKey";
-  //       socket!.on(channel, (msg) {
-  //         logger.i("Socket: Listening on $channel");
-  //         debugPrint(channel);
-  //         handleIncomingMessage(msg);
-  //       });
-  //     });
-  //   } catch (e) {
-  //     logger.e("Error in listenToIncomingMessages: $e");
-  //   }
-  // }
+  void onConnectActive(dynamic data) {
+    logger.i("Socket: Listening to active $data");
 
-  // void handleIncomingMessage(dynamic data) {
-  //   try {
-  //     // Parse the incoming data
-  //     final Map<String, dynamic> response = Map<String, dynamic>.from(data);
-  //     final String senderName = response['sender_name'] ?? '';
-  //     final String messageText = response['message']['text'] ?? '';
-  //     final String timestamp = response['messageTimestamp_str'] ?? '';
-  //
-  //     debugPrint('Message from $senderName: $messageText at $timestamp');
-  //     //getChatBoxList();
-  //   } catch (e) {
-  //     debugPrint('Error processing incoming message: $e');
-  //   }
-  // }
+    if (data == null) {
+      logger.e("Received null message");
+      return;
+    }
+    handleIncomingMessage(data);
+  }
+
+  void handleIncomingMessage(dynamic data) {
+    if (kDebugMode) {
+      print('handleIncomingMessage: $data');
+    }
+    try {
+      // Parse the incoming data into a Map
+      final Map<String, dynamic> response = Map<String, dynamic>.from(data);
+      final Conversation conversation = Conversation.fromJson(response);
+      debugPrint('response: $response');
+
+      if (mounted) {
+        setState(() {
+          // Map the Conversation object into ChatBoxDataList format
+          final ChatBoxDataList newChatData = ChatBoxDataList(
+            roomChat: conversation.roomChat ?? '',
+            notify: conversation.notify ?? '',
+            remoteJid: conversation.senderNumber ?? '',
+            messages: Messages(
+              agentId: conversation.agentId,
+              agentName: conversation.agentName,
+              broadcast: conversation.message?.caption,
+              category: conversation.category ?? '',
+              chat: conversation.chat ?? '',
+              fromMe: conversation.fromMe ?? false,
+              greeting: false, // Assuming greeting is not part of this structure
+              id: conversation.id ?? '',
+              message: MessageContent(
+                caption: conversation.message?.caption,
+                file: conversation.message?.file,
+                name: conversation.message?.name,
+                thumb: conversation.message?.thumb,
+                mentionedJid: conversation.message?.mentionedJid ?? false,
+                quotedMessage: conversation.message?.quotedMessage,
+                stanzaId: conversation.message?.stanzaId,
+                text: conversation.message?.text,
+              ),
+              messageTimestamp: conversation.messageTimestamp ?? 0,
+              messageTimestampStr: conversation.messageTimestampStr ?? '',
+              messageId: conversation.messageId ?? '',
+              receipt: conversation.receipt ?? '',
+              senderName: conversation.senderName ?? '',
+              senderNumber: conversation.senderNumber ?? '',
+              sessionId: conversation.pkey ?? '',
+              status: conversation.status ?? 0,
+              ticketId: conversation.ticketId ?? '',
+              ticketNumber: conversation.ticketNumber ?? '',
+              type: conversation.type ?? '',
+            ),
+          );
+
+          // Check if a ChatBoxDataList with the same pkey exists
+          final existingIndex = userChatBox.indexWhere((chatData) => chatData.roomChat == newChatData.roomChat);
+
+          if (existingIndex != -1) {
+            // Replace the old chat data with the new one
+            userChatBox[existingIndex] = newChatData;
+          } else {
+            // Insert the new chat data at the beginning
+            userChatBox.insert(0, newChatData);
+          }
+        });
+      }
+
+      final String? senderName = response['sender_name'] ?? '';
+      final String? messageText = response['message']['text'] ?? '';
+      final String? timestamp = response['messageTimestamp_str'] ?? '';
+
+      debugPrint('Message from $senderName: $messageText at $timestamp');
+    } catch (e) {
+      debugPrint('Error processing incoming message: $e');
+    }
+  }
 
   @override
   Widget build(BuildContext context) {

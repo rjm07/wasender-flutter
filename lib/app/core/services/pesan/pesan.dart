@@ -465,7 +465,10 @@ class PesanServices extends ChangeNotifier {
       // Parsing the response into the SendMessageResponse model
       return HandleTicketMessageData.fromJson(json);
     } else {
-      throw Exception('Error: ${response.statusCode} - ${response.reasonPhrase}');
+      String errorMessage = 'Unknown error';
+      final Map<String, dynamic> json = jsonDecode(response.body);
+      errorMessage = json['message_data']['message'] ?? json['error'] ?? errorMessage;
+      throw Exception(errorMessage);
     }
   }
 }

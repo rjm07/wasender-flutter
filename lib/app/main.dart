@@ -9,6 +9,7 @@ import 'core/services/auth.dart';
 import 'core/services/local_notifications/local_notifications.dart';
 import 'core/services/perangkat_saya/perangkat_saya.dart';
 import 'core/services/pesan/pesan.dart';
+import 'core/services/socket_io/socket.dart';
 
 class MyHttpOverrides extends HttpOverrides {
   @override
@@ -20,6 +21,8 @@ class MyHttpOverrides extends HttpOverrides {
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  final socketService = SocketService();
+  socketService.initializeSocket();
   await Firebase.initializeApp();
   await LocalNotificationsServices.init();
   await FirebaseCloudMessagingService.init();
@@ -39,7 +42,7 @@ void main() async {
           create: (_) => PesanServices(),
         ),
       ],
-      child: const WaSenderApp(),
+      child: const WhatUpApp(),
     ),
   );
 }

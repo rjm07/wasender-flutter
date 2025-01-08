@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:logger/logger.dart';
-import 'package:socket_io_client/socket_io_client.dart' as socket_io;
 import 'package:wasender/app/ui/pages/feature_main/feature_pages/menu/feature_pesan/chats/chat_categories/bot_chat_screen.dart';
 import 'package:wasender/app/ui/pages/feature_main/feature_pages/menu/feature_pesan/chats/chat_categories/close_chat_screen.dart';
-import '../../../../../../core/services/socket_io/socket.dart';
+
 import '../../../../../../utils/lang/colors.dart';
 import '../../../../../../utils/lang/images.dart';
 import 'chats/chat_categories/active_chat_screen.dart';
@@ -23,10 +21,6 @@ class _PesanScreenState extends State<PesanScreen> with SingleTickerProviderStat
   int closedBadgeCount = 0;
   int openBadgeCount = 0;
 
-  final logger = Logger();
-  late socket_io.Socket? socket;
-  final SocketService socketService = SocketService();
-
   int _selectedFilterIndex = 0; // Track the selected filter
 
   @override
@@ -34,7 +28,7 @@ class _PesanScreenState extends State<PesanScreen> with SingleTickerProviderStat
     super.initState();
     _tabController = TabController(length: 3, vsync: this);
     _pageController = PageController();
-    socket = socketService.initializeSocket();
+
     // Sync TabBar and PageView
     _tabController.addListener(() {
       if (_tabController.indexIsChanging) {
