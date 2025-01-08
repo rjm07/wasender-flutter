@@ -1,20 +1,20 @@
 import 'package:flutter/material.dart';
 
-class KontakScreen extends StatefulWidget {
-  const KontakScreen({super.key});
+class ProfileScreen extends StatefulWidget {
+  const ProfileScreen({super.key});
 
   @override
-  State<KontakScreen> createState() => _KontakScreenState();
+  State<ProfileScreen> createState() => _ProfileScreenState();
 }
 
-class _KontakScreenState extends State<KontakScreen> {
+class _ProfileScreenState extends State<ProfileScreen> {
   @override
   Widget build(BuildContext context) {
     return const Scaffold(
       body: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Center(child: Text('Kontak Screen')),
+          Center(child: Text('Profile Screen')),
         ],
       ),
     );

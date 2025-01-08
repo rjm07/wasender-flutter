@@ -28,11 +28,8 @@ class _ActiveChatScreenState extends State<ActiveChatScreen> {
   @override
   void initState() {
     super.initState();
-    //Initiate socket connection
-
     WidgetsBinding.instance.addPostFrameCallback((_) {
       getChatBoxList();
-      //listenToIncomingMessages();
     });
     final socketService = SocketService();
     socketService.listen(false, onConnectActive);
@@ -60,10 +57,11 @@ class _ActiveChatScreenState extends State<ActiveChatScreen> {
         );
 
         // Assign the fetched data to userChatBox
-
-        setState(() {
-          userChatBox = devices.chatBoxDataDetails;
-        });
+        if (mounted) {
+          setState(() {
+            userChatBox = devices.chatBoxDataDetails;
+          });
+        }
       } catch (e) {
         debugPrint("Error in getChatBoxList: $e");
       }

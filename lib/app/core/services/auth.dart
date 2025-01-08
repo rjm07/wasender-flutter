@@ -46,6 +46,7 @@ class Auth extends ChangeNotifier {
           final User user = User.fromJson(loginResponse.messageData);
           await LocalPrefs.saveToken(user.accessToken);
           await LocalPrefs.saveFKUserID(user.fkUserID);
+          await LocalPrefs.saveUserRole(user.role);
           updateBrandIdFuture();
         } else {
           throw loginResponse.messageDesc;
