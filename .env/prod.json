@@ -1,7 +1,8 @@
 
 {
   "baseUrl": "https://whatup.id/",
-  "wasenderKey": "SOCOM-KEY-SW7b6KbWU3",
-  "wasenderSec": "SOCOM-SEC-q15fx7rEeX",
+  "socketURL" : "https://whatup.id",
+  "whatupKey": "SOCOM-KEY-SW7b6KbWU3",
+  "whatupSec": "SOCOM-SEC-q15fx7rEeX",
   "hashKey": "67721160-d317-4ff3-82be-194626be0844"
 }

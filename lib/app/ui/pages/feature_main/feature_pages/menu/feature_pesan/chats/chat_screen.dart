@@ -1,11 +1,13 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:logger/logger.dart';
 import 'package:provider/provider.dart';
 import 'package:wasender/app/core/models/pesan/pesan_conversation.dart';
 
 import '../../../../../../../core/services/local_notifications/local_notifications.dart';
+import '../../../../../../../core/services/navigation/navigation.dart';
 import '../../../../../../../core/services/pesan/pesan.dart';
 import '../../../../../../../core/services/preferences.dart';
 import '../../../../../../../core/services/socket_io/socket.dart';
@@ -24,13 +26,15 @@ class ChatScreen extends StatefulWidget {
       required this.timestamp,
       required this.roomChat,
       required this.senderNumber,
-      required this.statusIsOpen});
+      required this.statusIsOpen,
+      required this.onHandleTicket});
 
   final String fullName;
   final String timestamp;
   final String roomChat;
   final String senderNumber;
   final bool statusIsOpen;
+  final void Function() onHandleTicket;
 
   @override
   State<ChatScreen> createState() => _ChatScreenState();
@@ -159,8 +163,6 @@ class _ChatScreenState extends State<ChatScreen> {
 
   @override
   void dispose() {
-    // Cancel the listener or subscription here
-
     super.dispose();
   }
 
@@ -170,6 +172,45 @@ class _ChatScreenState extends State<ChatScreen> {
     DateTime dateTime = DateTime.parse(widget.timestamp);
     String formattedDate = DateFormat('MMM d').format(dateTime);
     String formattedTime = DateFormat('H:mm a').format(dateTime);
+
+    void onTicketAccepted() async {
+      try {
+        await devices.assignTicket(widget.roomChat, widget.senderNumber);
+        NavService.pop(pages: 2);
+      } catch (error) {
+        // Close the dialog and show a SnackBar with the error message
+        NavService.pop();
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(error.toString()),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
+      widget.onHandleTicket.call();
+    }
+
+    void onHandleTicketPressed() {
+      showDialog(
+        context: context,
+        builder: (_) {
+          return AlertDialog(
+            title: const Text('Handle Ticket'),
+            content: const Text('Are you sure you want to handle this ticket?'),
+            actions: [
+              TextButton(
+                onPressed: () => NavService.pop(),
+                child: const Text('No'),
+              ),
+              TextButton(
+                onPressed: onTicketAccepted,
+                child: const Text('Yes'),
+              ),
+            ],
+          );
+        },
+      );
+    }
 
     return Scaffold(
       appBar: AppBar(
@@ -264,7 +305,7 @@ class _ChatScreenState extends State<ChatScreen> {
           ),
           widget.statusIsOpen == true
               ? Container(
-                  color: Colors.grey.shade100,
+                  color: Colors.white,
                   child: Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 8.0),
                     child: Column(
@@ -338,9 +379,7 @@ class _ChatScreenState extends State<ChatScreen> {
                         ),
                         SizedBox(height: 8),
                         WidgetButton(
-                          onPressed: () {
-                            _handleTicket(context, devices, widget.roomChat, widget.senderNumber);
-                          },
+                          onPressed: onHandleTicketPressed,
                           child: Row(
                             mainAxisSize: MainAxisSize.min,
                             children: [
@@ -412,46 +451,4 @@ class _ChatScreenState extends State<ChatScreen> {
       ),
     );
   }
-}
-
-void _handleTicket(BuildContext context, PesanServices pesanServices, String roomChat, String customerWhatsapp) {
-  showDialog(
-    context: context,
-    builder: (BuildContext context) {
-      return AlertDialog(
-        title: const Text("Handle Ticket"),
-        content: const Text("Are you sure you want to handle this ticket?"),
-        actions: <Widget>[
-          TextButton(
-            child: const Text("No"),
-            onPressed: () {
-              Navigator.of(context).pop(); // Close the dialog
-            },
-          ),
-          TextButton(
-            child: const Text("Yes"),
-            onPressed: () async {
-              try {
-                await pesanServices.assignTicket(roomChat, customerWhatsapp);
-                // Close the dialog and navigate back to ChatScreen
-                Navigator.of(context).pop(); // Close the dialog
-                Navigator.of(context).popUntil((route) => route.settings.name == 'pesan');
-                // Navigator.of(context).pop(); // Close the dialog
-                // context.goNamed('chat'); // Navigate to the route
-              } catch (error) {
-                // Close the dialog and show a SnackBar with the error message
-                Navigator.of(context).pop();
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
-                    content: Text(error.toString()),
-                    backgroundColor: Colors.red,
-                  ),
-                );
-              }
-            },
-          ),
-        ],
-      );
-    },
-  );
 }

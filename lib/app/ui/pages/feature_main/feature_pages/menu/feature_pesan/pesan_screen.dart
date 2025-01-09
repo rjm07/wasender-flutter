@@ -41,6 +41,10 @@ class _PesanScreenState extends State<PesanScreen> with SingleTickerProviderStat
     });
   }
 
+  void onHandleTicket() {
+    _tabController.animateTo(0);
+  }
+
   @override
   void dispose() {
     _tabController.dispose();
@@ -61,12 +65,6 @@ class _PesanScreenState extends State<PesanScreen> with SingleTickerProviderStat
       // Update this if you want to change the selected filter based on the page
     });
   }
-
-  final List<Widget> _pages = [
-    ActiveChatScreen(),
-    ClosedChatScreen(),
-    BotChatScreen(),
-  ];
 
   Widget buildBadge(int count) {
     if (count == 0) return SizedBox.shrink();
@@ -140,62 +138,88 @@ class _PesanScreenState extends State<PesanScreen> with SingleTickerProviderStat
           ),
         ],
         elevation: 1,
+        bottom: TabBar(
+            controller: _tabController,
+            dividerHeight: 0,
+            labelColor: AppColors.primary,
+            unselectedLabelColor: Colors.black45,
+            indicatorColor: AppColors.primary,
+            indicatorWeight: 3.0,
+            indicatorSize: TabBarIndicatorSize.tab,
+            labelStyle: TextStyle(fontSize: 14),
+            tabs: const [
+              Tab(
+                text: 'Active',
+              ),
+              Tab(
+                text: 'Closed',
+              ),
+              Tab(
+                text: 'Open',
+              ),
+            ]),
       ),
-      body: Column(
-        children: [
-          // Filter buttons row
-          Padding(
-            padding: const EdgeInsets.only(bottom: 4),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.start,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Container(
-                  color: Colors.blueGrey.shade50,
-                  height: 64,
-                  child: TabBar(
-                    dividerHeight: 0,
-                    controller: _tabController,
-                    labelColor: AppColors.primary,
-                    unselectedLabelColor: Colors.black45,
-                    indicatorColor: AppColors.primary,
-                    indicatorWeight: 3.0,
-                    indicatorSize: TabBarIndicatorSize.tab,
-                    labelStyle: TextStyle(fontSize: 14),
-                    tabs: [
-                      tabWithBadge("Active", activeBadgeCount),
-                      tabWithBadge("Closed", closedBadgeCount),
-                      tabWithBadge("Open (Bot)", openBadgeCount),
-                    ],
+      body: SafeArea(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // Filter buttons row
+            Padding(
+              padding: const EdgeInsets.only(bottom: 4),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const SizedBox(
+                    height: 16,
                   ),
-                ),
-                const SizedBox(
-                  height: 16,
-                ),
-                const Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 16.0),
-                  child: Text(
-                    "MESSAGES",
-                    style: TextStyle(
-                      color: Colors.black54,
-                      fontSize: 14,
-                      fontWeight: FontWeight.w700,
+                  const Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 16.0),
+                    child: Text(
+                      "MESSAGES",
+                      style: TextStyle(
+                        color: Colors.black54,
+                        fontSize: 14,
+                        fontWeight: FontWeight.w700,
+                      ),
                     ),
                   ),
-                ),
-              ],
+                  const SizedBox(
+                    height: 16,
+                  ),
+                  // Container(
+                  //   color: Colors.blueGrey.shade50,
+                  //   height: 64,
+                  //   child: TabBarView(
+                  //     controller: _tabController,
+                  //     children: [],
+                  //   ),
+                  // ),
+                ],
+              ),
             ),
-          ),
-          // PageView for different screens
-          Expanded(
-            child: PageView(
-              controller: _pageController,
-              onPageChanged: _onPageChanged,
-              physics: const BouncingScrollPhysics(),
-              children: _pages,
+            // PageView for different screens
+            Expanded(
+              child: PageView(
+                controller: _pageController,
+                onPageChanged: _onPageChanged,
+                physics: const BouncingScrollPhysics(),
+                children: [
+                  ActiveChatScreen(
+                    onHandleTicket: () {},
+                  ),
+                  ClosedChatScreen(
+                    onHandleTicket: () {},
+                  ),
+                  BotChatScreen(
+                    onHandleTicket: onHandleTicket,
+                  ),
+                ],
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
