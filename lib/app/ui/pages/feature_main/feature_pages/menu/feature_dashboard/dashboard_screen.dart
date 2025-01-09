@@ -16,7 +16,7 @@ class DashboardScreen extends StatefulWidget {
   State<DashboardScreen> createState() => _DashboardScreenState();
 }
 
-class _DashboardScreenState extends State<DashboardScreen> {
+class _DashboardScreenState extends State<DashboardScreen> with WidgetsBindingObserver {
   String name = "Blipcom Indonesia";
   String description = "Informasi Perangkat whatsapp yang terhubung!";
   final SocketService socketService = SocketService();
@@ -28,6 +28,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       getDeviceList();
     });
+    WidgetsBinding.instance.addObserver(this);
     socketService.initializeSocket();
   }
 
@@ -51,8 +52,20 @@ class _DashboardScreenState extends State<DashboardScreen> {
 
   @override
   void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
     socketService.dispose(); // Clean up socket resources if needed
     super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed) {
+      // App is back in the foreground
+      socketService.initializeSocket();
+    } else if (state == AppLifecycleState.paused) {
+      // App is in the background
+      socketService.dispose(); // Optionally close the socket when the app is backgrounded
+    }
   }
 
   @override
