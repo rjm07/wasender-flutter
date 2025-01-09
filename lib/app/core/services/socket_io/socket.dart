@@ -58,6 +58,11 @@ class SocketService {
     }
   }
 
+  void dispose() {
+    _socket?.disconnect();
+    _socket = null;
+  }
+
   void closeSocket() {
     _socket!.close();
   }

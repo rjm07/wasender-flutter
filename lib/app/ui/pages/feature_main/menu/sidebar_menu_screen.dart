@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:wasender/app/core/services/navigation/navigation.dart';
 import 'package:wasender/app/core/services/preferences.dart';
 import 'package:wasender/app/ui/pages/feature_main/feature_pages/pengaturan/feature_paket/paket_screen.dart';
 import '../../../../core/services/auth.dart';
@@ -35,8 +36,9 @@ class _SideBarMenuScreenState extends State<SideBarMenuScreen> {
   }
 
   void _onTileTap(int index) {
+    NavService.pop();
     widget.pageController.jumpToPage(index); // Use the passed controller
-    Navigator.pop(context); // Close the drawer after selecting a tile
+    // Close the drawer after selecting a tile
   }
 
   @override

@@ -19,6 +19,19 @@ class NavService {
     }
   }
 
+  static void showSnackBar({
+    String? errorMessage,
+  }) {
+    final BuildContext? context = navigatorKey.currentContext;
+
+    ScaffoldMessenger.of(context!).showSnackBar(
+      SnackBar(
+        content: Text(errorMessage!),
+        backgroundColor: Colors.red,
+      ),
+    );
+  }
+
   static void popToRoot() {
     final BuildContext? context = navigatorKey.currentContext;
 

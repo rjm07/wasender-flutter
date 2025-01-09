@@ -1,6 +1,5 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:logger/logger.dart';
 import 'package:provider/provider.dart';
@@ -180,12 +179,7 @@ class _ChatScreenState extends State<ChatScreen> {
       } catch (error) {
         // Close the dialog and show a SnackBar with the error message
         NavService.pop();
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(error.toString()),
-            backgroundColor: Colors.red,
-          ),
-        );
+        NavService.showSnackBar(errorMessage: error.toString());
       }
       widget.onHandleTicket.call();
     }

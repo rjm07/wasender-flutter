@@ -6,6 +6,7 @@ import 'package:wasender/app/ui/shared/widgets/dashboard_cards.dart';
 import '../../../../../../core/services/auth.dart';
 import '../../../../../../core/services/perangkat_saya/perangkat_saya.dart';
 import '../../../../../../core/services/preferences.dart';
+import '../../../../../../core/services/socket_io/socket.dart';
 import '../../../../../../utils/lang/images.dart';
 
 class DashboardScreen extends StatefulWidget {
@@ -18,6 +19,7 @@ class DashboardScreen extends StatefulWidget {
 class _DashboardScreenState extends State<DashboardScreen> {
   String name = "Blipcom Indonesia";
   String description = "Informasi Perangkat whatsapp yang terhubung!";
+  final SocketService socketService = SocketService();
 
   @override
   void initState() {
@@ -26,6 +28,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       getDeviceList();
     });
+    socketService.initializeSocket();
   }
 
   Future<void> getDeviceList() async {
@@ -44,6 +47,12 @@ class _DashboardScreenState extends State<DashboardScreen> {
         }
       });
     }
+  }
+
+  @override
+  void dispose() {
+    socketService.dispose(); // Clean up socket resources if needed
+    super.dispose();
   }
 
   @override
