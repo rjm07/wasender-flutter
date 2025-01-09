@@ -14,8 +14,9 @@ import '../chat_screen.dart';
 class ActiveChatScreen extends StatefulWidget {
   const ActiveChatScreen({
     super.key,
+    required this.onHandleTicket,
   });
-
+  final void Function() onHandleTicket;
   @override
   State<ActiveChatScreen> createState() => _ActiveChatScreenState();
 }
@@ -200,6 +201,7 @@ class _ActiveChatScreenState extends State<ActiveChatScreen> {
                                         fullName: chatData.messages.senderName,
                                         timestamp: chatData.messages.messageTimestampStr,
                                         statusIsOpen: false,
+                                        onHandleTicket: widget.onHandleTicket,
                                       ),
                                     ),
                                   );

@@ -4,6 +4,7 @@ import 'package:logger/logger.dart';
 import 'package:provider/provider.dart';
 import '../../../../../../../../core/models/pesan/pesan.dart';
 import '../../../../../../../../core/models/pesan/pesan_conversation.dart';
+import '../../../../../../../../core/services/navigation/navigation.dart';
 import '../../../../../../../../core/services/pesan/pesan.dart';
 import '../../../../../../../../core/services/preferences.dart';
 import '../../../../../../../../core/services/socket_io/socket.dart';
@@ -14,8 +15,9 @@ import '../chat_screen.dart';
 class BotChatScreen extends StatefulWidget {
   const BotChatScreen({
     super.key,
+    required this.onHandleTicket,
   });
-
+  final void Function() onHandleTicket;
   @override
   State<BotChatScreen> createState() => _BotChatScreenState();
 }
@@ -183,15 +185,14 @@ class _BotChatScreenState extends State<BotChatScreen> {
                                 description: chatData.messages.message.text ?? '',
                                 time: chatData.messages.messageTimestampStr,
                                 onTap: () {
-                                  Navigator.of(context).push(
-                                    MaterialPageRoute(
-                                      builder: (context) => ChatScreen(
-                                        roomChat: chatData.roomChat,
-                                        senderNumber: chatData.messages.senderNumber,
-                                        fullName: chatData.messages.senderName,
-                                        timestamp: chatData.messages.messageTimestampStr,
-                                        statusIsOpen: true,
-                                      ),
+                                  NavService.push(
+                                    screen: ChatScreen(
+                                      roomChat: chatData.roomChat,
+                                      senderNumber: chatData.messages.senderNumber,
+                                      fullName: chatData.messages.senderName,
+                                      timestamp: chatData.messages.messageTimestampStr,
+                                      statusIsOpen: true,
+                                      onHandleTicket: widget.onHandleTicket,
                                     ),
                                   );
                                 },

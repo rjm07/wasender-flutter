@@ -13,9 +13,10 @@ import '../chat_screen.dart';
 class ClosedChatScreen extends StatefulWidget {
   const ClosedChatScreen({
     super.key,
+    required this.onHandleTicket,
   });
+  final void Function() onHandleTicket;
 
-  @override
   State<ClosedChatScreen> createState() => _ClosedChatScreenState();
 }
 
@@ -107,6 +108,7 @@ class _ClosedChatScreenState extends State<ClosedChatScreen> {
                                         fullName: chatData.messages.senderName,
                                         timestamp: chatData.messages.messageTimestampStr,
                                         statusIsOpen: false,
+                                        onHandleTicket: widget.onHandleTicket,
                                       ),
                                     ),
                                   );

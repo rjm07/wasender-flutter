@@ -4,9 +4,11 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/foundation.dart';
 import 'package:wasender/app/core/services/local_notifications/local_notifications.dart';
 import 'package:wasender/app/core/services/preferences.dart';
+import 'package:logger/logger.dart';
 
 class FirebaseCloudMessagingService {
   static final FirebaseMessaging _firebaseMessaging = FirebaseMessaging.instance;
+  static final logger = Logger();
 
   static Future<void> _saveFCMToken() async {
     String? fcmToken = await _firebaseMessaging.getToken();
@@ -43,6 +45,7 @@ class FirebaseCloudMessagingService {
   static Future<void> onMessage(RemoteMessage message) async {
     if (kDebugMode) {
       print('onMessage: $message');
+      logger.i('onMessage: ${message.data}');
     }
 
     final String? messageTitle = message.notification?.title;
