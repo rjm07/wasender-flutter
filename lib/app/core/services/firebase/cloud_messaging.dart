@@ -76,8 +76,10 @@ class FirebaseCloudMessagingService {
       print('onMessage: ${message.data}');
     }
 
-    notificationSetup(message);
+    // Trigger navigation or logic tied to the notification
+    _onNotificationTap(message);
 
+    // Optionally display a local notification
     final String? messageTitle = message.notification?.title;
     final String? messageBody = message.notification?.body;
 
@@ -86,7 +88,7 @@ class FirebaseCloudMessagingService {
     }
   }
 
-  static void _onNotificationTap(RemoteMessage message) {
+  static Future<void> _onNotificationTap(RemoteMessage message) async {
     final notificationData = message.data;
     logger.i('Notification tapped: $notificationData');
 
@@ -95,7 +97,7 @@ class FirebaseCloudMessagingService {
       final String? timestamp = notificationData['timestamp'];
       final screen = notificationData['screen'];
 
-      if (roomChat != null && screen != null) {
+      if (roomChat != null) {
         logger.i('Navigating to: $screen with roomChat: $roomChat');
         NavService.navigatorKey.currentState?.pushNamed(
           screen,
@@ -117,7 +119,7 @@ class FirebaseCloudMessagingService {
     final notificationData = message.data;
     final String? timestamp = notificationData['timestamp'];
     logger.i('notificationData: ${message.data}');
-    if (notificationData.containsKey('room_chat') || (notificationData.containsKey('chatId'))) {
+    if (notificationData.containsKey('room_chat')) {
       final String? roomChat = notificationData['room_chat'] as String?;
       final screen = notificationData['screen'];
       NavService.navigatorKey.currentState?.pushNamed(
