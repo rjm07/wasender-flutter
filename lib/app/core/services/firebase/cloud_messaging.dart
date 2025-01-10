@@ -76,11 +76,7 @@ class FirebaseCloudMessagingService {
       print('onMessage: ${message.data}');
     }
 
-    // Use the correct key 'room_chat'
-    final String? roomChat = message.data['room_chat'] as String?;
-    if (kDebugMode) {
-      print('roomChat: $roomChat');
-    }
+    notificationSetup(message);
 
     final String? messageTitle = message.notification?.title;
     final String? messageBody = message.notification?.body;
@@ -119,14 +115,24 @@ class FirebaseCloudMessagingService {
   @pragma('vm:entry-point')
   static Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
     final notificationData = message.data;
+    final String? timestamp = notificationData['timestamp'];
     logger.i('notificationData: ${message.data}');
     if (notificationData.containsKey('room_chat') || (notificationData.containsKey('chatId'))) {
       final String? roomChat = notificationData['room_chat'] as String?;
       final screen = notificationData['screen'];
       NavService.navigatorKey.currentState?.pushNamed(
         screen,
-        arguments: {'room_chat': roomChat},
+        arguments: {
+          'room_chat': roomChat,
+          'timestamp': timestamp,
+        },
       );
+    }
+    final String? messageTitle = message.notification?.title;
+    final String? messageBody = message.notification?.body;
+
+    if (messageTitle != null && messageBody != null) {
+      LocalNotificationsServices().showNotification(messageTitle, messageBody);
     }
   }
 
@@ -143,6 +149,23 @@ class FirebaseCloudMessagingService {
       print('User granted provisional permission');
     } else {
       print('User declined or has not accepted permission');
+    }
+  }
+
+  static void notificationSetup(RemoteMessage message) {
+    final String? roomChat = message.data['room_chat'];
+    final String? timestamp = message.data['timestamp'];
+    final screen = message.data['screen'];
+
+    if (roomChat != null && screen != null) {
+      logger.i('Navigating to: $screen with roomChat: $roomChat');
+      NavService.navigatorKey.currentState?.pushNamed(
+        screen,
+        arguments: {
+          'room_chat': roomChat,
+          'timestamp': timestamp,
+        },
+      );
     }
   }
 }
