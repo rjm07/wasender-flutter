@@ -71,10 +71,10 @@ class _ChatScreenState extends State<ChatScreen> {
 
   Future<void> getChatBoxConversation() async {
     // Get arguments passed to this screen
-    final arguments = ModalRoute.of(context)?.settings.arguments as Map<String, String>?;
+    final arguments = ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>?;
 
-    final roomChat = arguments?['room_chat'] ?? ''; // Provide default if null
-    final timestamp = arguments?['timestamp'] ?? 'No timestamp'; // Default value for timestamp
+    // Safely extract the 'room_chat' argument, allowing for nullable values
+    final roomChat = arguments?['room_chat'] as String? ?? ''; // Default to an empty string if null
 
     final PesanServices devices = Provider.of<PesanServices>(context, listen: false);
     final String? tokenBearer = await LocalPrefs.getBearerToken();
@@ -182,7 +182,13 @@ class _ChatScreenState extends State<ChatScreen> {
   @override
   Widget build(BuildContext context) {
     final PesanServices devices = Provider.of<PesanServices>(context);
-    DateTime dateTime = DateTime.parse(widget.timestamp);
+    // Get arguments passed to this screen
+    final arguments = ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>?;
+
+    // Safely extract the 'room_chat' argument, allowing for nullable values
+    final timestamp = arguments?['timestamp'] as String? ?? ''; // Default to an empty string if null
+
+    DateTime dateTime = DateTime.parse(widget.timestamp.isEmpty ? timestamp : widget.timestamp);
     String formattedDate = DateFormat('MMM d').format(dateTime);
     String formattedTime = DateFormat('H:mm a').format(dateTime);
 

@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/foundation.dart';
 import 'package:wasender/app/core/services/local_notifications/local_notifications.dart';
@@ -23,6 +24,7 @@ class FirebaseCloudMessagingService {
   }
 
   static Future<void> init() async {
+    await Firebase.initializeApp();
     if (Platform.isIOS) {
       String? apnsToken = await _firebaseMessaging.getAPNSToken();
 
@@ -36,7 +38,8 @@ class FirebaseCloudMessagingService {
     FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
     FirebaseMessaging.onMessage.listen(onMessage);
     FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
-      _onNotificationTap(message);
+      logger.i('Notification tapped: ${message.data}');
+      _onNotificationTap(message); // Trigger the navigation logic
     });
     FirebaseMessaging.instance.getInitialMessage().then((RemoteMessage? message) {
       if (message != null) {
@@ -93,13 +96,17 @@ class FirebaseCloudMessagingService {
 
     if (notificationData.containsKey('room_chat')) {
       final String? roomChat = notificationData['room_chat'];
+      final String? timestamp = notificationData['timestamp'];
       final screen = notificationData['screen'];
 
       if (roomChat != null && screen != null) {
         logger.i('Navigating to: $screen with roomChat: $roomChat');
         NavService.navigatorKey.currentState?.pushNamed(
           screen,
-          arguments: {'room_chat': roomChat},
+          arguments: {
+            'room_chat': roomChat,
+            'timestamp': timestamp,
+          },
         );
       } else {
         logger.e('Error: Missing room_chat or screen');

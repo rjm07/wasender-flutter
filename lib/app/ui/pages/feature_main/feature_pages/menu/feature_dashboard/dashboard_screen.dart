@@ -20,11 +20,14 @@ class _DashboardScreenState extends State<DashboardScreen> with WidgetsBindingOb
   String name = "Blipcom Indonesia";
   String description = "Informasi Perangkat whatsapp yang terhubung!";
   final SocketService socketService = SocketService();
+  late String fullName = "";
+  late String image = "";
+  late String role = "";
 
   @override
   void initState() {
     super.initState();
-
+    getUserInfo();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       getDeviceList();
     });
@@ -48,6 +51,14 @@ class _DashboardScreenState extends State<DashboardScreen> with WidgetsBindingOb
         }
       });
     }
+  }
+
+  Future<void> getUserInfo() async {
+    fullName = (await LocalPrefs.getFullName()) ?? "Guest";
+    image = (await LocalPrefs.getImage()) ?? "https://via.placeholder.com/90"; // Default placeholder image
+    role = (await LocalPrefs.getUserRole()) ?? "User";
+
+    setState(() {}); // Trigger rebuild to update UI with fetched data
   }
 
   @override
@@ -92,11 +103,11 @@ class _DashboardScreenState extends State<DashboardScreen> with WidgetsBindingOb
                           style: TextStyle(fontSize: 22, fontWeight: FontWeight.w300, color: Colors.black54),
                         ),
                         Text(
-                          name,
+                          fullName,
                           style: const TextStyle(fontSize: 25, fontWeight: FontWeight.w400, color: Colors.black87),
                         ),
                         Text(
-                          description,
+                          role,
                           style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w400, color: Colors.black54),
                         ),
                       ],
@@ -115,13 +126,37 @@ class _DashboardScreenState extends State<DashboardScreen> with WidgetsBindingOb
                         height: 90, // Match the height of the image
                         width: 90, // Match the width of the image
                         decoration: const BoxDecoration(
-                          shape: BoxShape.circle, color: Colors.white, // White background for the border
+                          shape: BoxShape.circle, // Circular shape
+                          color: Colors.white, // White background for the border
                         ),
-                        child: Image.asset(
-                          CustomIcons.iconProfilePicture, // Path to your asset
-                          height: 90,
-                          width: 90,
-                          fit: BoxFit.cover, // Adjust image fit as needed
+                        child: ClipOval(
+                          // Ensures the image is clipped to a circular shape
+                          child: Image.network(
+                            image.isNotEmpty ? image : "https://via.placeholder.com/90",
+                            height: 90,
+                            width: 90,
+                            fit: BoxFit.cover, // Adjust image fit as needed
+                            loadingBuilder: (context, child, loadingProgress) {
+                              if (loadingProgress == null) {
+                                return child;
+                              } else {
+                                return Center(
+                                  child: CircularProgressIndicator(
+                                    value: loadingProgress.expectedTotalBytes != null
+                                        ? loadingProgress.cumulativeBytesLoaded /
+                                            (loadingProgress.expectedTotalBytes ?? 1)
+                                        : null,
+                                  ),
+                                );
+                              }
+                            },
+                            errorBuilder: (context, error, stackTrace) {
+                              return const Icon(
+                                Icons.error, // Show an error icon if the image fails to load
+                                color: Colors.red,
+                              );
+                            },
+                          ),
                         ),
                       ),
                     )
