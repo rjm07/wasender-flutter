@@ -1,7 +1,6 @@
 import 'dart:io';
 
 import 'package:firebase_messaging/firebase_messaging.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:wasender/app/core/services/local_notifications/local_notifications.dart';
 import 'package:wasender/app/core/services/navigation/navigation.dart';
@@ -33,13 +32,12 @@ class FirebaseCloudMessagingService {
     } else {
       _saveFCMToken();
     }
-
-    FirebaseMessaging.onBackgroundMessage(onBackgroundMessage);
+    requestPermission();
+    FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
     FirebaseMessaging.onMessage.listen(onMessage);
     FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
       _onNotificationTap(message);
     });
-
     FirebaseMessaging.instance.getInitialMessage().then((RemoteMessage? message) {
       if (message != null) {
         _onNotificationTap(message);
@@ -89,30 +87,32 @@ class FirebaseCloudMessagingService {
     }
   }
 
-  static Future<void> _onNotificationTap(RemoteMessage message) async {
+  static void _onNotificationTap(RemoteMessage message) {
     final notificationData = message.data;
+    logger.i('Notification tapped: $notificationData');
+
     if (notificationData.containsKey('room_chat')) {
-      final String? roomChat = notificationData['room_chat'] as String?;
+      final String? roomChat = notificationData['room_chat'];
       final screen = notificationData['screen'];
-      await NavService.navigatorKey.currentState?.pushNamed(
-        screen,
-        arguments: {'room_chat': roomChat},
-      );
-      if (NavService.navigatorKey.currentState?.canPop() == true) {
-        final currentRoute = ModalRoute.of(NavService.navigatorKey.currentContext!)?.settings.name;
-        if (currentRoute != screen) {
-          NavService.navigatorKey.currentState?.pushNamed(
-            screen,
-            arguments: {'room_chat': roomChat},
-          );
-        }
+
+      if (roomChat != null && screen != null) {
+        logger.i('Navigating to: $screen with roomChat: $roomChat');
+        NavService.navigatorKey.currentState?.pushNamed(
+          screen,
+          arguments: {'room_chat': roomChat},
+        );
+      } else {
+        logger.e('Error: Missing room_chat or screen');
       }
+    } else {
+      logger.e('Error: Notification data does not contain valid keys');
     }
   }
 
   @pragma('vm:entry-point')
   static Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
     final notificationData = message.data;
+    logger.i('notificationData: ${message.data}');
     if (notificationData.containsKey('room_chat') || (notificationData.containsKey('chatId'))) {
       final String? roomChat = notificationData['room_chat'] as String?;
       final screen = notificationData['screen'];

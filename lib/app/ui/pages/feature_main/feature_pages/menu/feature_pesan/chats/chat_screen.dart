@@ -59,7 +59,7 @@ class _ChatScreenState extends State<ChatScreen> {
 
     chatRoom = widget.roomChat;
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      getChatBoxConversation(chatRoom);
+      getChatBoxConversation();
     });
     final socketService = SocketService();
     if (widget.statusIsOpen == true) {
@@ -69,7 +69,13 @@ class _ChatScreenState extends State<ChatScreen> {
     }
   }
 
-  Future<void> getChatBoxConversation(String chatRoom) async {
+  Future<void> getChatBoxConversation() async {
+    // Get arguments passed to this screen
+    final arguments = ModalRoute.of(context)?.settings.arguments as Map<String, String>?;
+
+    final roomChat = arguments?['room_chat'] ?? ''; // Provide default if null
+    final timestamp = arguments?['timestamp'] ?? 'No timestamp'; // Default value for timestamp
+
     final PesanServices devices = Provider.of<PesanServices>(context, listen: false);
     final String? tokenBearer = await LocalPrefs.getBearerToken();
     final String? deviceKey = await LocalPrefs.getDeviceKey();
@@ -77,7 +83,8 @@ class _ChatScreenState extends State<ChatScreen> {
     debugPrint("deviceKey: $deviceKey");
 
     if (tokenBearer != null) {
-      final converse = await devices.getChatBoxConversation(tokenBearer, deviceKey!, chatRoom);
+      final converse =
+          await devices.getChatBoxConversation(tokenBearer, deviceKey!, chatRoom.isEmpty ? roomChat : chatRoom);
       final List<Conversation> conversation = converse.toList();
       setState(() {
         _messages = conversation;
@@ -179,6 +186,9 @@ class _ChatScreenState extends State<ChatScreen> {
     String formattedDate = DateFormat('MMM d').format(dateTime);
     String formattedTime = DateFormat('H:mm a').format(dateTime);
 
+    if (kDebugMode) {
+      print('date time: ${widget.timestamp}');
+    }
     void onTicketAccepted() async {
       try {
         await devices.assignTicket(widget.roomChat, widget.senderNumber);
