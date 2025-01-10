@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 class NavService {
   static final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
   static void pop({
     int? pages,
@@ -51,6 +52,14 @@ class NavService {
           builder: (_) => screen,
         ),
       );
+    }
+  }
+
+  static void jumpToPage(int page) {
+    final BuildContext? context = navigatorKey.currentContext;
+
+    if (context != null) {
+      Navigator.of(context).popUntil((route) => route.isFirst);
     }
   }
 }

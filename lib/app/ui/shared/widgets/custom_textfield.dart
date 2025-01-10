@@ -27,7 +27,7 @@ class LoginTextField extends StatelessWidget {
         child: TextFormField(
           autovalidateMode: AutovalidateMode.onUserInteraction,
           controller: controller,
-          style: const TextStyle(color: Colors.black54, fontSize: 14.0),
+          style: const TextStyle(color: Colors.black, fontSize: 14.0),
           autocorrect: false,
           obscureText: isObscure,
           decoration: InputDecoration(

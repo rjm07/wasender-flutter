@@ -19,6 +19,9 @@ import '../../../../../../shared/widgets/msg_widget/own_msg_widget.dart';
 import 'chat_user_profile.dart';
 
 class ChatScreen extends StatefulWidget {
+  static const routeName = '/chat';
+  final Map<String, dynamic>? arguments;
+
   const ChatScreen(
       {super.key,
       required this.fullName,
@@ -26,7 +29,8 @@ class ChatScreen extends StatefulWidget {
       required this.roomChat,
       required this.senderNumber,
       required this.statusIsOpen,
-      required this.onHandleTicket});
+      required this.onHandleTicket,
+      this.arguments});
 
   final String fullName;
   final String timestamp;
@@ -46,13 +50,16 @@ class _ChatScreenState extends State<ChatScreen> {
   List<Conversation> _messages = [];
   final ScrollController _scrollController = ScrollController();
   bool isExpanded = false;
+  late String chatRoom;
 
   @override
   void initState() {
     super.initState();
     debugPrint('status ${widget.statusIsOpen}');
+
+    chatRoom = widget.roomChat;
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      getChatBoxConversation();
+      getChatBoxConversation(chatRoom);
     });
     final socketService = SocketService();
     if (widget.statusIsOpen == true) {
@@ -62,7 +69,7 @@ class _ChatScreenState extends State<ChatScreen> {
     }
   }
 
-  Future<void> getChatBoxConversation() async {
+  Future<void> getChatBoxConversation(String chatRoom) async {
     final PesanServices devices = Provider.of<PesanServices>(context, listen: false);
     final String? tokenBearer = await LocalPrefs.getBearerToken();
     final String? deviceKey = await LocalPrefs.getDeviceKey();
@@ -70,7 +77,7 @@ class _ChatScreenState extends State<ChatScreen> {
     debugPrint("deviceKey: $deviceKey");
 
     if (tokenBearer != null) {
-      final converse = await devices.getChatBoxConversation(tokenBearer, deviceKey!, widget.roomChat);
+      final converse = await devices.getChatBoxConversation(tokenBearer, deviceKey!, chatRoom);
       final List<Conversation> conversation = converse.toList();
       setState(() {
         _messages = conversation;
@@ -210,6 +217,12 @@ class _ChatScreenState extends State<ChatScreen> {
       appBar: AppBar(
         backgroundColor: Colors.white,
         elevation: 0,
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back, color: Colors.black),
+          onPressed: () {
+            NavService.navigatorKey.currentState?.pop(2);
+          },
+        ),
         title: GestureDetector(
           onTap: () {
             Navigator.of(context).push(

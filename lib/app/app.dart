@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:wasender/app/core/services/navigation/navigation.dart';
 import 'package:wasender/app/ui/pages/feature_main/feature_pages/menu/feature_dashboard/dashboard_screen.dart';
+import 'package:wasender/app/ui/pages/feature_main/feature_pages/menu/feature_pesan/chats/chat_screen.dart';
 import 'package:wasender/app/ui/pages/feature_main/feature_pages/menu/feature_pesan/pesan_screen.dart';
 import 'package:wasender/app/ui/shared/widgets/wrappers/auth_wrapper.dart';
 import 'package:wasender/app/utils/lang/theme.dart';
@@ -27,6 +28,14 @@ class WhatUpApp extends StatelessWidget {
         '/auth': (context) => AuthWrapper(),
         '/dashboard': (context) => DashboardScreen(),
         '/pesan': (context) => PesanScreen(),
+        ChatScreen.routeName: (context) => ChatScreen(
+              fullName: '',
+              timestamp: '',
+              roomChat: '',
+              senderNumber: '',
+              statusIsOpen: false,
+              onHandleTicket: () {},
+            ),
         // Add additional routes as needed
       },
     );

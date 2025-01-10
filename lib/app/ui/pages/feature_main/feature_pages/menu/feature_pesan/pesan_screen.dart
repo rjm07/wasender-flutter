@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:wasender/app/ui/pages/feature_main/feature_pages/menu/feature_pesan/chats/chat_categories/bot_chat_screen.dart';
 import 'package:wasender/app/ui/pages/feature_main/feature_pages/menu/feature_pesan/chats/chat_categories/close_chat_screen.dart';
 
+import '../../../../../../core/services/navigation/navigation.dart';
 import '../../../../../../utils/lang/colors.dart';
 import '../../../../../../utils/lang/images.dart';
 import 'chats/chat_categories/active_chat_screen.dart';
@@ -99,6 +100,12 @@ class _PesanScreenState extends State<PesanScreen> with SingleTickerProviderStat
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back, color: Colors.black),
+          onPressed: () {
+            NavService.pop(pages: 2);
+          },
+        ),
         title: Row(
           children: [
             GestureDetector(
