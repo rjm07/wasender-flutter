@@ -114,7 +114,7 @@ class PerangkatSayaServices extends ChangeNotifier {
     String whatsappNumber,
     Function(String) showErrorSnackbar,
   ) async {
-    final Uri uri = Uri.parse("https://wasender.pytavia.id/api/v1/device/$whatsappNumber");
+    final Uri uri = Uri.parse("${API.baseUrl}/api/v1/device/$whatsappNumber");
     debugPrint("Calling $uri");
 
     try {

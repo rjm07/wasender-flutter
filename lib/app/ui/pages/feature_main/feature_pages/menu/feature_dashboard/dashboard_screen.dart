@@ -3,7 +3,9 @@ import 'package:provider/provider.dart';
 import 'package:wasender/app/ui/pages/feature_main/feature_pages/menu/feature_dashboard/feature_profile/profile_screen.dart';
 import 'package:wasender/app/ui/shared/widgets/dashboard_cards.dart';
 
+import '../../../../../../core/models/dashboard/dashboard_response.dart';
 import '../../../../../../core/services/auth.dart';
+import '../../../../../../core/services/fcm.dart';
 import '../../../../../../core/services/perangkat_saya/perangkat_saya.dart';
 import '../../../../../../core/services/preferences.dart';
 import '../../../../../../core/services/socket_io/socket.dart';
@@ -50,7 +52,14 @@ class _DashboardScreenState extends State<DashboardScreen> with WidgetsBindingOb
           debugPrint("Error: $errorMessage");
         }
       });
+      sendFCMToken();
     }
+  }
+
+  Future<void> sendFCMToken() async {
+    final FCMServices fcmServices = Provider.of<FCMServices>(context, listen: false);
+    final SendFCMTokenResponse fcmToken = await fcmServices.sendFCMToken();
+    debugPrint("FCM Token: $fcmToken");
   }
 
   Future<void> getUserInfo() async {
@@ -132,7 +141,7 @@ class _DashboardScreenState extends State<DashboardScreen> with WidgetsBindingOb
                         child: ClipOval(
                           // Ensures the image is clipped to a circular shape
                           child: Image.network(
-                            image.isNotEmpty ? image : "https://via.placeholder.com/90",
+                            image.isNotEmpty ? image : CustomIcons.iconProfile,
                             height: 90,
                             width: 90,
                             fit: BoxFit.cover, // Adjust image fit as needed
