@@ -47,6 +47,8 @@ class Auth extends ChangeNotifier {
           await LocalPrefs.saveToken(user.accessToken);
           await LocalPrefs.saveFKUserID(user.fkUserID);
           await LocalPrefs.saveUserRole(user.role);
+          await LocalPrefs.saveFullName(user.fullName);
+          await LocalPrefs.saveImage(user.avatar);
           updateBrandIdFuture();
         } else {
           throw loginResponse.messageDesc;
@@ -66,6 +68,9 @@ class Auth extends ChangeNotifier {
     await LocalPrefs.clearDeviceKey();
     await LocalPrefs.clearFKUserID();
     await LocalPrefs.clearWhatsappNumber();
+    await LocalPrefs.clearUserRole();
+    await LocalPrefs.clearFullName();
+    await LocalPrefs.clearImage();
     updateBrandIdFuture();
   }
 }

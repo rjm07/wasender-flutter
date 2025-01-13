@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:wasender/app/ui/pages/feature_main/feature_pages/menu/feature_pesan/chats/chat_categories/bot_chat_screen.dart';
 import 'package:wasender/app/ui/pages/feature_main/feature_pages/menu/feature_pesan/chats/chat_categories/close_chat_screen.dart';
 
+import '../../../../../../core/services/navigation/navigation.dart';
 import '../../../../../../utils/lang/colors.dart';
 import '../../../../../../utils/lang/images.dart';
 import 'chats/chat_categories/active_chat_screen.dart';
@@ -99,6 +100,12 @@ class _PesanScreenState extends State<PesanScreen> with SingleTickerProviderStat
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back, color: Colors.black),
+          onPressed: () {
+            NavService.pop(pages: 2);
+          },
+        ),
         title: Row(
           children: [
             GestureDetector(
@@ -224,26 +231,26 @@ class _PesanScreenState extends State<PesanScreen> with SingleTickerProviderStat
     );
   }
 
-  // Helper method to build a filter button
-  Widget _buildFilterButton(String text, int index) {
-    return GestureDetector(
-      onTap: () => _onFilterSelected(index),
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 4),
-        child: Container(
-          decoration: BoxDecoration(
-            color: _selectedFilterIndex == index ? Colors.greenAccent : Colors.grey[300],
-            borderRadius: BorderRadius.circular(20),
-          ),
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-          child: Text(
-            text,
-            style: TextStyle(
-              color: _selectedFilterIndex == index ? Colors.white : Colors.black54,
-            ),
-          ),
-        ),
-      ),
-    );
-  }
+//   // Helper method to build a filter button
+//   Widget _buildFilterButton(String text, int index) {
+//     return GestureDetector(
+//       onTap: () => _onFilterSelected(index),
+//       child: Padding(
+//         padding: const EdgeInsets.symmetric(horizontal: 4),
+//         child: Container(
+//           decoration: BoxDecoration(
+//             color: _selectedFilterIndex == index ? Colors.greenAccent : Colors.grey[300],
+//             borderRadius: BorderRadius.circular(20),
+//           ),
+//           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+//           child: Text(
+//             text,
+//             style: TextStyle(
+//               color: _selectedFilterIndex == index ? Colors.white : Colors.black54,
+//             ),
+//           ),
+//         ),
+//       ),
+//     );
+//   }
 }

@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:wasender/app/core/services/preferences.dart';
 import 'package:wasender/app/ui/pages/feature_main/feature_pages/pengaturan/feature_paket/paket_screen.dart';
 import '../../../../core/services/auth.dart';
+import '../../../../core/services/navigation/navigation.dart';
 import '../../../../utils/lang/images.dart';
 import '../../../shared/widgets/custom_list_tiles.dart';
 import '../feature_pages/menu/feature_pesan/pesan_screen.dart';
@@ -18,6 +19,7 @@ class SideBarMenuScreen extends StatefulWidget {
 
 class _SideBarMenuScreenState extends State<SideBarMenuScreen> {
   String userRole = ''; // Declare the userRole variable
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
   @override
   void initState() {
@@ -35,8 +37,10 @@ class _SideBarMenuScreenState extends State<SideBarMenuScreen> {
   }
 
   void _onTileTap(int index) {
-    widget.pageController.jumpToPage(index); // Use the passed controller
-    Navigator.pop(context); // Close the drawer after selecting a tile
+    NavService.jumpToPage(0);
+    widget.pageController.jumpToPage(index);
+    _scaffoldKey.currentState?.closeDrawer();
+    // Close the drawer after selecting a tile
   }
 
   @override
@@ -44,6 +48,7 @@ class _SideBarMenuScreenState extends State<SideBarMenuScreen> {
     final Auth auth = Provider.of<Auth>(context);
 
     return Drawer(
+      key: _scaffoldKey,
       child: Container(
         color: Colors.grey.shade300,
         child: Column(

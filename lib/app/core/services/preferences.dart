@@ -23,6 +23,40 @@ class LocalPrefs {
     prefs.remove(_LocalPrefKeys.bearerToken);
   }
 
+  ///MARK: Get Full Name
+
+  static Future<String?> getFullName() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    return prefs.getString(_LocalPrefKeys.fullName);
+  }
+
+  static Future<void> clearFullName() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.remove(_LocalPrefKeys.fullName);
+  }
+
+  static Future<void> saveFullName(String fullname) async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.setString(_LocalPrefKeys.fullName, fullname);
+  }
+
+  ///MARK: Get Full Name
+
+  static Future<String?> getImage() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    return prefs.getString(_LocalPrefKeys.image);
+  }
+
+  static Future<void> clearImage() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.remove(_LocalPrefKeys.image);
+  }
+
+  static Future<void> saveImage(String image) async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.setString(_LocalPrefKeys.image, image);
+  }
+
   static Future<String?> getUserRole() async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     return prefs.getString(_LocalPrefKeys.userRole); // pkey on device list primary device
@@ -97,6 +131,8 @@ class LocalPrefs {
 class _LocalPrefKeys {
   static String token = "TOKEN_VALUE";
   static String userRole = "USER_ROLE";
+  static String fullName = "FULL_NAME";
+  static String image = "IMAGE";
   static String bearerToken = "Bearer $token";
   static String deviceKey = "DEVICE_KEY";
   static String fkUserID = "FK_USER_ID";
