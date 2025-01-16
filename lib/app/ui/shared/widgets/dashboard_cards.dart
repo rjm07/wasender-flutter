@@ -105,7 +105,7 @@ class QuotaCard extends StatelessWidget {
           Text(
             "Last activity at 19 Nov, 2019",
             style: TextStyle(
-              color: Colors.white.withOpacity(0.7), // Lighter white text
+              color: Colors.white24, // Lighter white text
               fontSize: 12,
               fontStyle: FontStyle.italic,
             ),

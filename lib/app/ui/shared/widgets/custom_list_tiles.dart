@@ -39,12 +39,14 @@ class ChatUserListTile extends StatelessWidget {
       required this.onTap,
       required this.fullName,
       required this.description,
+      required this.category,
       required this.time});
 
   final String fullName;
   final String title;
   final String description;
   final String time;
+  final String category;
   final void Function()? onTap;
 
   @override
@@ -64,7 +66,11 @@ class ChatUserListTile extends StatelessWidget {
       ),
       title: Text(fullName),
       subtitle: Text(
-        description,
+        category == 'text'
+            ? description
+            : description.isEmpty
+                ? 'sent an attachment'
+                : '',
         maxLines: 1,
         overflow: TextOverflow.ellipsis,
         style: TextStyle(fontSize: 13, color: Colors.black54),

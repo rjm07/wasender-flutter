@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
 
@@ -371,20 +372,13 @@ class PesanServices extends ChangeNotifier {
     }
   }
 
-  //MARK: Send Media
   Future<SendMessageData> sendMedia(
-    String type,
-    String roomChat,
-    String sender,
-    String receiver,
-    String caption,
-    String filePath,
-  ) async {
+      String type, String roomChat, String sender, String receiver, String caption, File file) async {
     final String? tokenBearer = await LocalPrefs.getBearerToken();
     final String? deviceKey = await LocalPrefs.getDeviceKey();
     final Uri uri = Uri.parse("${API.baseUrl}/api/v1/chat/media/$deviceKey");
 
-    debugPrint("Calling \$uri");
+    debugPrint("Calling $uri");
 
     // Creating multipart request
     final request = http.MultipartRequest('POST', uri)
@@ -396,14 +390,14 @@ class PesanServices extends ChangeNotifier {
       ..fields['type'] = type;
 
     // Adding file to the request
-    request.files.add(await http.MultipartFile.fromPath('images', filePath));
+    request.files.add(await http.MultipartFile.fromPath('images', file.path)); // Use file.path here
 
-    debugPrint('room chat: \$roomChat');
-    debugPrint('sender: \$sender');
-    debugPrint('receiver: \$receiver');
-    debugPrint('caption: \$caption');
-    debugPrint('type: \$type');
-    debugPrint('file path: \$filePath');
+    debugPrint('room chat: $roomChat');
+    debugPrint('sender: $sender');
+    debugPrint('receiver: $receiver');
+    debugPrint('caption: $caption');
+    debugPrint('type: $type');
+    debugPrint('file path: ${file.path}');
 
     try {
       final streamedResponse = await request.send();
@@ -417,10 +411,10 @@ class PesanServices extends ChangeNotifier {
         // Parsing the response into the SendMessageResponse model
         return SendMessageData.fromJson(json);
       } else {
-        throw Exception('Error: \${response.statusCode} - \${response.reasonPhrase}');
+        throw Exception('Error: ${response.statusCode} - ${response.reasonPhrase}');
       }
     } catch (e) {
-      debugPrint('Error occurred while sending media: \$e');
+      debugPrint('Error occurred while sending media: $e');
       throw Exception('Failed to send media.');
     }
   }

@@ -13,7 +13,7 @@ class OwnMsgWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final double maxWidth = MediaQuery.of(context).size.width * 0.75;
+    final double maxWidth = MediaQuery.of(context).size.width - 120;
     DateTime dateTime = DateTime.parse(time!);
     String formattedDate = DateFormat('MMM d').format(dateTime);
     String formattedTime = DateFormat('H:mm a').format(dateTime);

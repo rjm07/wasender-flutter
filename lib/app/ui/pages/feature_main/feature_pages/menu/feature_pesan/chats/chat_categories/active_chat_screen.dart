@@ -206,6 +206,7 @@ class _ActiveChatScreenState extends State<ActiveChatScreen> {
                                     ),
                                   );
                                 },
+                                category: chatData.messages.category,
                               ),
                             );
                           },

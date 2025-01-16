@@ -1,4 +1,5 @@
 import 'dart:io' show Platform; // Import Platform for OS detection
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
@@ -34,6 +35,7 @@ class _MainScreenState extends State<MainScreen> {
   @override
   void initState() {
     super.initState();
+
     _getUserRoleFromPrefs(); // Fetch the role from SharedPreferences
   }
 
@@ -163,7 +165,7 @@ class _MainScreenState extends State<MainScreen> {
         activeBackgroundColor: Colors.blue,
         spacing: 12,
         spaceBetweenChildren: 12,
-        overlayColor: Colors.black.withOpacity(0.25),
+        overlayColor: Colors.black26,
 
         children: [
           SpeedDialChild(
