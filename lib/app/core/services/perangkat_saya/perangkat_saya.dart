@@ -34,6 +34,7 @@ class PerangkatSayaServices extends ChangeNotifier {
     try {
       final newDevices = await getDeviceList(
         token,
+        showErrorSnackbar,
         page,
         perPage,
       );
@@ -52,6 +53,7 @@ class PerangkatSayaServices extends ChangeNotifier {
 
   Future<List<PerangkatSayaDataList>> getDeviceList(
     String token,
+    Function(String) showErrorSnackbar,
     int page,
     int perPage,
   ) async {
@@ -88,15 +90,18 @@ class PerangkatSayaServices extends ChangeNotifier {
           final List<PerangkatSayaDataList> devices = data.data;
 
           if (devices.isNotEmpty) {
-            await LocalPrefs.saveDeviceKey(devices[0].pKey); // Save all devices at once
+            await LocalPrefs.saveDeviceKey(devices[0].pKey);
+            await LocalPrefs.saveWhatsappNumber(devices[0].whatsappNumber);
           }
 
           return devices;
         } else {
-          throw Exception(psResponse.messageDesc);
+          final String message = jsonDecode(response.body)["message_desc"];
+          showErrorSnackbar('Error: ${response.statusCode} - ${psResponse.messageData.msg}');
+          throw Exception(message);
         }
       } else {
-        throw Exception('Error: ${response.statusCode} - ${response.reasonPhrase}');
+        throw Exception('Error: ${response.statusCode} - ${response.reasonPhrase} test');
       }
     } catch (error, stackTrace) {
       debugPrintStack(stackTrace: stackTrace);
@@ -109,7 +114,7 @@ class PerangkatSayaServices extends ChangeNotifier {
     String whatsappNumber,
     Function(String) showErrorSnackbar,
   ) async {
-    final Uri uri = Uri.parse("https://wasender.pytavia.id/api/v1/device/$whatsappNumber");
+    final Uri uri = Uri.parse("${API.baseUrl}/api/v1/device/$whatsappNumber");
     debugPrint("Calling $uri");
 
     try {
@@ -128,6 +133,7 @@ class PerangkatSayaServices extends ChangeNotifier {
       } else {
         final String message = jsonDecode(response.body)["message_desc"];
         showErrorSnackbar('Error: ${response.statusCode} - ${response.reasonPhrase}');
+
         throw Exception(message);
       }
     } catch (error, stackTrace) {

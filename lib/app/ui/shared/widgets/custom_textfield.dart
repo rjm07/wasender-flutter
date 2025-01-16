@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:wasender/app/utils/lang/colors.dart';
 
 class LoginTextField extends StatelessWidget {
   const LoginTextField({
@@ -26,7 +27,7 @@ class LoginTextField extends StatelessWidget {
         child: TextFormField(
           autovalidateMode: AutovalidateMode.onUserInteraction,
           controller: controller,
-          style: const TextStyle(color: Colors.black54, fontSize: 14.0),
+          style: const TextStyle(color: Colors.black, fontSize: 14.0),
           autocorrect: false,
           obscureText: isObscure,
           decoration: InputDecoration(
@@ -45,7 +46,7 @@ class LoginTextField extends StatelessWidget {
               borderRadius: BorderRadius.circular(5.0),
             ),
             focusedBorder: OutlineInputBorder(
-              borderSide: BorderSide(color: Colors.greenAccent.shade700),
+              borderSide: BorderSide(color: AppColors.primary),
               borderRadius: BorderRadius.circular(5.0),
             ),
             focusedErrorBorder: OutlineInputBorder(
@@ -112,15 +113,15 @@ class WidgetWithOutlineTextField extends StatelessWidget {
             labelStyle: TextStyle(color: Colors.grey[600], fontSize: 12.0), // Smaller and gray
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(6.0),
-              borderSide: BorderSide(color: Colors.green[400]!, width: 1.5), // Removes the border
+              borderSide: BorderSide(color: AppColors.primary, width: 1.5), // Removes the border
             ),
             enabledBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(6.0),
-              borderSide: BorderSide(color: Colors.green[400]!, width: 1.5), // Inactive outline
+              borderSide: BorderSide(color: AppColors.primary, width: 1.5), // Inactive outline
             ),
             focusedBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(6.0),
-              borderSide: BorderSide(color: Colors.green, width: 1.5), // Active outline when focused
+              borderSide: BorderSide(color: AppColors.primary, width: 1.5), // Active outline when focused
             ),
             contentPadding:
                 const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0), // Adjust padding to match appearance

@@ -109,7 +109,6 @@ class _PerangkatSayaScreenState extends State<PerangkatSayaScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      key: scaffoldKey,
       body: SafeArea(
         child: Consumer<PerangkatSayaServices>(
           builder: (context, devices, child) {

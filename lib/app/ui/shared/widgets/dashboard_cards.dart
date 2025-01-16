@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../../../utils/lang/colors.dart';
+
 class QuotaCard extends StatelessWidget {
   const QuotaCard({super.key});
 
@@ -10,7 +12,7 @@ class QuotaCard extends StatelessWidget {
       width: MediaQuery.of(context).size.width, // Adjust width based on your need
       height: 210, // Adjust height as per design
       decoration: BoxDecoration(
-        color: const Color(0xFF2D4189), // Dark blue background color
+        color: AppColors.primaryVariant, // Dark blue background color
         borderRadius: BorderRadius.circular(15), // Rounded corners
       ),
       child: Column(
@@ -25,7 +27,7 @@ class QuotaCard extends StatelessWidget {
                   Text(
                     "Kuota Tersedia",
                     style: TextStyle(
-                      color: Color(0xFF90A3FF), // Lighter blue text color
+                      color: Colors.white, // Lighter blue text color
                       fontSize: 12,
                     ),
                   ),
@@ -52,7 +54,7 @@ class QuotaCard extends StatelessWidget {
                   Text(
                     "Kuota Tersedia",
                     style: TextStyle(
-                      color: Color(0xFF90A3FF), // Lighter blue text color
+                      color: Colors.white, // Lighter blue text color
                       fontSize: 12,
                     ),
                   ),
@@ -82,7 +84,7 @@ class QuotaCard extends StatelessWidget {
                   Text(
                     "Total Kuota",
                     style: TextStyle(
-                      color: Color(0xFF90A3FF), // Lighter blue text color
+                      color: Colors.white, // Lighter blue text color
                       fontSize: 12,
                     ),
                   ),
@@ -103,7 +105,7 @@ class QuotaCard extends StatelessWidget {
           Text(
             "Last activity at 19 Nov, 2019",
             style: TextStyle(
-              color: Colors.white.withOpacity(0.7), // Lighter white text
+              color: Colors.white24, // Lighter white text
               fontSize: 12,
               fontStyle: FontStyle.italic,
             ),

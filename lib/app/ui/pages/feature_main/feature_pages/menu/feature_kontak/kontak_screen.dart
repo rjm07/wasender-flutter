@@ -14,7 +14,7 @@ class _KontakScreenState extends State<KontakScreen> {
       body: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Center(child: Text('Dashboard Screen')),
+          Center(child: Text('Kontak Screen')),
         ],
       ),
     );

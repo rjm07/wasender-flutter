@@ -41,4 +41,10 @@ app.*.map.json
 /android/app/debug
 /android/app/profile
 /android/app/release
+/.env/
+/.firebaserc
+/firebase.json
+/remoteconfig.template.json
+/lib/firebase_options.dart
+/ios/Runner/GoogleService-Info.plist
 /android/app/

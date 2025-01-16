@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../../../utils/lang/colors.dart';
+
 class PerangkatSayaCard extends StatelessWidget {
   final Color color;
   final String title;
@@ -27,7 +29,7 @@ class PerangkatSayaCard extends StatelessWidget {
         borderRadius: BorderRadius.circular(12.0),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.1), // Shadow color
+            color: Colors.black12, // Shadow color
             spreadRadius: 2, // Spread radius
             blurRadius: 6, // Blur radius
             offset: const Offset(0, 3), // Offset for the shadow (x, y)
@@ -45,7 +47,7 @@ class PerangkatSayaCard extends StatelessWidget {
                 width: 50.0, // Width of the circle
                 height: 50.0, // Height of the circle
                 decoration: const BoxDecoration(
-                  color: Colors.green, // Background color (green)
+                  color: AppColors.primary, // Background color (green)
                   shape: BoxShape.circle, // Circular shape
                 ),
                 child: const Center(
@@ -74,7 +76,7 @@ class PerangkatSayaCard extends StatelessWidget {
                       const SizedBox(height: 8),
                       Container(
                         decoration: BoxDecoration(
-                            border: Border.all(color: Colors.green.shade300, width: 1),
+                            border: Border.all(color: AppColors.primary, width: 1),
                             borderRadius: BorderRadius.circular(5)),
                         child: Padding(
                           padding: const EdgeInsets.all(8.0),
@@ -85,7 +87,7 @@ class PerangkatSayaCard extends StatelessWidget {
                                 style: TextStyle(
                                   fontSize: 14,
                                   fontWeight: FontWeight.w500,
-                                  color: Colors.green.shade300,
+                                  color: AppColors.primary,
                                 ),
                               ),
                             ],
@@ -112,7 +114,7 @@ class PerangkatSayaCard extends StatelessWidget {
                           isActive ? "CONNECTED" : "DISCONNECTED",
                           style: TextStyle(
                             color: isActive
-                                ? Colors.greenAccent.shade700
+                                ? AppColors.primary
                                 : Colors.redAccent.shade700, // White text for the main count
                             fontSize: 14,
                             fontWeight: FontWeight.w500,
@@ -132,7 +134,7 @@ class PerangkatSayaCard extends StatelessWidget {
               Text(
                 "Status",
                 style: TextStyle(
-                  color: Colors.greenAccent.shade700, // Lighter blue text color
+                  color: AppColors.primary, // Lighter blue text color
                   fontSize: 12,
                 ),
               ),
@@ -172,7 +174,7 @@ class PerangkatSayaCard extends StatelessWidget {
                   Text(
                     "Phone Number",
                     style: TextStyle(
-                      color: Colors.greenAccent.shade700, // Lighter blue text color
+                      color: AppColors.primary, // Lighter blue text color
                       fontSize: 12,
                     ),
                   ),
@@ -208,7 +210,7 @@ class PerangkatSayaCard extends StatelessWidget {
                   Text(
                     "Jatuh Tempo",
                     style: TextStyle(
-                      color: Colors.greenAccent.shade700, // Lighter blue text color
+                      color: AppColors.primary, // Lighter blue text color
                       fontSize: 12,
                     ),
                   ),

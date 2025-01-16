@@ -34,9 +34,18 @@ class LocalNotificationsServices {
       ticker: 'ticker',
     );
 
+    final DarwinNotificationDetails darwinNotificationDetails = DarwinNotificationDetails(
+      presentAlert: true,
+      presentBadge: true,
+      presentSound: true,
+      presentBanner: true,
+    );
+
     final NotificationDetails platformChannelSpecifics = NotificationDetails(
       android: androidPlatformChannelSpecifics,
+      iOS: darwinNotificationDetails,
     );
+
     try {
       await FlutterLocalNotificationsPlugin().show(
         1, // id of the notification

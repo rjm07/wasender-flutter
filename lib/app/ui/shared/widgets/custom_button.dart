@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:wasender/app/utils/lang/colors.dart';
 
 class WidgetButton extends StatelessWidget {
   const WidgetButton({
@@ -22,7 +23,7 @@ class WidgetButton extends StatelessWidget {
               child: ElevatedButton(
                 onPressed: onPressed,
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.green.shade600, // Button color
+                  backgroundColor: AppColors.primary, // Button color
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(5),
                   ),
