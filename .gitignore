@@ -47,3 +47,4 @@ app.*.map.json
 /remoteconfig.template.json
 /lib/firebase_options.dart
 /ios/Runner/GoogleService-Info.plist
+/android/app/
