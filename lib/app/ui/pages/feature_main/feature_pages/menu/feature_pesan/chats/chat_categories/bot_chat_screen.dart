@@ -196,6 +196,7 @@ class _BotChatScreenState extends State<BotChatScreen> {
                                     ),
                                   );
                                 },
+                                category: chatData.messages.category,
                               ),
                             );
                           },

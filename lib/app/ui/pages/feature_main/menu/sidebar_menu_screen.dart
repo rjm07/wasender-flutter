@@ -37,6 +37,7 @@ class _SideBarMenuScreenState extends State<SideBarMenuScreen> {
   }
 
   void _onTileTap(int index) {
+    NavService.pop();
     NavService.jumpToPage(0);
     widget.pageController.jumpToPage(index);
     _scaffoldKey.currentState?.closeDrawer();
@@ -99,14 +100,14 @@ class _SideBarMenuScreenState extends State<SideBarMenuScreen> {
                         SMListTiles(
                           image: CustomIcons.iconPesan,
                           title: 'Pesan',
-                          onTap: () => _onTileTap(2),
-                          //     {
-                          //   Navigator.of(context).push(
-                          //     MaterialPageRoute(
-                          //       builder: (context) => const PesanScreen(),
-                          //     ),
-                          //   );
-                          // },
+                          onTap: () // => _onTileTap(3),
+                              {
+                            Navigator.of(context).push(
+                              MaterialPageRoute(
+                                builder: (context) => const PesanScreen(),
+                              ),
+                            );
+                          },
                         ),
                         SMListTiles(
                           image: CustomIcons.iconMainDashboard,

@@ -7,6 +7,8 @@ class CustomIcons {
   static String iconCalendar = "assets/icons/icon_calendar.png";
   static String iconCamera = "assets/icons/icon_camera.png";
   static String iconEditCircle = "assets/icons/icon_edit.png";
+  static String iconEyeClosed = "assets/icons/icon_eye_closed.png";
+  static String iconEyeOpened = "assets/icons/icon_eye_open.png";
   static String iconFloatingActionButtonWhite = "assets/icons/icon_floating_action_button_white.png";
   static String iconGearGreen = "assets/icons/icon_gear_green.png";
   static String iconHandleTicket = "assets/icons/icon_handle_ticket.png";

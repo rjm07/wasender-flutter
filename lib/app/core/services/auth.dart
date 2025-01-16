@@ -65,7 +65,6 @@ class Auth extends ChangeNotifier {
 
   Future<void> logout() async {
     await LocalPrefs.clearToken();
-    await LocalPrefs.clearDeviceKey();
     await LocalPrefs.clearFKUserID();
     await LocalPrefs.clearWhatsappNumber();
     await LocalPrefs.clearUserRole();

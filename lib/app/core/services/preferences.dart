@@ -126,6 +126,11 @@ class LocalPrefs {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     return prefs.getString(_LocalPrefKeys.fcmToken);
   }
+
+  static Future<void> clearFCMToken() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.remove(_LocalPrefKeys.fcmToken);
+  }
 }
 
 class _LocalPrefKeys {

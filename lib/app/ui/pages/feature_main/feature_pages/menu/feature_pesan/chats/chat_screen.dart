@@ -1,11 +1,13 @@
+import 'dart:io';
+
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 import 'package:logger/logger.dart';
 import 'package:provider/provider.dart';
 import 'package:wasender/app/core/models/pesan/pesan_conversation.dart';
 
-import '../../../../../../../core/services/local_notifications/local_notifications.dart';
 import '../../../../../../../core/services/navigation/navigation.dart';
 import '../../../../../../../core/services/pesan/pesan.dart';
 import '../../../../../../../core/services/preferences.dart';
@@ -174,6 +176,29 @@ class _ChatScreenState extends State<ChatScreen> {
     _controller.clear();
   }
 
+  void _sendMedia() async {
+    final ImagePicker picker = ImagePicker();
+    final XFile? pickedFile = await picker.pickImage(source: ImageSource.gallery);
+
+    if (pickedFile != null) {
+      final File file = File(pickedFile.path);
+      final PesanServices devices = Provider.of<PesanServices>(context, listen: false);
+      final String? whatsappNumber = await LocalPrefs.getWhatsappNumber();
+
+      // Send the media file through the API
+      await devices.sendMedia(
+        'image',
+        widget.roomChat,
+        whatsappNumber ?? '',
+        widget.senderNumber,
+        _controller.text,
+        file,
+      );
+
+      debugPrint('Media file sent successfully: ${file.path}');
+    }
+  }
+
   @override
   void dispose() {
     super.dispose();
@@ -306,21 +331,35 @@ class _ChatScreenState extends State<ChatScreen> {
                 controller: _scrollController, // Attach the scroll controller
                 itemCount: _messages.length,
                 itemBuilder: (context, index) {
-                  // Use reversed index to display messages in descending order
                   final reversedIndex = _messages.length - 1 - index;
                   final message = _messages[reversedIndex];
+
                   if (message.fromMe == true) {
-                    return OwnMsgWidget(
-                      status: message.status, // Example status
-                      time: message.messageTimestampStr, // Example time
-                      ownMessage: message.message?.text,
-                    );
+                    return message.message?.file != null
+                        ? OwnMsgWidget(
+                            status: message.status,
+                            time: message.messageTimestampStr,
+                            ownMessage: message.message?.text,
+                            filePath: message.message?.file,
+                          )
+                        : OwnMsgWidget(
+                            status: message.status,
+                            time: message.messageTimestampStr,
+                            ownMessage: message.message?.text,
+                          );
                   } else {
-                    return OthersMsgWidget(
-                      status: message.status, // Example status
-                      time: message.messageTimestampStr, // Example time
-                      ownMessage: message.message?.text,
-                    );
+                    return message.message?.file != null
+                        ? OthersMsgWidget(
+                            status: message.status,
+                            time: message.messageTimestampStr,
+                            ownMessage: message.message?.text,
+                            filePath: message.message?.file,
+                          )
+                        : OthersMsgWidget(
+                            status: message.status,
+                            time: message.messageTimestampStr,
+                            ownMessage: message.message?.text,
+                          );
                   }
                 },
               ),
@@ -427,9 +466,7 @@ class _ChatScreenState extends State<ChatScreen> {
                     children: [
                       IconButton(
                         icon: Icon(Icons.add_circle, color: Colors.green[700]),
-                        onPressed: () {
-                          // Add functionality for adding an attachment
-                        },
+                        onPressed: _sendMedia, // Open file picker and send media
                       ),
                       Expanded(
                         child: TextField(
@@ -459,8 +496,6 @@ class _ChatScreenState extends State<ChatScreen> {
                         icon: Icon(Icons.emoji_emotions_outlined, color: Colors.grey),
                         onPressed: () {
                           debugPrint('emoji button pressed');
-                          LocalNotificationsServices()
-                              .showNotification('Testing', 'This is just a sample for Firebase');
                         },
                       ),
                       IconButton(

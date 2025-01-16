@@ -17,6 +17,7 @@ class ClosedChatScreen extends StatefulWidget {
   });
   final void Function() onHandleTicket;
 
+  @override
   State<ClosedChatScreen> createState() => _ClosedChatScreenState();
 }
 
@@ -113,6 +114,7 @@ class _ClosedChatScreenState extends State<ClosedChatScreen> {
                                     ),
                                   );
                                 },
+                                category: chatData.messages.category,
                               ),
                             );
                           },
