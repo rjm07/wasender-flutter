@@ -19,20 +19,25 @@ class SideBarMenuScreen extends StatefulWidget {
 
 class _SideBarMenuScreenState extends State<SideBarMenuScreen> {
   String userRole = ''; // Declare the userRole variable
+  String bearerToken = '';
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
   @override
   void initState() {
     super.initState();
-    _getUserRoleFromPrefs(); // Fetch the role from SharedPreferences
+    _getCredentialsFromPrefs(); // Fetch the role from SharedPreferences
   }
 
   // Fetch userRole from LocalPrefs (SharedPreferences)
-  Future<void> _getUserRoleFromPrefs() async {
+  Future<void> _getCredentialsFromPrefs() async {
     final prefs = await LocalPrefs.getUserRole();
+    final token = await LocalPrefs.getBearerToken();
+
     setState(() {
       userRole = prefs!;
+      bearerToken = token!;
       debugPrint("User Role: $userRole");
+      debugPrint("User Role: $bearerToken");
     });
   }
 
