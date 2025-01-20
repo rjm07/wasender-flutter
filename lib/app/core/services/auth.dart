@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:wasender/app/core/models/login/change_password.dart';
 //import 'package:wasender/app/core/providers/token.dart';
 
 import '../../utils/lang/strings.dart';
@@ -11,6 +12,7 @@ import '../models/login/user.dart';
 import 'preferences.dart';
 
 class Auth extends ChangeNotifier {
+  static final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
   Future<String?>? tokenFuture;
 
   void updateBrandIdFuture() {
@@ -19,10 +21,6 @@ class Auth extends ChangeNotifier {
   }
 
   Future<void> login(String username, String password) async {
-    // final String sequence = password + username;
-    //final ({int requestId, String token}) generated = TokenGenerator.generate(sequence);
-    // debugPrint("Generated Token: $generated");
-
     final Uri loginUri = Uri.parse("${API.baseUrl}${API.loginUrl}");
     debugPrint("Login URI: $loginUri");
 
@@ -64,7 +62,6 @@ class Auth extends ChangeNotifier {
       debugPrintStack(stackTrace: stackTrace);
       throw error.toString();
     }
-
   }
 
   Future<void> logout() async {
@@ -110,5 +107,70 @@ class Auth extends ChangeNotifier {
     } else {
       throw Exception('Error: ${response.statusCode} - ${response.reasonPhrase}');
     }
+  }
+
+  Future<void> changePassword(String password, String passwordConfirmation) async {
+    final Uri uri = Uri.parse("${API.baseUrl}/api/v1/password");
+
+    debugPrint("Calling $uri");
+
+    // Constructing the JSON payload
+    final Map<String, dynamic> payload = {"password": password, "password_confirmation": passwordConfirmation};
+
+    debugPrint('password: $password');
+    debugPrint('confirm password: $passwordConfirmation');
+
+    final response = await http.post(
+      uri,
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: jsonEncode(payload),
+    );
+
+    debugPrint(response.body);
+
+    if (response.statusCode == 200) {
+      final Map<String, dynamic> json = jsonDecode(response.body);
+      final ChangePasswordResponse changePasswordResponse = ChangePasswordResponse.fromJson(json);
+      final Map<String, dynamic> messageData = changePasswordResponse.messageData as Map<String, dynamic>;
+      final bool success = messageData['success'] as bool;
+
+      if (success) {
+        // Showing success alert
+        showDialog(
+          context: navigatorKey.currentContext!,
+          builder: (BuildContext context) {
+            return AlertDialog(
+              title: const Text('Success'),
+              content: const Text('Password changed successfully!'),
+              actions: [
+                TextButton(
+                  onPressed: () {
+                    Navigator.pop(context);
+                    Navigator.pushNamedAndRemoveUntil(context, '/login', (route) => false);
+                  },
+                  child: const Text('OK'),
+                ),
+              ],
+            );
+          },
+        );
+      } else {
+        throw changePasswordResponse.messageDesc;
+      }
+    } else {
+      throw Exception('Error: ${response.statusCode} - ${response.reasonPhrase}');
+    }
+  }
+
+  Future<void> clearAllData() async {
+    await LocalPrefs.clearToken();
+    await LocalPrefs.clearFKUserID();
+    await LocalPrefs.clearWhatsappNumber();
+    await LocalPrefs.clearUserRole();
+    await LocalPrefs.clearFullName();
+    await LocalPrefs.clearImage();
+    updateBrandIdFuture();
   }
 }

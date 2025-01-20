@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:wasender/app/ui/shared/widgets/custom_textfield.dart';
 
-import '../../../core/services/navigation/navigation.dart';
+import '../../../core/services/auth.dart';
 import '../../shared/widgets/custom_button.dart';
 
 class ChangePasswordScreen extends StatefulWidget {
@@ -12,25 +13,66 @@ class ChangePasswordScreen extends StatefulWidget {
 }
 
 class _State extends State<ChangePasswordScreen> {
+  final GlobalKey<FormState> formKey = GlobalKey<FormState>();
   final passwordController = TextEditingController();
   final confirmPasswordController = TextEditingController();
   var _isAuthenticating = false;
 
-  void onLoginPressed() {
+  void onSimpanDanLanjutPressed() async {
+    final Auth auth = Provider.of<Auth>(context, listen: false);
     setState(() {
       _isAuthenticating = true;
     });
+    final messenger = ScaffoldMessenger.of(context);
+    if (formKey.currentState!.validate()) {
+      auth.changePassword(passwordController.text, confirmPasswordController.text).onError((error, stackTrace) {
+        setState(() {
+          _isAuthenticating = false;
+        });
+        final snackBar = SnackBar(
+          backgroundColor: Colors.red,
+          content: Text(
+            error.toString(),
+            style: const TextStyle(
+              color: Colors.white,
+            ),
+          ),
+        );
+        messenger.showSnackBar(snackBar); // Use messenger instead of ScaffoldMessenger.of(context)
+      });
+    }
+  }
+
+  void clearAllData(BuildContext context) {
+    final Auth auth = Provider.of<Auth>(context, listen: false);
+    auth.clearAllData();
+  }
+
+  @override
+  void dispose() {
+    passwordController.dispose();
+    confirmPasswordController.dispose();
+
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-          leading: IconButton(
-              icon: Icon(Icons.arrow_back, color: Colors.black),
-              onPressed: () {
-                NavService.pop(pages: 1);
-              })),
+        title: const Text("Change Password"),
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back, color: Colors.black),
+          onPressed: () {
+            clearAllData(context);
+            Navigator.pushNamedAndRemoveUntil(
+              context,
+              '/login', // Navigate back to the LoginScreen
+              (route) => false, // Remove all other routes
+            );
+          },
+        ),
+      ),
       body: Container(
         padding: const EdgeInsets.fromLTRB(20, 64, 20, 20),
         width: double.infinity,
@@ -52,17 +94,11 @@ class _State extends State<ChangePasswordScreen> {
                     children: [
                       Text(
                         'Keamanan Akun',
-                        style: TextStyle(
-                            fontSize: 32.0,
-                            fontWeight: FontWeight.w400,
-                            color: Colors.black87),
+                        style: TextStyle(fontSize: 32.0, fontWeight: FontWeight.w400, color: Colors.black87),
                       ),
                       Text(
                         'Untuk menjara keamanan akun, silahkan masukkan kata sandi baru.',
-                        style: TextStyle(
-                            fontSize: 16.0,
-                            fontWeight: FontWeight.w400,
-                            color: Colors.black87),
+                        style: TextStyle(fontSize: 16.0, fontWeight: FontWeight.w400, color: Colors.black87),
                       ),
                     ],
                   ),
@@ -112,23 +148,18 @@ class _State extends State<ChangePasswordScreen> {
                 ],
               ),
               WidgetButton(
-                onPressed: onLoginPressed, //onLoginPressed,
+                onPressed: onSimpanDanLanjutPressed,
                 child: _isAuthenticating
                     ? const Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          SizedBox(
-                              height: 18.0,
-                              width: 18.0,
-                              child: CircularProgressIndicator(
-                                  color: Colors.white)),
+                          SizedBox(height: 18.0, width: 18.0, child: CircularProgressIndicator(color: Colors.white)),
                           SizedBox(
                             width: 24.0,
                           ),
                           Text(
                             "Please wait...",
-                            style:
-                                TextStyle(fontSize: 12.0, color: Colors.white),
+                            style: TextStyle(fontSize: 12.0, color: Colors.white),
                           ),
                         ],
                       )
