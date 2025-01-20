@@ -28,9 +28,9 @@ class User {
         clientID: json["client_id"] as String,
         fkUserID: json["fk_user_id"] as String,
         fullName: json["fullname"] as String,
+        passwordBySystem: json["password_by_system"] as String,
         role: json["role"] as String,
         userActivation: json["user_activation"] as bool,
-        userName: json["username"] as String,
-        passwordBySystem: json["password_by_system"] as String);
+        userName: json["username"] as String);
   }
 }

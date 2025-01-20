@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:wasender/app/ui/pages/feature_login/change_password_screen.dart';
@@ -16,12 +17,13 @@ class AuthWrapper extends StatefulWidget {
 
 class _AuthWrapperState extends State<AuthWrapper> {
   final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
-  String? passBySystem = "";
+  String passBySystem = '';
 
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
+      getStoredPassBySystem();
       getStoredBrandId(scaffoldKey.currentContext!);
     });
   }
@@ -31,10 +33,11 @@ class _AuthWrapperState extends State<AuthWrapper> {
     auth.updateBrandIdFuture();
   }
 
-  void getStoredPassBySystem() async {
-    final String? passBySys = await LocalPrefs.getPassBySystem();
+  Future<void> getStoredPassBySystem() async {
+    final prefs = await LocalPrefs.getPassBySystem();
     setState(() {
-      passBySystem = passBySys;
+      passBySystem = prefs!;
+      debugPrint("Password By System: $passBySystem");
     });
   }
 
@@ -52,10 +55,18 @@ class _AuthWrapperState extends State<AuthWrapper> {
               if (brandId == null) {
                 return const LoginScreen();
               } else {
-                if (passBySystem == "FALSE" ){
+                if (passBySystem == "TRUE") {
+                  return ChangePasswordScreen(); // Go to login if no brandId or passBySystem is TRUE
+                } else if (passBySystem == "FALSE") {
+                  if (kDebugMode) {
+                    print('DEBUG MODE: $passBySystem passbysystem is authenticated');
+                  }
                   return const MainScreen();
-                }else{
-                  return const ChangePasswordScreen();
+                } else {
+                  if (kDebugMode) {
+                    print('DEBUG MODE: $passBySystem Default is authenticated');
+                  }
+                  return const LoginScreen();
                 }
               }
             } else if (snapshot.hasError) {
