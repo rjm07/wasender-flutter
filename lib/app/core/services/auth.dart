@@ -109,12 +109,3 @@ class Auth extends ChangeNotifier {
     }
   }
 }
-// Future<void> logout2() async {
-//   await LocalPrefs.clearToken();
-//   await LocalPrefs.clearFKUserID();
-//   await LocalPrefs.clearWhatsappNumber();
-//   await LocalPrefs.clearUserRole();
-//   await LocalPrefs.clearFullName();
-//   await LocalPrefs.clearImage();
-//   updateBrandIdFuture();
-// }

@@ -44,6 +44,7 @@ class CustomIcons {
   static String iconViewProfileFill = "assets/icons/icon_profile_fill.png";
   static String iconWhatsAppGeneric = "assets/icons/icon_whatsapp_generic.png";
   static String iconWhatsAppGeneric2 = "assets/icons/icon_whatsapp_generic_2.png";
+  static String iconWorkingInProgress = "assets/icons/icon_wip.png";
 }
 
 class CustomImages {

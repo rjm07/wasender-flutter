@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../../../../../shared/widgets/working_in_progress.dart';
+
 class InboxScreen extends StatefulWidget {
   const InboxScreen({super.key});
 
@@ -14,7 +16,11 @@ class _InboxScreenState extends State<InboxScreen> {
       body: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Center(child: Text('Inbox Screen')),
+          Center(
+            child: WidgetWorkingInProgress(
+              title: 'Inbox',
+            ),
+          ),
         ],
       ),
     );

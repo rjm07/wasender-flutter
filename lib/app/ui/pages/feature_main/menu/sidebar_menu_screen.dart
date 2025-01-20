@@ -7,6 +7,7 @@ import '../../../../core/services/navigation/navigation.dart';
 import '../../../../utils/lang/images.dart';
 import '../../../shared/widgets/custom_list_tiles.dart';
 import '../feature_pages/menu/feature_pesan/pesan_screen.dart';
+import '../feature_pages/pengaturan/feature_bantuan/bantuan_screen.dart';
 
 class SideBarMenuScreen extends StatefulWidget {
   final PageController pageController;
@@ -210,7 +211,13 @@ class _SideBarMenuScreenState extends State<SideBarMenuScreen> {
                       SMListTiles(
                         image: CustomIcons.iconBantuan,
                         title: 'Bantuan',
-                        onTap: () => _onTileTap(9),
+                        onTap: () {
+                          Navigator.of(context).push(
+                            MaterialPageRoute(
+                              builder: (context) => const BantuanScreen(),
+                            ),
+                          );
+                        },
                       ),
                       SMListTiles(
                           image: CustomIcons.iconKeluar, title: 'Keluar', onTap: () => _confirmLogout(context, auth)),

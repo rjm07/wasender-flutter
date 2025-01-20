@@ -17,6 +17,7 @@ import 'feature_pages/menu/feature_dashboard/dashboard_screen.dart';
 import 'feature_pages/menu/feature_dashboard/feature_profile/profile_screen.dart';
 import 'feature_pages/menu/feature_inbox/inbox_screen.dart';
 import 'feature_pages/menu/feature_tim_agen/tim_agen_screen.dart';
+import 'feature_pages/pengaturan/feature_bantuan/bantuan_screen.dart';
 
 class MainScreen extends StatefulWidget {
   const MainScreen({super.key});
@@ -72,6 +73,7 @@ class _MainScreenState extends State<MainScreen> {
     InboxScreen(),
     PesanScreen(),
     KontakScreen(),
+    BantuanScreen(),
   ];
 
   final List<String> _pageTitles = [

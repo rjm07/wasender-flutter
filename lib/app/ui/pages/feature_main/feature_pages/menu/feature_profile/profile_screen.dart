@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../../../../../shared/widgets/working_in_progress.dart';
+
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
 
@@ -14,7 +16,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
       body: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Center(child: Text('Profile Screen')),
+          Center(
+            child: WidgetWorkingInProgress(
+              title: 'Profile',
+            ),
+          ),
         ],
       ),
     );
