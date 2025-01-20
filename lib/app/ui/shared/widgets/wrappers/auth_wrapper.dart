@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:wasender/app/ui/pages/feature_login/change_password_screen.dart';
 
 import '../../../../core/services/auth.dart';
+import '../../../../core/services/preferences.dart';
 import '../../../pages/feature_login/login_screen.dart';
 import '../../../pages/feature_main/main_screen.dart';
 
@@ -14,6 +16,7 @@ class AuthWrapper extends StatefulWidget {
 
 class _AuthWrapperState extends State<AuthWrapper> {
   final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
+  String? passBySystem = "";
 
   @override
   void initState() {
@@ -26,6 +29,13 @@ class _AuthWrapperState extends State<AuthWrapper> {
   void getStoredBrandId(BuildContext context) {
     final Auth auth = Provider.of<Auth>(context, listen: false);
     auth.updateBrandIdFuture();
+  }
+
+  void getStoredPassBySystem() async {
+    final String? passBySys = await LocalPrefs.getPassBySystem();
+    setState(() {
+      passBySystem = passBySys;
+    });
   }
 
   @override
@@ -42,7 +52,11 @@ class _AuthWrapperState extends State<AuthWrapper> {
               if (brandId == null) {
                 return const LoginScreen();
               } else {
-                return const MainScreen();
+                if (passBySystem == "FALSE" ){
+                  return const MainScreen();
+                }else{
+                  return const ChangePasswordScreen();
+                }
               }
             } else if (snapshot.hasError) {
               return Center(
