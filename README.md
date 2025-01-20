@@ -1,4 +1,4 @@
-# wasender
+# WhatUp
 
 A new Flutter project.
 

@@ -23,21 +23,19 @@ class LocalPrefs {
     prefs.remove(_LocalPrefKeys.bearerToken);
   }
 
-  static Future<String?> getPWSystem() async {
+  static Future<String?> getPassBySystem() async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
-    await prefs.setBool(_LocalPrefKeys.passBySys, true);
+    return prefs.getString(_LocalPrefKeys.passwordBySystem);
   }
 
-  static Future<void> savePWSystem(String token) async {
+  static Future<void> savePassBySystem(String value) async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
-    prefs.setString(_LocalPrefKeys.token, token);
-    prefs.setString(_LocalPrefKeys.bearerToken, token);
+    prefs.setString(_LocalPrefKeys.passwordBySystem, value);
   }
 
-  static Future<void> clearPWSystem() async {
+  static Future<void> clearPassBySystem() async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
-    prefs.remove(_LocalPrefKeys.token);
-    prefs.remove(_LocalPrefKeys.bearerToken);
+    prefs.remove(_LocalPrefKeys.passwordBySystem);
   }
 
   ///MARK: Get Full Name
@@ -160,5 +158,5 @@ class _LocalPrefKeys {
   static String fkUserID = "FK_USER_ID";
   static String whatsappNumber = "WHATSAPP_NUMBER";
   static String fcmToken = "FCM_TOKEN";
-  static String passBySys = "FALSE";
+  static String passwordBySystem = "FALSE";
 }

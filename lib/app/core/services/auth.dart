@@ -42,14 +42,16 @@ class Auth extends ChangeNotifier {
       if (response.statusCode == 200) {
         final Map<String, dynamic> json = jsonDecode(responseBody) as Map<String, dynamic>;
         final ApiResponse loginResponse = ApiResponse.fromJson(json);
+        final Map<String, dynamic> messageData = loginResponse.messageData as Map<String, dynamic>;
 
-        if ((loginResponse.messageData as Map<String, dynamic>).isNotEmpty) {
+        if (messageData.isNotEmpty) {
           final User user = User.fromJson(loginResponse.messageData);
           await LocalPrefs.saveToken(user.accessToken);
           await LocalPrefs.saveFKUserID(user.fkUserID);
           await LocalPrefs.saveUserRole(user.role);
           await LocalPrefs.saveFullName(user.fullName);
           await LocalPrefs.saveImage(user.avatar);
+          await LocalPrefs.savePassBySystem(user.passwordBySystem);
           updateBrandIdFuture();
         } else {
           throw loginResponse.messageDesc;
@@ -62,6 +64,7 @@ class Auth extends ChangeNotifier {
       debugPrintStack(stackTrace: stackTrace);
       throw error.toString();
     }
+
   }
 
   Future<void> logout() async {

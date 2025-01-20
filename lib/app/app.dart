@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:wasender/app/core/services/navigation/navigation.dart';
+import 'package:wasender/app/ui/pages/feature_login/change_password_screen.dart';
 import 'package:wasender/app/ui/pages/feature_main/feature_pages/menu/feature_dashboard/dashboard_screen.dart';
 import 'package:wasender/app/ui/pages/feature_main/feature_pages/menu/feature_pesan/chats/chat_screen.dart';
 import 'package:wasender/app/ui/pages/feature_main/feature_pages/menu/feature_pesan/pesan_screen.dart';
