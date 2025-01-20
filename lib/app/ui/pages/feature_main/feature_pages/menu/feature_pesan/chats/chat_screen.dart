@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:emoji_picker_flutter/emoji_picker_flutter.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
@@ -326,42 +327,45 @@ class _ChatScreenState extends State<ChatScreen> {
           Expanded(
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 8.0),
-              child: ListView.builder(
-                reverse: true, // Makes the ListView start from the bottom
-                controller: _scrollController, // Attach the scroll controller
-                itemCount: _messages.length,
-                itemBuilder: (context, index) {
-                  final reversedIndex = _messages.length - 1 - index;
-                  final message = _messages[reversedIndex];
+              child: GestureDetector(
+                onTap: _hideEmojiPicker,
+                child: ListView.builder(
+                  reverse: true, // Makes the ListView start from the bottom
+                  controller: _scrollController, // Attach the scroll controller
+                  itemCount: _messages.length,
+                  itemBuilder: (context, index) {
+                    final reversedIndex = _messages.length - 1 - index;
+                    final message = _messages[reversedIndex];
 
-                  if (message.fromMe == true) {
-                    return message.message?.file != null
-                        ? OwnMsgWidget(
-                            status: message.status,
-                            time: message.messageTimestampStr,
-                            ownMessage: message.message?.text,
-                            filePath: message.message?.file,
-                          )
-                        : OwnMsgWidget(
-                            status: message.status,
-                            time: message.messageTimestampStr,
-                            ownMessage: message.message?.text,
-                          );
-                  } else {
-                    return message.message?.file != null
-                        ? OthersMsgWidget(
-                            status: message.status,
-                            time: message.messageTimestampStr,
-                            ownMessage: message.message?.text,
-                            filePath: message.message?.file,
-                          )
-                        : OthersMsgWidget(
-                            status: message.status,
-                            time: message.messageTimestampStr,
-                            ownMessage: message.message?.text,
-                          );
-                  }
-                },
+                    if (message.fromMe == true) {
+                      return message.message?.file != null
+                          ? OwnMsgWidget(
+                              status: message.status,
+                              time: message.messageTimestampStr,
+                              ownMessage: message.message?.text,
+                              filePath: message.message?.file,
+                            )
+                          : OwnMsgWidget(
+                              status: message.status,
+                              time: message.messageTimestampStr,
+                              ownMessage: message.message?.text,
+                            );
+                    } else {
+                      return message.message?.file != null
+                          ? OthersMsgWidget(
+                              status: message.status,
+                              time: message.messageTimestampStr,
+                              ownMessage: message.message?.text,
+                              filePath: message.message?.file,
+                            )
+                          : OthersMsgWidget(
+                              status: message.status,
+                              time: message.messageTimestampStr,
+                              ownMessage: message.message?.text,
+                            );
+                    }
+                  },
+                ),
               ),
             ),
           ),
@@ -508,5 +512,23 @@ class _ChatScreenState extends State<ChatScreen> {
         ],
       ),
     );
+  }
+
+  bool _isEmojiVisible = false; // Track emoji picker visibility
+
+  void _toggleEmojiPicker() {
+    setState(() {
+      _isEmojiVisible = !_isEmojiVisible;
+    });
+  }
+
+  void _onEmojiSelected(Emoji emoji) {
+    _controller.text += emoji.emoji; // Append selected emoji to the text field
+  }
+
+  void _hideEmojiPicker() {
+    setState(() {
+      _isEmojiVisible = false;
+    });
   }
 }

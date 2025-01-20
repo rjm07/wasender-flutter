@@ -7,6 +7,7 @@ import '../../../../core/services/navigation/navigation.dart';
 import '../../../../utils/lang/images.dart';
 import '../../../shared/widgets/custom_list_tiles.dart';
 import '../feature_pages/menu/feature_pesan/pesan_screen.dart';
+import '../feature_pages/pengaturan/feature_bantuan/bantuan_screen.dart';
 
 class SideBarMenuScreen extends StatefulWidget {
   final PageController pageController;
@@ -19,20 +20,25 @@ class SideBarMenuScreen extends StatefulWidget {
 
 class _SideBarMenuScreenState extends State<SideBarMenuScreen> {
   String userRole = ''; // Declare the userRole variable
+  String bearerToken = '';
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
   @override
   void initState() {
     super.initState();
-    _getUserRoleFromPrefs(); // Fetch the role from SharedPreferences
+    _getCredentialsFromPrefs(); // Fetch the role from SharedPreferences
   }
 
   // Fetch userRole from LocalPrefs (SharedPreferences)
-  Future<void> _getUserRoleFromPrefs() async {
+  Future<void> _getCredentialsFromPrefs() async {
     final prefs = await LocalPrefs.getUserRole();
+    final token = await LocalPrefs.getBearerToken();
+
     setState(() {
       userRole = prefs!;
+      bearerToken = token!;
       debugPrint("User Role: $userRole");
+      debugPrint("User Role: $bearerToken");
     });
   }
 
@@ -205,7 +211,13 @@ class _SideBarMenuScreenState extends State<SideBarMenuScreen> {
                       SMListTiles(
                         image: CustomIcons.iconBantuan,
                         title: 'Bantuan',
-                        onTap: () => _onTileTap(9),
+                        onTap: () {
+                          Navigator.of(context).push(
+                            MaterialPageRoute(
+                              builder: (context) => const BantuanScreen(),
+                            ),
+                          );
+                        },
                       ),
                       SMListTiles(
                           image: CustomIcons.iconKeluar, title: 'Keluar', onTap: () => _confirmLogout(context, auth)),

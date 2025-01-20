@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../../../../../shared/widgets/working_in_progress.dart';
+
 class KontakScreen extends StatefulWidget {
   const KontakScreen({super.key});
 
@@ -14,7 +16,11 @@ class _KontakScreenState extends State<KontakScreen> {
       body: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Center(child: Text('Kontak Screen')),
+          Center(
+            child: WidgetWorkingInProgress(
+              title: 'Kontak',
+            ),
+          ),
         ],
       ),
     );

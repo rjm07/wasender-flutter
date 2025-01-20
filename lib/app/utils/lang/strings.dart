@@ -5,6 +5,7 @@ class API {
 
   static String baseUrl = const String.fromEnvironment("baseUrl");
   static String loginUrl = "/api/v1/oauth";
+  static String logoutUrl = "/api/v1/logout";
 
   //DASHBOARD APIS
   static String dashboardUrl = "/v2";

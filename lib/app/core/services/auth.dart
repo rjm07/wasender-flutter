@@ -6,6 +6,7 @@ import 'package:http/http.dart' as http;
 
 import '../../utils/lang/strings.dart';
 import '../models/login/api_response.dart';
+import '../models/login/logout.dart';
 import '../models/login/user.dart';
 import 'preferences.dart';
 
@@ -67,12 +68,47 @@ class Auth extends ChangeNotifier {
   }
 
   Future<void> logout() async {
-    await LocalPrefs.clearToken();
-    await LocalPrefs.clearFKUserID();
-    await LocalPrefs.clearWhatsappNumber();
-    await LocalPrefs.clearUserRole();
-    await LocalPrefs.clearFullName();
-    await LocalPrefs.clearImage();
-    updateBrandIdFuture();
+    final String? fkUserID = await LocalPrefs.getFKUserID();
+    final Uri uri = Uri.parse("${API.baseUrl}${API.logoutUrl}");
+
+    debugPrint("Calling $uri");
+
+    // Constructing the JSON payload
+    final Map<String, dynamic> payload = {
+      "fk_user_id": fkUserID,
+    };
+
+    debugPrint('fkUserID: $fkUserID');
+
+    final response = await http.post(
+      uri,
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: jsonEncode(payload),
+    );
+
+    debugPrint(response.body);
+
+    if (response.statusCode == 200) {
+      final Map<String, dynamic> json = jsonDecode(response.body);
+      final LogoutResponse logoutResponse = LogoutResponse.fromJson(json);
+      final Map<String, dynamic> messageData = logoutResponse.messageData as Map<String, dynamic>;
+      final bool success = messageData['success'] as bool;
+
+      if (success) {
+        await LocalPrefs.clearToken();
+        await LocalPrefs.clearFKUserID();
+        await LocalPrefs.clearWhatsappNumber();
+        await LocalPrefs.clearUserRole();
+        await LocalPrefs.clearFullName();
+        await LocalPrefs.clearImage();
+        updateBrandIdFuture();
+      } else {
+        throw logoutResponse.messageDesc;
+      }
+    } else {
+      throw Exception('Error: ${response.statusCode} - ${response.reasonPhrase}');
+    }
   }
 }

@@ -66,7 +66,7 @@ class _DashboardScreenState extends State<DashboardScreen> with WidgetsBindingOb
 
   Future<void> getUserInfo() async {
     fullName = (await LocalPrefs.getFullName()) ?? "Guest";
-    image = (await LocalPrefs.getImage()) ?? "https://via.placeholder.com/90"; // Default placeholder image
+    image = (await LocalPrefs.getImage()) ?? CustomIcons.iconProfile;
     role = (await LocalPrefs.getUserRole()) ?? "User";
 
     setState(() {}); // Trigger rebuild to update UI with fetched data
@@ -143,7 +143,7 @@ class _DashboardScreenState extends State<DashboardScreen> with WidgetsBindingOb
                         child: ClipOval(
                           // Ensures the image is clipped to a circular shape
                           child: Image.network(
-                            image.isNotEmpty ? image : CustomIcons.iconProfile,
+                            image,
                             height: 90,
                             width: 90,
                             fit: BoxFit.cover, // Adjust image fit as needed

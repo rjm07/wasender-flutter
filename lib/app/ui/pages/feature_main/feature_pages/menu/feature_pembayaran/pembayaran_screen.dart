@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../../../../../shared/widgets/working_in_progress.dart';
+
 class PembayaranScreen extends StatefulWidget {
   const PembayaranScreen({super.key});
 
@@ -14,7 +16,11 @@ class _PembayaranScreenState extends State<PembayaranScreen> {
       body: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Center(child: Text('Pembayaran Screen')),
+          Center(
+            child: WidgetWorkingInProgress(
+              title: 'Pembayaran',
+            ),
+          ),
         ],
       ),
     );
