@@ -4,20 +4,11 @@ class API {
   // static String hashKey = const String.fromEnvironment("hashKey");
 
   static String baseUrl = const String.fromEnvironment("baseUrl");
-  static String loginUrl = "/api/v1/oauth";
-  static String logoutUrl = "/api/v1/logout";
+  static String loginUrl = "/v1/oauth";
+  static String logoutUrl = "/v1/logout";
 
   //DASHBOARD APIS
   static String dashboardUrl = "/v2";
-
-  //PIPELINE APIS
-  static String pipelineUrl = "/v2/customer-pipeline";
-
-  //CUSTOMER
-  static String customerUrl = "/v2/customer";
-
-  //SALES FUNNEL
-  static String salesFunnelUrl = "/v2/sales-funnel";
 
   //SOCKET IO
   static String socketUrl = const String.fromEnvironment("socketURL");
