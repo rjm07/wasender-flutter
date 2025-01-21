@@ -136,6 +136,11 @@ class _State extends State<ChangePasswordScreen> {
                                     _isAuthenticating = false;
                                   });
                                   return "This field is required";
+                                } else if (value != passwordController.text) {
+                                  setState(() {
+                                    _isAuthenticating = false;
+                                  });
+                                  return "Password and confirm password must be the same";
                                 } else {
                                   return null;
                                 }
