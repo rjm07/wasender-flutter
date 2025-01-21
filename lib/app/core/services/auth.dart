@@ -133,7 +133,7 @@ class Auth extends ChangeNotifier {
 
   Future<void> changePassword(String password, String passwordConfirmation) async {
     final String? bearerToken = await LocalPrefs.getBearerToken();
-    final Uri uri = Uri.parse("${API.baseUrl}/api/v1/password");
+    final Uri uri = Uri.parse("${API.baseUrl}/v1/password");
 
     debugPrint("Calling $uri");
 

@@ -1,7 +1,7 @@
 import 'dart:io';
 
 import 'package:emoji_picker_flutter/emoji_picker_flutter.dart';
-import 'package:flutter/foundation.dart';
+import 'package:flutter/foundation.dart' as foundation;
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
@@ -54,6 +54,7 @@ class _ChatScreenState extends State<ChatScreen> {
   final ScrollController _scrollController = ScrollController();
   bool isExpanded = false;
   late String chatRoom;
+  bool _isEmojiVisible = false;
 
   @override
   void initState() {
@@ -99,7 +100,7 @@ class _ChatScreenState extends State<ChatScreen> {
     debugPrint("ChatScreen initState called");
     logger.i("Socket: Listening to active $data");
 
-    if (kDebugMode) {
+    if (foundation.kDebugMode) {
       print('msg: $data');
     }
     if (data == null) {
@@ -113,43 +114,26 @@ class _ChatScreenState extends State<ChatScreen> {
     try {
       // Parse the incoming data
       final Map<String, dynamic> response = Map<String, dynamic>.from(data);
-      debugPrint('response: $response');
-
-      // Extract sender_id and compare it with your own ID
       final String? agentId = response['agent_id'];
       final String? fkUserID = await LocalPrefs.getFKUserID();
 
       if (agentId == fkUserID) {
         final Conversation conversation = Conversation.fromJson(response);
 
-        logger.i('response: $response');
-        logger.e('conversation: $conversation');
-
         if (mounted) {
           setState(() {
-            logger.i('setState: $response');
-
-            // Check if an object with the same id exists in the list
+            // Add or update the received message in the list
             final int index = _messages.indexWhere((msg) => msg.messageId == conversation.messageId);
-
-            logger.i('index: $index');
             if (index != -1) {
-              // Replace the existing object with the same ID
               _messages[index] = conversation;
-              logger.i('Replaced message at index $index');
             } else {
-              // Add the new object to the list if it doesn't exist
               _messages.add(conversation);
-              logger.i('Added new message');
             }
           });
         }
 
-        final String? senderName = response['sender_name'] ?? '';
         final String? messageText = response['message']['text'] ?? '';
-        final String? timestamp = response['messageTimestamp_str'] ?? '';
-
-        debugPrint('Message from $senderName: $messageText at $timestamp');
+        debugPrint('Message: $messageText');
       } else {
         debugPrint('Ignored message from self: $response');
       }
@@ -218,7 +202,7 @@ class _ChatScreenState extends State<ChatScreen> {
     String formattedDate = DateFormat('MMM d').format(dateTime);
     String formattedTime = DateFormat('H:mm a').format(dateTime);
 
-    if (kDebugMode) {
+    if (foundation.kDebugMode) {
       print('date time: ${widget.timestamp}');
     }
     void onTicketAccepted() async {
@@ -498,9 +482,7 @@ class _ChatScreenState extends State<ChatScreen> {
                       ),
                       IconButton(
                         icon: Icon(Icons.emoji_emotions_outlined, color: Colors.grey),
-                        onPressed: () {
-                          debugPrint('emoji button pressed');
-                        },
+                        onPressed: _toggleEmojiPicker, // Show emoji picker when clicked
                       ),
                       IconButton(
                         icon: Icon(Icons.send, color: Colors.green),
@@ -509,12 +491,34 @@ class _ChatScreenState extends State<ChatScreen> {
                     ],
                   ),
                 ),
+          _isEmojiVisible // Display the emoji picker if it's visible
+              ? SizedBox(
+                  height: 250, // Height of the emoji picker
+                  child: EmojiPicker(
+                    onEmojiSelected: (category, emoji) {
+                      _onEmojiSelected(emoji); // Append selected emoji to the text field
+                    },
+                    config: Config(
+                      height: 256,
+                      checkPlatformCompatibility: true,
+                      viewOrderConfig: const ViewOrderConfig(),
+                      emojiViewConfig: EmojiViewConfig(
+                        // Issue: https://github.com/flutter/flutter/issues/28894
+                        emojiSizeMax: 28 * (foundation.defaultTargetPlatform == TargetPlatform.iOS ? 1.2 : 1.0),
+                      ),
+                      skinToneConfig: const SkinToneConfig(),
+                      categoryViewConfig: const CategoryViewConfig(),
+                      bottomActionBarConfig: const BottomActionBarConfig(),
+                      searchViewConfig: const SearchViewConfig(),
+                    ),
+                  ),
+                )
+              : Container(), //
         ],
       ),
     );
   }
-
-  bool _isEmojiVisible = false; // Track emoji picker visibility
+// Track emoji picker visibility
 
   void _toggleEmojiPicker() {
     setState(() {

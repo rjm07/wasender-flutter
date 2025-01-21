@@ -67,7 +67,7 @@ class PerangkatSayaServices extends ChangeNotifier {
       sequence = "NA";
     }
 
-    final Uri uri = Uri.parse("${API.baseUrl}/api/v1/device/lists");
+    final Uri uri = Uri.parse("${API.baseUrl}/v1/device/lists");
 
     debugPrint("Calling $uri");
     try {

@@ -1,6 +1,6 @@
 
 {
-  "baseUrl": "https://whatup.id",
+  "baseUrl": "https://api.whatup.id",
   "socketURL" : "https://whatup.id",
   "whatupKey": "SOCOM-KEY-SW7b6KbWU3",
   "whatupSec": "SOCOM-SEC-q15fx7rEeX",
