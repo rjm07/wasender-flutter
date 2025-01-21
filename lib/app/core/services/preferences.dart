@@ -158,5 +158,5 @@ class _LocalPrefKeys {
   static String fkUserID = "FK_USER_ID";
   static String whatsappNumber = "WHATSAPP_NUMBER";
   static String fcmToken = "FCM_TOKEN";
-  static String passwordBySystem = "FALSE";
+  static String passwordBySystem = "PASSWORD_BY_SYSTEM";
 }

@@ -61,4 +61,16 @@ class NavService {
       Navigator.of(context).popUntil((route) => route.isFirst);
     }
   }
+
+  static void jumpToPageID(String pageID) {
+    final BuildContext? context = navigatorKey.currentContext;
+
+    if (context != null) {
+      Navigator.pushNamedAndRemoveUntil(
+        context,
+        pageID,
+        (route) => false, // Clear all other routes
+      );
+    }
+  }
 }

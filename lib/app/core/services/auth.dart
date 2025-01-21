@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:wasender/app/core/models/login/change_password.dart';
@@ -9,6 +10,7 @@ import '../../utils/lang/strings.dart';
 import '../models/login/api_response.dart';
 import '../models/login/logout.dart';
 import '../models/login/user.dart';
+import 'navigation/navigation.dart';
 import 'preferences.dart';
 
 class Auth extends ChangeNotifier {
@@ -17,6 +19,11 @@ class Auth extends ChangeNotifier {
 
   void updateBrandIdFuture() {
     tokenFuture = LocalPrefs.getToken();
+    notifyListeners();
+  }
+
+  void clearTokenFuture() async {
+    LocalPrefs.clearToken();
     notifyListeners();
   }
 
@@ -64,8 +71,18 @@ class Auth extends ChangeNotifier {
     }
   }
 
+  Future<Map<String, String?>> getTokenAndPassBySystem() async {
+    final String? brandId = await LocalPrefs.getToken();
+    final String? passBySystem = await LocalPrefs.getPassBySystem(); // Assuming this method exists
+    return {
+      'brandId': brandId,
+      'passBySystem': passBySystem,
+    };
+  }
+
   Future<void> logout() async {
     final String? fkUserID = await LocalPrefs.getFKUserID();
+
     final Uri uri = Uri.parse("${API.baseUrl}${API.logoutUrl}");
 
     debugPrint("Calling $uri");
@@ -100,7 +117,12 @@ class Auth extends ChangeNotifier {
         await LocalPrefs.clearUserRole();
         await LocalPrefs.clearFullName();
         await LocalPrefs.clearImage();
-        updateBrandIdFuture();
+        await LocalPrefs.clearPassBySystem();
+        await LocalPrefs.clearFCMToken();
+        await LocalPrefs.clearDeviceKey();
+        await LocalPrefs.clearFullName();
+        notifyListeners();
+        clearTokenFuture();
       } else {
         throw logoutResponse.messageDesc;
       }
@@ -110,6 +132,7 @@ class Auth extends ChangeNotifier {
   }
 
   Future<void> changePassword(String password, String passwordConfirmation) async {
+    final String? bearerToken = await LocalPrefs.getBearerToken();
     final Uri uri = Uri.parse("${API.baseUrl}/api/v1/password");
 
     debugPrint("Calling $uri");
@@ -124,6 +147,7 @@ class Auth extends ChangeNotifier {
       uri,
       headers: {
         "Content-Type": "application/json",
+        "Authorization": "Bearer $bearerToken",
       },
       body: jsonEncode(payload),
     );
@@ -134,33 +158,24 @@ class Auth extends ChangeNotifier {
       final Map<String, dynamic> json = jsonDecode(response.body);
       final ChangePasswordResponse changePasswordResponse = ChangePasswordResponse.fromJson(json);
       final Map<String, dynamic> messageData = changePasswordResponse.messageData as Map<String, dynamic>;
+
       final bool success = messageData['success'] as bool;
 
       if (success) {
+        if (kDebugMode) {
+          print('Password changed successfully!');
+        }
         // Showing success alert
-        showDialog(
-          context: navigatorKey.currentContext!,
-          builder: (BuildContext context) {
-            return AlertDialog(
-              title: const Text('Success'),
-              content: const Text('Password changed successfully!'),
-              actions: [
-                TextButton(
-                  onPressed: () {
-                    Navigator.pop(context);
-                    Navigator.pushNamedAndRemoveUntil(context, '/login', (route) => false);
-                  },
-                  child: const Text('OK'),
-                ),
-              ],
-            );
-          },
-        );
+        NavService.jumpToPageID("/auth");
       } else {
-        throw changePasswordResponse.messageDesc;
+        if (kDebugMode) {
+          print('Password has error!');
+        }
+        throw Exception(changePasswordResponse.messageDesc);
       }
     } else {
-      throw Exception('Error: ${response.statusCode} - ${response.reasonPhrase}');
+      final String message = jsonDecode(response.body)["message_data"]["message"] as String;
+      throw Exception(message);
     }
   }
 
@@ -171,6 +186,10 @@ class Auth extends ChangeNotifier {
     await LocalPrefs.clearUserRole();
     await LocalPrefs.clearFullName();
     await LocalPrefs.clearImage();
+    await LocalPrefs.clearPassBySystem();
+    await LocalPrefs.clearFCMToken();
+    await LocalPrefs.clearDeviceKey();
+    await LocalPrefs.clearFullName();
     updateBrandIdFuture();
   }
 }

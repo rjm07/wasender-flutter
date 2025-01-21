@@ -26,16 +26,19 @@ class ChangePasswordResponse {
 
 class ChangePasswordData {
   const ChangePasswordData({
+    required this.error,
     required this.message,
     required this.success,
   });
+  final String? error;
+  final String? message;
+  final bool? success;
 
-  final String message;
-  final bool success;
   factory ChangePasswordData.fromJson(Map<String, dynamic> json) {
     return ChangePasswordData(
-      message: json["message"] as String,
-      success: json["success"] as bool,
+      error: json["errors"] as String?,
+      message: json["message"] as String?,
+      success: json["success"] as bool?,
     );
   }
 }
