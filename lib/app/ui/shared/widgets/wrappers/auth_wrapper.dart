@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import 'package:wasender/app/ui/pages/feature_login/change_password_screen.dart';
 
 import '../../../../core/services/auth.dart';
+import '../../../../core/services/navigation/navigation.dart';
 import '../../../../core/services/preferences.dart';
 import '../../../pages/feature_login/login_screen.dart';
 import '../../../pages/feature_main/main_screen.dart';
@@ -25,6 +26,7 @@ class _AuthWrapperState extends State<AuthWrapper> {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       getStoredPassBySystem();
       getStoredBrandId(scaffoldKey.currentContext!);
+      getTokenAndPass(scaffoldKey.currentContext!);
     });
   }
 
@@ -33,12 +35,21 @@ class _AuthWrapperState extends State<AuthWrapper> {
     auth.updateBrandIdFuture();
   }
 
+  void getTokenAndPass(BuildContext context) {
+    final Auth auth = Provider.of<Auth>(context, listen: false);
+    auth.getTokenAndPassBySystem();
+  }
+
   Future<void> getStoredPassBySystem() async {
     final prefs = await LocalPrefs.getPassBySystem();
-    setState(() {
-      passBySystem = prefs!;
-      debugPrint("Password By System: $passBySystem");
-    });
+    if (prefs != null) {
+      setState(() {
+        passBySystem = prefs;
+        debugPrint("Password By System: $passBySystem");
+      });
+    } else {
+      debugPrint("No password from system found");
+    }
   }
 
   @override
@@ -46,38 +57,42 @@ class _AuthWrapperState extends State<AuthWrapper> {
     return Scaffold(
       key: scaffoldKey,
       body: Consumer<Auth>(builder: (context, auth, _) {
-        return FutureBuilder<String?>(
-          future: auth.tokenFuture,
+        return FutureBuilder<Map<String, dynamic>?>(
+          future: auth.getTokenAndPassBySystem(),
           builder: (context, snapshot) {
-            if (snapshot.connectionState == ConnectionState.done) {
-              final String? brandId = snapshot.data;
+            if (snapshot.hasData) {
+              final String? brandId = snapshot.data?['brandId'];
+              final String? passBySystem = snapshot.data?['passBySystem'];
 
+              if (kDebugMode) {
+                print('brandId: $brandId');
+                print('passBySystem: $passBySystem');
+              }
               if (brandId == null) {
                 return const LoginScreen();
               } else {
-                if (passBySystem == "TRUE") {
-                  return ChangePasswordScreen(); // Go to login if no brandId or passBySystem is TRUE
-                } else if (passBySystem == "FALSE") {
-                  if (kDebugMode) {
-                    print('DEBUG MODE: $passBySystem passbysystem is authenticated');
-                  }
-                  return const MainScreen();
+                if (passBySystem == 'TRUE') {
+                  // example when going to Change Password
+                  WidgetsBinding.instance.addPostFrameCallback((_) {
+                    if (kDebugMode) {
+                      print('I went here: $passBySystem');
+                    }
+                    NavService.push(screen: ChangePasswordScreen());
+                  });
+                  return const SizedBox.shrink(); // Placeholder while navigating
                 } else {
-                  if (kDebugMode) {
-                    print('DEBUG MODE: $passBySystem Default is authenticated');
-                  }
-                  return const LoginScreen();
+                  return const MainScreen();
                 }
               }
-            } else if (snapshot.hasError) {
-              return Center(
-                child: Text('${snapshot.error}'),
-              );
             } else {
-              return const Center(
-                child: CircularProgressIndicator(),
-              );
+              return const LoginScreen();
             }
+
+            // if (brandId == null) {
+            //   return const LoginScreen();
+            // } else {
+            //   return const MainScreen();
+            // }
           },
         );
       }),

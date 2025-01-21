@@ -3,6 +3,8 @@ import 'package:provider/provider.dart';
 import 'package:wasender/app/ui/shared/widgets/custom_textfield.dart';
 
 import '../../../core/services/auth.dart';
+import '../../../core/services/navigation/navigation.dart';
+import '../../../core/services/preferences.dart';
 import '../../shared/widgets/custom_button.dart';
 
 class ChangePasswordScreen extends StatefulWidget {
@@ -43,9 +45,12 @@ class _State extends State<ChangePasswordScreen> {
     }
   }
 
-  void clearAllData(BuildContext context) {
+  void clearAllData(BuildContext context) async {
     final Auth auth = Provider.of<Auth>(context, listen: false);
-    auth.clearAllData();
+    await auth.logout(); // Ensure logout completes
+    await LocalPrefs.clearToken();
+    await LocalPrefs.clearPassBySystem();
+    NavService.jumpToPageID('/auth');
   }
 
   @override
@@ -62,14 +67,9 @@ class _State extends State<ChangePasswordScreen> {
       appBar: AppBar(
         title: const Text("Change Password"),
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Colors.black),
+          icon: const Icon(Icons.arrow_back, color: Colors.white),
           onPressed: () {
             clearAllData(context);
-            Navigator.pushNamedAndRemoveUntil(
-              context,
-              '/login', // Navigate back to the LoginScreen
-              (route) => false, // Remove all other routes
-            );
           },
         ),
       ),
@@ -123,6 +123,9 @@ class _State extends State<ChangePasswordScreen> {
                                     });
                                     return "This field is required";
                                   } else {
+                                    setState(() {
+                                      _isAuthenticating = false;
+                                    });
                                     return null;
                                   }
                                 },
@@ -144,6 +147,9 @@ class _State extends State<ChangePasswordScreen> {
                                     });
                                     return "Password and confirm password must be the same";
                                   } else {
+                                    setState(() {
+                                      _isAuthenticating = false;
+                                    });
                                     return null;
                                   }
                                 },

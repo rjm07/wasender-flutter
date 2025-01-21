@@ -51,7 +51,6 @@ class _LoginScreenState extends State<LoginScreen> {
         auth.login(emailController.text, passwordController.text).onError((error, stackTrace) {
           setState(() {
             _isAuthenticating = false;
-
           });
           final snackBar = SnackBar(
             backgroundColor: Colors.red,
