@@ -66,22 +66,28 @@ class _AuthWrapperState extends State<AuthWrapper> {
                 print('brandId2: $snapshot');
                 print('passBySystem: $passBySystem');
               }
+
               if (brandId == null) {
                 return const LoginScreen();
               } else {
-                if (passBySystem == 'TRUE') {
-                  // example when going to Change Password
-                  WidgetsBinding.instance.addPostFrameCallback((_) {
-                    if (kDebugMode) {
-                      print('I went here: $passBySystem');
-                    }
-                    NavService.push(screen: ChangePasswordScreen());
-                  });
-                  return const SizedBox.shrink(); // Placeholder while navigating
-                } else {
-                  return const MainScreen();
-                }
+                return const MainScreen();
               }
+              // if (brandId == null) {
+              //   return const LoginScreen();
+              // } else {
+              //   if (passBySystem == 'TRUE') {
+              //     // example when going to Change Password
+              //     WidgetsBinding.instance.addPostFrameCallback((_) {
+              //       if (kDebugMode) {
+              //         print('I went here: $passBySystem');
+              //       }
+              //       NavService.push(screen: ChangePasswordScreen());
+              //     });
+              //     return const SizedBox.shrink(); // Placeholder while navigating
+              //   } else {
+              //     return const MainScreen();
+              //   }
+              // }
             } else {
               return const LoginScreen();
             }
