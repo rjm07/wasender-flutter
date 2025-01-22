@@ -3,7 +3,7 @@ import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
 
-import '../../../utils/lang/strings.dart';
+import '../../../utils/lang/api/strings.dart';
 import 'package:http/http.dart' as http;
 
 import '../../models/pesan/handle_ticket.dart';

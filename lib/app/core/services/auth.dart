@@ -6,7 +6,7 @@ import 'package:http/http.dart' as http;
 import 'package:wasender/app/core/models/login/change_password.dart';
 //import 'package:wasender/app/core/providers/token.dart';
 
-import '../../utils/lang/strings.dart';
+import '../../utils/lang/api/strings.dart';
 import '../models/login/api_response.dart';
 import '../models/login/logout.dart';
 import '../models/login/user.dart';

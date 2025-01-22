@@ -4,7 +4,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:wasender/app/core/services/preferences.dart';
 import 'package:http/http.dart' as http;
 
-import '../../utils/lang/strings.dart';
+import '../../utils/lang/api/strings.dart';
 import '../models/dashboard/dashboard_response.dart';
 
 class FCMServices extends ChangeNotifier {
@@ -20,7 +20,7 @@ class FCMServices extends ChangeNotifier {
     final String? tokenBearer = await LocalPrefs.getBearerToken();
     final String? fkUserID = await LocalPrefs.getFKUserID();
     final String? fcmToken = await LocalPrefs.getFCMToken();
-    final Uri uri = Uri.parse("${API.baseUrl}/v1/user/device-token");
+    final Uri uri = Uri.parse("${API.baseUrl}/v1/device/token");
 
     debugPrint("Calling $uri");
 

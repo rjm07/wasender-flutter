@@ -20,6 +20,7 @@ class DashboardScreen extends StatefulWidget {
 }
 
 class _DashboardScreenState extends State<DashboardScreen> with WidgetsBindingObserver {
+  ScaffoldMessengerState? scaffoldMessenger;
   String name = "Blipcom Indonesia";
   String description = "Informasi Perangkat whatsapp yang terhubung!";
   final SocketService socketService = SocketService();
@@ -33,6 +34,7 @@ class _DashboardScreenState extends State<DashboardScreen> with WidgetsBindingOb
     Firebase.initializeApp();
     getUserInfo();
     WidgetsBinding.instance.addPostFrameCallback((_) {
+      getDashboardData();
       getDeviceList();
     });
     WidgetsBinding.instance.addObserver(this);
@@ -45,7 +47,28 @@ class _DashboardScreenState extends State<DashboardScreen> with WidgetsBindingOb
     debugPrint("tokenBearer: $tokenBearer");
     if (tokenBearer != null) {
       devices.updateDeviceListFuture(tokenBearer, showErrorSnackbar: (String errorMessage) {
-        if (errorMessage.contains("Error: 401 - UNAUTHORIZED")) {
+        final snackBar = SnackBar(
+          backgroundColor: Colors.red,
+          content: Text(
+            errorMessage.toString(),
+            style: const TextStyle(
+              color: Colors.white,
+            ),
+          ),
+        );
+        scaffoldMessenger?.showSnackBar(snackBar);
+      });
+      sendFCMToken();
+    }
+  }
+
+  Future<void> getDashboardData() async {
+    final PerangkatSayaServices devices = Provider.of<PerangkatSayaServices>(context, listen: false);
+    final String? tokenBearer = await LocalPrefs.getBearerToken();
+    debugPrint("tokenBearer: $tokenBearer");
+    if (tokenBearer != null) {
+      devices.updateDeviceListFuture(tokenBearer, showErrorSnackbar: (String errorMessage) {
+        if (errorMessage.contains("")) {
           // Handle unauthorized error by showing logout confirmation
           final auth = Provider.of<Auth>(context, listen: false);
           _confirmLogout(context, auth);
