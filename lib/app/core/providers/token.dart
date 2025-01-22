@@ -3,7 +3,7 @@
 // import 'package:crypto/crypto.dart';
 // import 'package:flutter/material.dart';
 //
-// import '../../utils/lang/strings.dart';
+// import '../../utils/lang/api_strings.dart';
 
 // class TokenGenerator {
 //   static ({int requestId, String token}) generate(String sequence) {

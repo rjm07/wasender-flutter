@@ -1,19 +1,3 @@
-class API {
-  // static String socomKey = const String.fromEnvironment("socomKey");
-  // static String socomSec = const String.fromEnvironment("socomSec");
-  // static String hashKey = const String.fromEnvironment("hashKey");
-
-  static String baseUrl = const String.fromEnvironment("baseUrl");
-  static String loginUrl = "/v1/oauth";
-  static String logoutUrl = "/v1/logout";
-
-  //DASHBOARD APIS
-  static String dashboardUrl = "/v2";
-
-  //SOCKET IO
-  static String socketUrl = const String.fromEnvironment("socketURL");
-}
-
 class FirebaseConstants {
   static String projectId = const String.fromEnvironment("FIREBASE_PROJECT_ID");
   static String messagingSenderId = const String.fromEnvironment("FIREBASE_MESSAGING_SENDER_ID");

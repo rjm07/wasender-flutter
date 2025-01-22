@@ -3,7 +3,7 @@ import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
 
-import '../../../utils/lang/api/strings.dart';
+import '../../../utils/lang/api/api_strings.dart';
 import 'package:http/http.dart' as http;
 
 import '../../models/pesan/handle_ticket.dart';
@@ -99,7 +99,7 @@ class PesanServices extends ChangeNotifier {
       sequence = "NA";
     }
 
-    final Uri uri = Uri.parse("${API.baseUrl}/v1/message/$deviceKey/inbox");
+    final Uri uri = Uri.parse("${API.baseUrl}${API.messageUrl}$deviceKey/inbox");
 
     debugPrint("Calling $uri");
     try {
@@ -150,7 +150,7 @@ class PesanServices extends ChangeNotifier {
       sequence = "NA";
     }
 
-    final Uri uri = Uri.parse('${API.baseUrl}/v1/message/$deviceKey/inbox?status=active');
+    final Uri uri = Uri.parse('${API.baseUrl}${API.messageUrl}$deviceKey/inbox?status=active');
 
     debugPrint("Calling $uri");
     try {
@@ -201,7 +201,7 @@ class PesanServices extends ChangeNotifier {
       sequence = "NA";
     }
 
-    final Uri uri = Uri.parse('${API.baseUrl}/v1/message/$deviceKey/inbox?status=close');
+    final Uri uri = Uri.parse('${API.baseUrl}${API.messageUrl}$deviceKey/inbox?status=close');
 
     debugPrint("Calling $uri");
     try {
@@ -252,7 +252,7 @@ class PesanServices extends ChangeNotifier {
       sequence = "NA";
     }
 
-    final Uri uri = Uri.parse('${API.baseUrl}/v1/message/$deviceKey/inbox?status=open');
+    final Uri uri = Uri.parse('${API.baseUrl}${API.messageUrl}$deviceKey/inbox?status=open');
 
     debugPrint("Calling $uri");
     try {
@@ -293,7 +293,7 @@ class PesanServices extends ChangeNotifier {
     String deviceKey,
     String roomChat,
   ) async {
-    final Uri uri = Uri.parse("${API.baseUrl}/v1/message/$deviceKey/conversation/$roomChat");
+    final Uri uri = Uri.parse("${API.baseUrl}${API.messageUrl}$deviceKey/conversation/$roomChat");
 
     debugPrint("Calling $uri");
     try {
@@ -334,7 +334,7 @@ class PesanServices extends ChangeNotifier {
   ) async {
     final String? tokenBearer = await LocalPrefs.getBearerToken();
     final String? deviceKey = await LocalPrefs.getDeviceKey();
-    final Uri uri = Uri.parse("${API.baseUrl}/v1/chat/text/$deviceKey");
+    final Uri uri = Uri.parse("${API.baseUrl}${API.chatTextUrl}$deviceKey");
 
     debugPrint("Calling $uri");
 
@@ -376,7 +376,7 @@ class PesanServices extends ChangeNotifier {
       String type, String roomChat, String sender, String receiver, String caption, File file) async {
     final String? tokenBearer = await LocalPrefs.getBearerToken();
     final String? deviceKey = await LocalPrefs.getDeviceKey();
-    final Uri uri = Uri.parse("${API.baseUrl}/v1/chat/media/$deviceKey");
+    final Uri uri = Uri.parse("${API.baseUrl}${API.chatMediaUrl}$deviceKey");
 
     debugPrint("Calling $uri");
 
@@ -424,7 +424,7 @@ class PesanServices extends ChangeNotifier {
     String roomChat,
     String customerWhatsapp,
   ) async {
-    final Uri uri = Uri.parse("${API.baseUrl}/v1/assign/ticket");
+    final Uri uri = Uri.parse("${API.baseUrl}${API.ticketAssignUrl}");
 
     debugPrint("Calling $uri");
 

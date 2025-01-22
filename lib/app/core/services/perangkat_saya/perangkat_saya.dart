@@ -2,7 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/cupertino.dart';
 
-import '../../../utils/lang/api/strings.dart';
+import '../../../utils/lang/api/api_strings.dart';
 import '../../models/perangkat_saya/api_response.dart';
 import '../../models/perangkat_saya/perangkat_saya.dart';
 import 'package:http/http.dart' as http;
@@ -67,7 +67,7 @@ class PerangkatSayaServices extends ChangeNotifier {
       sequence = "NA";
     }
 
-    final Uri uri = Uri.parse("${API.baseUrl}/v1/device/lists");
+    final Uri uri = Uri.parse("${API.baseUrl}${API.deviceListUrl}");
 
     debugPrint("Calling $uri");
     try {
@@ -114,7 +114,7 @@ class PerangkatSayaServices extends ChangeNotifier {
     String whatsappNumber,
     Function(String) showErrorSnackbar,
   ) async {
-    final Uri uri = Uri.parse("${API.baseUrl}/api/v1/device/$whatsappNumber");
+    final Uri uri = Uri.parse("${API.baseUrl}${API.deviceUrl}$whatsappNumber");
     debugPrint("Calling $uri");
 
     try {
@@ -148,7 +148,7 @@ class PerangkatSayaServices extends ChangeNotifier {
     String whatsappNumber,
     Function(String) showErrorSnackbar,
   ) async {
-    final Uri uri = Uri.parse("${API.baseUrl}/api/v1/device/$whatsappNumber");
+    final Uri uri = Uri.parse("${API.baseUrl}${API.deviceUrl}$whatsappNumber");
     debugPrint("Calling $uri");
 
     try {
