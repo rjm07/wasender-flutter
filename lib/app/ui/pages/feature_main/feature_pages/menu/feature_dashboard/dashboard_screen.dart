@@ -1,4 +1,5 @@
 import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:wasender/app/ui/pages/feature_main/feature_pages/menu/feature_dashboard/feature_profile/profile_screen.dart';
@@ -34,7 +35,7 @@ class _DashboardScreenState extends State<DashboardScreen> with WidgetsBindingOb
     Firebase.initializeApp();
     getUserInfo();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      getDashboardData();
+      //getDashboardData();
       getDeviceList();
     });
     WidgetsBinding.instance.addObserver(this);
@@ -77,7 +78,6 @@ class _DashboardScreenState extends State<DashboardScreen> with WidgetsBindingOb
           debugPrint("Error: $errorMessage");
         }
       });
-      sendFCMToken();
     }
   }
 
@@ -89,7 +89,10 @@ class _DashboardScreenState extends State<DashboardScreen> with WidgetsBindingOb
 
   Future<void> getUserInfo() async {
     fullName = (await LocalPrefs.getFullName()) ?? "Guest";
-    image = (await LocalPrefs.getImage()) ?? CustomIcons.iconProfile;
+    image = (await LocalPrefs.getImage()) ?? CustomIcons.iconProfilePicture;
+    if (kDebugMode) {
+      print('image: $image');
+    }
     role = (await LocalPrefs.getUserRole()) ?? "User";
 
     setState(() {}); // Trigger rebuild to update UI with fetched data
@@ -185,10 +188,19 @@ class _DashboardScreenState extends State<DashboardScreen> with WidgetsBindingOb
                               }
                             },
                             errorBuilder: (context, error, stackTrace) {
-                              return const Icon(
-                                Icons.error, // Show an error icon if the image fails to load
-                                color: Colors.red,
-                              );
+                              if (error.toString().contains('404') ||
+                                  error.toString().contains('HTTP request failed')) {
+                                return Image.asset(
+                                  CustomIcons.iconProfilePicture, // Use the custom icon for the profile
+                                  height: 90,
+                                  width: 90,
+                                );
+                              } else {
+                                return const Icon(
+                                  Icons.error, // Show a generic error icon for other errors
+                                  color: Colors.red,
+                                );
+                              }
                             },
                           ),
                         ),

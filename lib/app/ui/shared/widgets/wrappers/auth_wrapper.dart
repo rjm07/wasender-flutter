@@ -24,9 +24,9 @@ class _AuthWrapperState extends State<AuthWrapper> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      getStoredPassBySystem();
+      // getStoredPassBySystem();
       getStoredBrandId(scaffoldKey.currentContext!);
-      getTokenAndPass(scaffoldKey.currentContext!);
+      //  getTokenAndPass(scaffoldKey.currentContext!);
     });
   }
 
@@ -35,10 +35,10 @@ class _AuthWrapperState extends State<AuthWrapper> {
     auth.updateBrandIdFuture();
   }
 
-  void getTokenAndPass(BuildContext context) {
-    final Auth auth = Provider.of<Auth>(context, listen: false);
-    auth.getTokenAndPassBySystem();
-  }
+  // void getTokenAndPass(BuildContext context) {
+  //   final Auth auth = Provider.of<Auth>(context, listen: false);
+  //   auth.getTokenAndPassBySystem();
+  // }
 
   Future<void> getStoredPassBySystem() async {
     final prefs = await LocalPrefs.getPassBySystem();
@@ -57,15 +57,13 @@ class _AuthWrapperState extends State<AuthWrapper> {
     return Scaffold(
       key: scaffoldKey,
       body: Consumer<Auth>(builder: (context, auth, _) {
-        return FutureBuilder<Map<String, dynamic>?>(
-          future: auth.getTokenAndPassBySystem(),
+        return FutureBuilder<String?>(
+          future: auth.tokenFuture,
           builder: (context, snapshot) {
-            if (snapshot.hasData) {
-              final String? brandId = snapshot.data?['brandId'];
-              final String? passBySystem = snapshot.data?['passBySystem'];
-
+            if (snapshot.connectionState == ConnectionState.done) {
+              final String? brandId = snapshot.data;
               if (kDebugMode) {
-                print('brandId: $brandId');
+                print('brandId2: $snapshot');
                 print('passBySystem: $passBySystem');
               }
               if (brandId == null) {

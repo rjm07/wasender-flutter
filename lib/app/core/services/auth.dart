@@ -82,6 +82,7 @@ class Auth extends ChangeNotifier {
 
   Future<void> logout() async {
     final String? fkUserID = await LocalPrefs.getFKUserID();
+    final String? tokenBearer = await LocalPrefs.getBearerToken();
 
     final Uri uri = Uri.parse("${API.baseUrl}${API.logoutUrl}");
 
@@ -98,6 +99,7 @@ class Auth extends ChangeNotifier {
       uri,
       headers: {
         "Content-Type": "application/json",
+        "Authorization": "Bearer $tokenBearer",
       },
       body: jsonEncode(payload),
     );
