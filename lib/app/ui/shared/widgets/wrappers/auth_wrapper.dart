@@ -18,38 +18,18 @@ class AuthWrapper extends StatefulWidget {
 
 class _AuthWrapperState extends State<AuthWrapper> {
   final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
-  String passBySystem = '';
 
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      // getStoredPassBySystem();
       getStoredBrandId(scaffoldKey.currentContext!);
-      //  getTokenAndPass(scaffoldKey.currentContext!);
     });
   }
 
   void getStoredBrandId(BuildContext context) {
     final Auth auth = Provider.of<Auth>(context, listen: false);
     auth.updateBrandIdFuture();
-  }
-
-  // void getTokenAndPass(BuildContext context) {
-  //   final Auth auth = Provider.of<Auth>(context, listen: false);
-  //   auth.getTokenAndPassBySystem();
-  // }
-
-  Future<void> getStoredPassBySystem() async {
-    final prefs = await LocalPrefs.getPassBySystem();
-    if (prefs != null) {
-      setState(() {
-        passBySystem = prefs;
-        debugPrint("Password By System: $passBySystem");
-      });
-    } else {
-      debugPrint("No password from system found");
-    }
   }
 
   @override
@@ -63,14 +43,12 @@ class _AuthWrapperState extends State<AuthWrapper> {
             if (snapshot.connectionState == ConnectionState.done) {
               final String? brandId = snapshot.data;
               if (kDebugMode) {
-                print('brandId2: $snapshot');
-                print('passBySystem: $passBySystem');
+                print('brandId: $snapshot');
               }
-
               if (brandId == null) {
-                return const LoginScreen();
+                return const LoginScreen(); // Navigate to login if no token
               } else {
-                return const MainScreen();
+                return const MainScreen(); // Otherwise, show the main screen
               }
               // if (brandId == null) {
               //   return const LoginScreen();

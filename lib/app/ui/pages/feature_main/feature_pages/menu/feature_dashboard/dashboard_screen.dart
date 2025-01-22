@@ -38,7 +38,7 @@ class _DashboardScreenState extends State<DashboardScreen> with WidgetsBindingOb
     getUserInfo();
     _dashboardFuture = getDashboardData();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      //getDeviceList();
+      getDeviceList();
     });
     WidgetsBinding.instance.addObserver(this);
     socketService.initializeSocket();

@@ -114,6 +114,7 @@ class Auth extends ChangeNotifier {
 
       if (success) {
         await LocalPrefs.clearToken();
+        tokenFuture = Future.value(null);
         await LocalPrefs.clearFKUserID();
         await LocalPrefs.clearWhatsappNumber();
         await LocalPrefs.clearUserRole();
@@ -123,8 +124,8 @@ class Auth extends ChangeNotifier {
         await LocalPrefs.clearFCMToken();
         await LocalPrefs.clearDeviceKey();
         await LocalPrefs.clearFullName();
-        notifyListeners();
         clearTokenFuture();
+        notifyListeners();
       } else {
         throw logoutResponse.messageDesc;
       }
