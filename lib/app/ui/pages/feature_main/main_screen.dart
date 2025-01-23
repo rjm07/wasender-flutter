@@ -75,8 +75,8 @@ class _MainScreenState extends State<MainScreen> {
     BantuanScreen(),
   ];
 
-  final List<String> _pageTitles = [
-    'Dashboard',
+  final List<String> _adminPageTitles = [
+    '',
     'Perangkat Saya',
     'Inbox',
     'Pesan',
@@ -88,11 +88,20 @@ class _MainScreenState extends State<MainScreen> {
     'Bantuan',
   ];
 
+  final List<String> _agentPageTitles = [
+    '',
+    'Profile',
+    'Inbox',
+    'Pesan',
+    'Kontak',
+    'Bantuan',
+  ];
+
   // List of BottomNavigationBar items
   final List<BottomNavigationBarItem> _bottomNavItems = [
     BottomNavigationBarItem(
       icon: ImageIcon(AssetImage(CustomIcons.iconMainDashboard)),
-      label: 'Dashboard',
+      label: '',
     ),
     BottomNavigationBarItem(
       icon: ImageIcon(AssetImage(CustomIcons.iconPerangkatSaya)),
@@ -129,9 +138,13 @@ class _MainScreenState extends State<MainScreen> {
 
     return Scaffold(
       appBar: AppBar(
-          title: Text(_pageTitles[_currentPage] == 'Dashboard' ? '' : _pageTitles[_currentPage],
-              style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w400)),
-          backgroundColor: _pageTitles[_currentPage] == 'Dashboard' ? AppColors.navBarColor : AppColors.primary),
+          iconTheme: IconThemeData(color: Colors.black45),
+          title: Text(
+            userRole.toUpperCase() == 'ADMIN' ? _adminPageTitles[_currentPage] : _agentPageTitles[_currentPage],
+            style: const TextStyle(color: Colors.black45, fontSize: 20, fontWeight: FontWeight.w400),
+          ),
+          backgroundColor: userRole.toUpperCase() == 'ADMIN' ? AppColors.navBarColor : AppColors.navBarColor),
+
       // Conditionally display Drawer for Android
       drawer: isIOS ? null : SideBarMenuScreen(pageController: _pageController),
       // Conditionally display BottomNavigationBar for iOS
@@ -156,7 +169,7 @@ class _MainScreenState extends State<MainScreen> {
             _currentPage = index;
           });
         },
-        children: userRole.toUpperCase() != 'AGENT' ? _adminPages : _agentPages,
+        children: userRole.toUpperCase() == 'ADMIN' ? _agentPages : _adminPages,
       ),
       floatingActionButton: SpeedDial(
         // Initial FAB with four squares icon like in the first image

@@ -1,11 +1,8 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:wasender/app/ui/pages/feature_login/change_password_screen.dart';
 
 import '../../../../core/services/auth.dart';
-import '../../../../core/services/navigation/navigation.dart';
-import '../../../../core/services/preferences.dart';
 import '../../../pages/feature_login/login_screen.dart';
 import '../../../pages/feature_main/main_screen.dart';
 

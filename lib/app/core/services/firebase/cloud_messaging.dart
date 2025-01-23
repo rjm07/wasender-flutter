@@ -1,4 +1,6 @@
 import 'dart:io';
+import 'package:flutter/cupertino.dart';
+import 'package:provider/provider.dart';
 
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
@@ -8,7 +10,11 @@ import 'package:wasender/app/core/services/navigation/navigation.dart';
 import 'package:wasender/app/core/services/preferences.dart';
 import 'package:logger/logger.dart';
 
+import '../../models/dashboard/dashboard_response.dart';
+import '../fcm.dart';
+
 class FirebaseCloudMessagingService {
+  static final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
   static final FirebaseMessaging _firebaseMessaging = FirebaseMessaging.instance;
   static final logger = Logger();
 
@@ -18,6 +24,7 @@ class FirebaseCloudMessagingService {
     if (fcmToken != null) {
       if (kDebugMode) {
         print('FCM Token: $fcmToken');
+        print('I went here');
       }
       LocalPrefs.saveFCMToken(fcmToken);
     }

@@ -28,11 +28,14 @@ class _DashboardScreenState extends State<DashboardScreen> with WidgetsBindingOb
   late String fullName = "";
   late String image = "";
   late String role = "";
+  late String fcmToken = "";
 
   @override
   void initState() {
-    super.initState();
+    WidgetsFlutterBinding.ensureInitialized();
     Firebase.initializeApp();
+    super.initState();
+
     getUserInfo();
     _dashboardFuture = getDashboardData();
     WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -59,8 +62,13 @@ class _DashboardScreenState extends State<DashboardScreen> with WidgetsBindingOb
         );
         scaffoldMessenger?.showSnackBar(snackBar);
       });
-      sendFCMToken();
     }
+    sendFCMToken();
+  }
+
+  static Future<void> sendFCMToken() async {
+    final SendFCMTokenResponse fcmToken = await FCMServices().sendFCMToken();
+    debugPrint("FCM Token: $fcmToken");
   }
 
   Future<Map<String, dynamic>?> getDashboardData() async {
@@ -79,17 +87,13 @@ class _DashboardScreenState extends State<DashboardScreen> with WidgetsBindingOb
     return null; // Return null if tokenBearer is null
   }
 
-  Future<void> sendFCMToken() async {
-    final FCMServices fcmServices = Provider.of<FCMServices>(context, listen: false);
-    final SendFCMTokenResponse fcmToken = await fcmServices.sendFCMToken();
-    debugPrint("FCM Token: $fcmToken");
-  }
-
   Future<void> getUserInfo() async {
     fullName = (await LocalPrefs.getFullName()) ?? "Guest";
     image = (await LocalPrefs.getImage()) ?? CustomIcons.iconProfilePicture;
+    fcmToken = (await LocalPrefs.getFCMToken()) ?? "Dummy FCM";
     if (kDebugMode) {
       print('image: $image');
+      print('fcm: $fcmToken');
     }
     role = (await LocalPrefs.getUserRole()) ?? "User";
 // Trigger rebuild to update UI with fetched data

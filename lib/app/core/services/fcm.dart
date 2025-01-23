@@ -21,6 +21,7 @@ class FCMServices extends ChangeNotifier {
     final String? tokenBearer = await LocalPrefs.getBearerToken();
     final String? fkUserID = await LocalPrefs.getFKUserID();
     final String? fcmToken = await LocalPrefs.getFCMToken();
+    debugPrint("FCM Token: $fcmToken");
     final Uri uri = Uri.parse("${API.baseUrl}${API.fcmUrl}");
 
     if (kDebugMode) {

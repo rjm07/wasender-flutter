@@ -71,10 +71,7 @@ class _State extends State<ChangePasswordScreen> {
 
   void clearAllData(BuildContext context) async {
     final Auth auth = Provider.of<Auth>(context, listen: false);
-    await auth.logout(); // Ensure logout completes
-    await LocalPrefs.clearToken();
-    await LocalPrefs.clearPassBySystem();
-    NavService.jumpToPageID('/auth');
+    await auth.logout();
   }
 
   @override
