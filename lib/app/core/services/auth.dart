@@ -120,14 +120,24 @@ class Auth extends ChangeNotifier {
         await LocalPrefs.clearToken();
         tokenFuture = Future.value(null);
         await LocalPrefs.clearFKUserID();
-        await LocalPrefs.clearWhatsappNumber();
         await LocalPrefs.clearUserRole();
         await LocalPrefs.clearFullName();
         await LocalPrefs.clearImage();
         await LocalPrefs.clearPassBySystem();
-        await LocalPrefs.clearFCMToken();
         await LocalPrefs.clearDeviceKey();
         await LocalPrefs.clearFullName();
+
+        if (kDebugMode) {
+          print('Logout Successful');
+          print('Token: ${await LocalPrefs.getToken()}');
+          print('FKUserID: ${await LocalPrefs.getFKUserID()}');
+          print('UserRole: ${await LocalPrefs.getUserRole()}');
+          print('FullName: ${await LocalPrefs.getFullName()}');
+          print('Image: ${await LocalPrefs.getImage()}');
+          print('PassBySystem: ${await LocalPrefs.getPassBySystem()}');
+          print('DeviceKey: ${await LocalPrefs.getDeviceKey()}');
+        }
+
         clearTokenFuture();
         notifyListeners();
       } else {

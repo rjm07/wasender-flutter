@@ -1,3 +1,4 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -35,9 +36,10 @@ class _LoginScreenState extends State<LoginScreen> {
 
   @override
   void dispose() {
-    super.dispose();
     emailController.dispose();
     passwordController.dispose();
+
+    super.dispose();
   }
 
   @override
@@ -63,7 +65,10 @@ class _LoginScreenState extends State<LoginScreen> {
                 print('I went here: ${result?.messageData['password_by_system']}');
               }
               setState(() {
+                Firebase.initializeApp();
                 auth.updateBrandIdFuture();
+                emailController.clear();
+                passwordController.clear();
               });
             } else {
               NavService.push(screen: ChangePasswordScreen());

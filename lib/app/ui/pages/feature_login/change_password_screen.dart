@@ -3,10 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:wasender/app/ui/shared/widgets/custom_textfield.dart';
 
 import '../../../core/services/auth.dart';
-import '../../../core/services/navigation/navigation.dart';
-import '../../../core/services/preferences.dart';
 import '../../shared/widgets/custom_button.dart';
-import '../feature_main/main_screen.dart';
 
 class ChangePasswordScreen extends StatefulWidget {
   const ChangePasswordScreen({super.key});
@@ -34,7 +31,9 @@ class _State extends State<ChangePasswordScreen> {
         });
 
         if (result?.messageData['success'] == true) {
+          debugPrint('I went here');
           setState(() {
+            Navigator.pop(context);
             auth.updateBrandIdFuture();
           });
         } else {
@@ -69,12 +68,9 @@ class _State extends State<ChangePasswordScreen> {
     }
   }
 
-  void clearAllData(BuildContext context) async {
-    final Auth auth = Provider.of<Auth>(context, listen: false);
-    await auth.logout(); // Ensure logout completes
-    await LocalPrefs.clearToken();
-    await LocalPrefs.clearPassBySystem();
-    NavService.jumpToPageID('/auth');
+  void clearAllData() async {
+    Navigator.pop(context);
+    await Auth().logout();
   }
 
   @override
@@ -93,7 +89,7 @@ class _State extends State<ChangePasswordScreen> {
         leading: IconButton(
           icon: const Icon(Icons.arrow_back, color: Colors.white),
           onPressed: () {
-            clearAllData(context);
+            clearAllData();
           },
         ),
       ),

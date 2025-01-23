@@ -25,7 +25,7 @@ class API {
   static String messageUrl = "$versionUrl/message/";
   static String chatMediaUrl = "$versionUrl/chat/media/";
   static String chatTextUrl = "$versionUrl/chat/text/";
-  static String ticketAssignUrl = "$versionUrl/ticket/assign/";
+  static String ticketAssignUrl = "$versionUrl/ticket/assign";
 
   //FIREBASE APIS
   static String fcmUrl = "$versionUrl/device/token";

@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:wasender/app/core/services/preferences.dart';
@@ -38,7 +39,7 @@ class _SideBarMenuScreenState extends State<SideBarMenuScreen> {
       userRole = prefs!;
       bearerToken = token!;
       debugPrint("User Role: $userRole");
-      debugPrint("User Role: $bearerToken");
+      debugPrint("Bearer Token: $bearerToken");
     });
   }
 
@@ -90,7 +91,7 @@ class _SideBarMenuScreenState extends State<SideBarMenuScreen> {
                       children: [
                         SMListTiles(
                           image: CustomIcons.iconMainDashboard,
-                          title: 'Dashboard',
+                          title: '',
                           onTap: () => _onTileTap(0),
                         ),
                         SMListTiles(
@@ -144,7 +145,7 @@ class _SideBarMenuScreenState extends State<SideBarMenuScreen> {
                       children: [
                         SMListTiles(
                           image: CustomIcons.iconMainDashboard,
-                          title: 'Dashboard',
+                          title: '',
                           onTap: () => _onTileTap(0),
                         ),
                         SMListTiles(
@@ -249,11 +250,11 @@ class _SideBarMenuScreenState extends State<SideBarMenuScreen> {
             TextButton(
               child: const Text("Logout"),
               onPressed: () async {
-                Navigator.of(context).pop(); // Close the dialog
-                await auth.logout(); //
-                setState(() {
-                  auth.updateBrandIdFuture();
-                });
+                if (kDebugMode) {
+                  print('logout pressed');
+                }
+                Navigator.of(context).pop();
+                await auth.logout();
               },
             ),
           ],
