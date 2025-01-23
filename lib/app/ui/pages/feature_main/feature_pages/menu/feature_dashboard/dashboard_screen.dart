@@ -2,12 +2,10 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:wasender/app/core/models/dashboard/dashboard_all_device.dart';
 import 'package:wasender/app/ui/pages/feature_main/feature_pages/menu/feature_dashboard/feature_profile/profile_screen.dart';
 import 'package:wasender/app/ui/shared/widgets/dashboard_cards.dart';
 
 import '../../../../../../core/models/dashboard/dashboard_response.dart';
-import '../../../../../../core/services/auth.dart';
 import '../../../../../../core/services/fcm.dart';
 import '../../../../../../core/services/perangkat_saya/perangkat_saya.dart';
 import '../../../../../../core/services/preferences.dart';
@@ -182,7 +180,8 @@ class _DashboardScreenState extends State<DashboardScreen> with WidgetsBindingOb
                                   image,
                                   height: 90,
                                   width: 90,
-                                  fit: BoxFit.cover, // Adjust image fit as needed
+                                  fit: BoxFit.cover,
+                                  // Adjust image fit as needed
                                   loadingBuilder: (context, child, loadingProgress) {
                                     if (loadingProgress == null) {
                                       return child;
@@ -333,29 +332,30 @@ class _DashboardScreenState extends State<DashboardScreen> with WidgetsBindingOb
       },
     );
   }
-
-  void _confirmLogout(BuildContext context, Auth auth) {
-    showDialog(
-      context: context,
-      barrierDismissible: false, // Prevent dismissing the dialog by tapping outside
-      builder: (BuildContext context) {
-        return PopScope(
-          canPop: false, // Disable the back button
-          child: AlertDialog(
-            title: const Text("Session expired"),
-            content: const Text("Please log in again."),
-            actions: <Widget>[
-              TextButton(
-                child: const Text("Okay"),
-                onPressed: () {
-                  Navigator.of(context).pop(); // Close the dialog
-                  auth.logout(); // Call the logout method
-                },
-              ),
-            ],
-          ),
-        );
-      },
-    );
-  }
 }
+//
+//   void _confirmLogout(BuildContext context, Auth auth) {
+//     showDialog(
+//       context: context,
+//       barrierDismissible: false, // Prevent dismissing the dialog by tapping outside
+//       builder: (BuildContext context) {
+//         return PopScope(
+//           canPop: false, // Disable the back button
+//           child: AlertDialog(
+//             title: const Text("Session expired"),
+//             content: const Text("Please log in again."),
+//             actions: <Widget>[
+//               TextButton(
+//                 child: const Text("Okay"),
+//                 onPressed: () {
+//                   Navigator.of(context).pop(); // Close the dialog
+//                   auth.logout(); // Call the logout method
+//                 },
+//               ),
+//             ],
+//           ),
+//         );
+//       },
+//     );
+//   }
+// }

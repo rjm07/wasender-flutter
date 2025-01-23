@@ -250,7 +250,10 @@ class _SideBarMenuScreenState extends State<SideBarMenuScreen> {
               child: const Text("Logout"),
               onPressed: () async {
                 Navigator.of(context).pop(); // Close the dialog
-                await auth.logout(); // Call the logout method
+                await auth.logout(); //
+                setState(() {
+                  auth.updateBrandIdFuture();
+                });
               },
             ),
           ],
