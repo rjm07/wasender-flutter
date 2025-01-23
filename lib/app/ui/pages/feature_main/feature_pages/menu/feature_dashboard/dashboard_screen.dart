@@ -49,7 +49,7 @@ class _DashboardScreenState extends State<DashboardScreen> with WidgetsBindingOb
     final String? tokenBearer = await LocalPrefs.getBearerToken();
     debugPrint("tokenBearer: $tokenBearer");
     if (tokenBearer != null) {
-      devices.updateDeviceListFuture(tokenBearer, showErrorSnackbar: (String errorMessage) {
+      await devices.updateDeviceListFuture(tokenBearer, showErrorSnackbar: (String errorMessage) {
         final snackBar = SnackBar(
           backgroundColor: Colors.red,
           content: Text(
