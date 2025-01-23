@@ -1,11 +1,15 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:wasender/app/utils/lang/images.dart';
 
 import '../../../core/services/auth.dart';
+import '../../../core/services/navigation/navigation.dart';
 import '../../../utils/lang/colors.dart';
 import '../../shared/widgets/custom_button.dart';
 import '../../shared/widgets/custom_textfield.dart';
+import '../feature_main/main_screen.dart';
+import 'change_password_screen.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -48,20 +52,42 @@ class _LoginScreenState extends State<LoginScreen> {
       final messenger = ScaffoldMessenger.of(context); // Store reference to avoid using context in async gap
 
       if (formKey.currentState!.validate()) {
-        auth.login(emailController.text, passwordController.text).onError((error, stackTrace) {
+        auth.login(emailController.text, passwordController.text).then((result) {
+          setState(() {
+            _isAuthenticating = false;
+          });
+
+          if (result?.messageDesc == 'LOGIN SUCCESS' || result?.messageDesc == 'LOGIN SUCCES') {
+            if (result?.messageData['password_by_system'] == "FALSE") {
+              if (kDebugMode) {
+                print('I went here: ${result?.messageData['password_by_system']}');
+              }
+              setState(() {
+                auth.updateBrandIdFuture();
+              });
+            } else {
+              NavService.push(screen: ChangePasswordScreen());
+            }
+          }
+        }).onError((error, stackTrace) {
+          // Handle unexpected errors (e.g., network issues)
           setState(() {
             _isAuthenticating = false;
           });
           final snackBar = SnackBar(
             backgroundColor: Colors.red,
             content: Text(
-              error.toString(),
+              "An unexpected error occurred: ${error.toString()}",
               style: const TextStyle(
                 color: Colors.white,
               ),
             ),
           );
-          messenger.showSnackBar(snackBar); // Use messenger instead of ScaffoldMessenger.of(context)
+          messenger.showSnackBar(snackBar);
+        });
+      } else {
+        setState(() {
+          _isAuthenticating = false;
         });
       }
     }

@@ -46,3 +46,73 @@ class SendMessageData {
     );
   }
 }
+
+class Message {
+  final Key key;
+  final MessageContent message;
+  final String? messageStamp;
+  final String? status;
+
+  Message({
+    required this.key,
+    required this.message,
+    required this.messageStamp,
+    required this.status,
+  });
+
+  factory Message.fromJson(Map<String, dynamic> json) {
+    return Message(
+      key: json['key'],
+      message: json['message'],
+      messageStamp: json['messageStamp'] as String?,
+      status: json['status'] as String?,
+    );
+  }
+}
+
+class Key {
+  final bool? fromMe;
+  final String? id;
+  final String? remoteJID;
+
+  Key({
+    required this.fromMe,
+    required this.id,
+    required this.remoteJID,
+  });
+
+  factory Key.fromJson(Map<String, dynamic> json) {
+    return Key(
+      fromMe: json['fromMe'] as bool?,
+      id: json['id'] as String?,
+      remoteJID: json['remoteJID'] as String?,
+    );
+  }
+}
+
+class MessageContent {
+  final dynamic extendedTextMessage;
+  MessageContent({
+    required this.extendedTextMessage,
+  });
+
+  factory MessageContent.fromJson(Map<String, dynamic> json) {
+    return MessageContent(
+      extendedTextMessage: json['extendedTextMessage'],
+    );
+  }
+}
+
+class ExtendedTextMessage {
+  final String? text;
+
+  ExtendedTextMessage({
+    required this.text,
+  });
+
+  factory ExtendedTextMessage.fromJson(Map<String, dynamic> json) {
+    return ExtendedTextMessage(
+      text: json['text'] as String?,
+    );
+  }
+}

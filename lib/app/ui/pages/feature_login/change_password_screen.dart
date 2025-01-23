@@ -6,6 +6,7 @@ import '../../../core/services/auth.dart';
 import '../../../core/services/navigation/navigation.dart';
 import '../../../core/services/preferences.dart';
 import '../../shared/widgets/custom_button.dart';
+import '../feature_main/main_screen.dart';
 
 class ChangePasswordScreen extends StatefulWidget {
   const ChangePasswordScreen({super.key});
@@ -27,20 +28,43 @@ class _State extends State<ChangePasswordScreen> {
     });
     final messenger = ScaffoldMessenger.of(context);
     if (formKey.currentState!.validate()) {
-      auth.changePassword(passwordController.text, confirmPasswordController.text).onError((error, stackTrace) {
+      auth.changePassword(passwordController.text, confirmPasswordController.text).then((result) {
+        setState(() {
+          _isAuthenticating = false;
+        });
+
+        if (result?.messageData['success'] == true) {
+          setState(() {
+            auth.updateBrandIdFuture();
+          });
+        } else {
+          // Handle error message returned from auth.login
+          final snackBar = SnackBar(
+            backgroundColor: Colors.red,
+            content: Text(
+              result?.messageDesc ?? "",
+              style: const TextStyle(
+                color: Colors.white,
+              ),
+            ),
+          );
+          messenger.showSnackBar(snackBar);
+        }
+      }).onError((error, stackTrace) {
+        // Handle unexpected errors (e.g., network issues)
         setState(() {
           _isAuthenticating = false;
         });
         final snackBar = SnackBar(
           backgroundColor: Colors.red,
           content: Text(
-            error.toString(),
+            "An unexpected error occurred: ${error.toString()}",
             style: const TextStyle(
               color: Colors.white,
             ),
           ),
         );
-        messenger.showSnackBar(snackBar); // Use messenger instead of ScaffoldMessenger.of(context)
+        messenger.showSnackBar(snackBar);
       });
     }
   }

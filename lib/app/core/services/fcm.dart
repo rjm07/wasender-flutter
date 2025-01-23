@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:wasender/app/core/services/preferences.dart';
 import 'package:http/http.dart' as http;
 
@@ -22,7 +23,11 @@ class FCMServices extends ChangeNotifier {
     final String? fcmToken = await LocalPrefs.getFCMToken();
     final Uri uri = Uri.parse("${API.baseUrl}${API.fcmUrl}");
 
-    debugPrint("Calling $uri");
+    if (kDebugMode) {
+      print("Calling $uri");
+      print('fk user id: $fkUserID');
+      print('device token: $fcmToken');
+    }
 
     // Constructing the JSON payload
     final Map<String, dynamic> payload = {

@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter/cupertino.dart';
 
 import '../../../utils/lang/api/api_strings.dart';
+import '../../models/dashboard/dashboard_all_device.dart';
 import '../../models/perangkat_saya/api_response.dart';
 import '../../models/perangkat_saya/perangkat_saya.dart';
 import 'package:http/http.dart' as http;
@@ -143,12 +144,11 @@ class PerangkatSayaServices extends ChangeNotifier {
     }
   }
 
-  Future<DeviceInfoResponse> getDashboardData(
+  Future<Map<String, dynamic>?> getDashboardData(
     String token,
-    String whatsappNumber,
-    Function(String) showErrorSnackbar,
   ) async {
-    final Uri uri = Uri.parse("${API.baseUrl}${API.deviceUrl}$whatsappNumber");
+    final String? token = await LocalPrefs.getBearerToken();
+    final Uri uri = Uri.parse("${API.baseUrl}${API.deviceUrl}information");
     debugPrint("Calling $uri");
 
     try {
@@ -163,16 +163,19 @@ class PerangkatSayaServices extends ChangeNotifier {
 
       if (response.statusCode == 200) {
         final Map<String, dynamic> json = jsonDecode(response.body) as Map<String, dynamic>;
-        return DeviceInfoResponse.fromJson(json);
+        final DashboardAllDeviceResponse dashboardResponse = DashboardAllDeviceResponse.fromJson(json);
+
+        final Map<String, dynamic> messageData = dashboardResponse.messageData as Map<String, dynamic>;
+
+        return messageData;
       } else {
         final String message = jsonDecode(response.body)["message_desc"];
-        showErrorSnackbar('Error: ${response.statusCode} - ${response.reasonPhrase}');
 
         throw Exception(message);
       }
     } catch (error, stackTrace) {
       debugPrintStack(stackTrace: stackTrace);
-      showErrorSnackbar('Error: $error');
+
       throw Exception(error.toString());
     }
   }

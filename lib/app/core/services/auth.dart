@@ -27,7 +27,7 @@ class Auth extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> login(String username, String password) async {
+  Future<ApiResponse?> login(String username, String password) async {
     final Uri loginUri = Uri.parse("${API.baseUrl}${API.loginUrl}");
     debugPrint("Login URI: $loginUri");
 
@@ -47,6 +47,7 @@ class Auth extends ChangeNotifier {
       if (response.statusCode == 200) {
         final Map<String, dynamic> json = jsonDecode(responseBody) as Map<String, dynamic>;
         final ApiResponse loginResponse = ApiResponse.fromJson(json);
+        //final User user = User.fromJson(loginResponse.messageData);
         final Map<String, dynamic> messageData = loginResponse.messageData as Map<String, dynamic>;
 
         if (messageData.isNotEmpty) {
@@ -57,7 +58,11 @@ class Auth extends ChangeNotifier {
           await LocalPrefs.saveFullName(user.fullName);
           await LocalPrefs.saveImage(user.avatar);
           await LocalPrefs.savePassBySystem(user.passwordBySystem);
-          updateBrandIdFuture();
+          //
+          if (kDebugMode) {
+            print('Login Successful: ${loginResponse.messageDesc}');
+          }
+          return loginResponse;
         } else {
           throw loginResponse.messageDesc;
         }
@@ -82,6 +87,7 @@ class Auth extends ChangeNotifier {
 
   Future<void> logout() async {
     final String? fkUserID = await LocalPrefs.getFKUserID();
+    final String? tokenBearer = await LocalPrefs.getBearerToken();
 
     final Uri uri = Uri.parse("${API.baseUrl}${API.logoutUrl}");
 
@@ -98,6 +104,7 @@ class Auth extends ChangeNotifier {
       uri,
       headers: {
         "Content-Type": "application/json",
+        "Authorization": "Bearer $tokenBearer",
       },
       body: jsonEncode(payload),
     );
@@ -108,10 +115,10 @@ class Auth extends ChangeNotifier {
       final Map<String, dynamic> json = jsonDecode(response.body);
       final LogoutResponse logoutResponse = LogoutResponse.fromJson(json);
       final Map<String, dynamic> messageData = logoutResponse.messageData as Map<String, dynamic>;
-      final bool success = messageData['success'] as bool;
 
-      if (success) {
+      if (messageData['success'] == true) {
         await LocalPrefs.clearToken();
+        tokenFuture = Future.value(null);
         await LocalPrefs.clearFKUserID();
         await LocalPrefs.clearWhatsappNumber();
         await LocalPrefs.clearUserRole();
@@ -121,8 +128,8 @@ class Auth extends ChangeNotifier {
         await LocalPrefs.clearFCMToken();
         await LocalPrefs.clearDeviceKey();
         await LocalPrefs.clearFullName();
-        notifyListeners();
         clearTokenFuture();
+        notifyListeners();
       } else {
         throw logoutResponse.messageDesc;
       }
@@ -131,7 +138,7 @@ class Auth extends ChangeNotifier {
     }
   }
 
-  Future<void> changePassword(String password, String passwordConfirmation) async {
+  Future<ChangePasswordResponse?> changePassword(String password, String passwordConfirmation) async {
     final String? bearerToken = await LocalPrefs.getBearerToken();
     final Uri uri = Uri.parse("${API.baseUrl}${API.passwordUrl}");
 
@@ -165,8 +172,7 @@ class Auth extends ChangeNotifier {
         if (kDebugMode) {
           print('Password changed successfully!');
         }
-        // Showing success alert
-        NavService.jumpToPageID("/auth");
+        return changePasswordResponse;
       } else {
         if (kDebugMode) {
           print('Password has error!');
