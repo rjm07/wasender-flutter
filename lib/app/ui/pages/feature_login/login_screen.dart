@@ -36,9 +36,10 @@ class _LoginScreenState extends State<LoginScreen> {
 
   @override
   void dispose() {
-    super.dispose();
     emailController.dispose();
     passwordController.dispose();
+
+    super.dispose();
   }
 
   @override
@@ -66,6 +67,8 @@ class _LoginScreenState extends State<LoginScreen> {
               setState(() {
                 Firebase.initializeApp();
                 auth.updateBrandIdFuture();
+                emailController.clear();
+                passwordController.clear();
               });
             } else {
               NavService.push(screen: ChangePasswordScreen());

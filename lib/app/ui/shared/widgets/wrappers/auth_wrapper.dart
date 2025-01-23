@@ -47,31 +47,9 @@ class _AuthWrapperState extends State<AuthWrapper> {
               } else {
                 return const MainScreen(); // Otherwise, show the main screen
               }
-              // if (brandId == null) {
-              //   return const LoginScreen();
-              // } else {
-              //   if (passBySystem == 'TRUE') {
-              //     // example when going to Change Password
-              //     WidgetsBinding.instance.addPostFrameCallback((_) {
-              //       if (kDebugMode) {
-              //         print('I went here: $passBySystem');
-              //       }
-              //       NavService.push(screen: ChangePasswordScreen());
-              //     });
-              //     return const SizedBox.shrink(); // Placeholder while navigating
-              //   } else {
-              //     return const MainScreen();
-              //   }
-              // }
             } else {
               return const LoginScreen();
             }
-
-            // if (brandId == null) {
-            //   return const LoginScreen();
-            // } else {
-            //   return const MainScreen();
-            // }
           },
         );
       }),
