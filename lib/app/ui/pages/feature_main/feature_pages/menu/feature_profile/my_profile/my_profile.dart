@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:wasender/app/ui/pages/feature_main/feature_pages/menu/feature_dashboard/feature_profile/my_profile/tabs/security.dart';
-import 'package:wasender/app/ui/pages/feature_main/feature_pages/menu/feature_dashboard/feature_profile/my_profile/tabs/view_profile.dart';
+import 'package:wasender/app/ui/pages/feature_main/feature_pages/menu/feature_profile/my_profile/tabs/security.dart';
+import 'package:wasender/app/ui/pages/feature_main/feature_pages/menu/feature_profile/my_profile/tabs/view_profile.dart';
 import 'tabs/login_activity/login_activity.dart';
 import 'tabs/notifications.dart';
 
@@ -43,11 +43,14 @@ class _ViewProfileScreenState extends State<ViewProfileScreen> with SingleTicker
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('My Profile', style: TextStyle(color: Colors.black, fontSize: 20)),
+        iconTheme: IconThemeData(
+          color: Colors.white, //change your color here
+        ),
+        title: const Text('My Profile', style: TextStyle(color: Colors.white, fontSize: 20)),
         bottom: TabBar(
           controller: _tabController,
-          labelColor: Colors.green.shade300,
-          unselectedLabelColor: Colors.black54,
+          labelColor: Colors.white,
+          unselectedLabelColor: Colors.black12,
           indicatorWeight: 1,
           dividerColor: Colors.black26,
           indicatorSize: TabBarIndicatorSize.label,

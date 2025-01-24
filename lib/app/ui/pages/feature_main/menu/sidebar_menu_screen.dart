@@ -7,6 +7,7 @@ import '../../../../core/services/auth.dart';
 import '../../../../core/services/navigation/navigation.dart';
 import '../../../../utils/lang/images.dart';
 import '../../../shared/widgets/custom_list_tiles.dart';
+import '../feature_pages/menu/feature_profile/profile_screen.dart';
 import '../feature_pages/menu/feature_pesan/pesan_screen.dart';
 import '../feature_pages/pengaturan/feature_bantuan/bantuan_screen.dart';
 
@@ -91,7 +92,7 @@ class _SideBarMenuScreenState extends State<SideBarMenuScreen> {
                       children: [
                         SMListTiles(
                           image: CustomIcons.iconMainDashboard,
-                          title: '',
+                          title: 'Dashboard',
                           onTap: () => _onTileTap(0),
                         ),
                         SMListTiles(
@@ -145,13 +146,15 @@ class _SideBarMenuScreenState extends State<SideBarMenuScreen> {
                       children: [
                         SMListTiles(
                           image: CustomIcons.iconMainDashboard,
-                          title: '',
+                          title: 'Dashboard',
                           onTap: () => _onTileTap(0),
                         ),
                         SMListTiles(
                           image: CustomIcons.iconViewProfile,
                           title: 'Profile',
-                          onTap: () => _onTileTap(1),
+                          onTap: () {
+                            NavService.push(screen: ProfileScreen());
+                          },
                         ),
                         SMListTiles(
                           image: CustomIcons.iconInbox,

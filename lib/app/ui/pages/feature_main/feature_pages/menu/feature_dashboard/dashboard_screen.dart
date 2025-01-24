@@ -2,7 +2,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:wasender/app/ui/pages/feature_main/feature_pages/menu/feature_dashboard/feature_profile/profile_screen.dart';
+import 'package:wasender/app/ui/pages/feature_main/feature_pages/menu/feature_profile/profile_screen.dart';
 import 'package:wasender/app/ui/shared/widgets/dashboard_cards.dart';
 
 import '../../../../../../core/models/dashboard/dashboard_response.dart';

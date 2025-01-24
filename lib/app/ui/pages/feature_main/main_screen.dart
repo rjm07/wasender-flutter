@@ -13,7 +13,7 @@ import '../../../core/services/preferences.dart';
 import '../../../utils/lang/colors.dart';
 import '../../../utils/lang/images.dart';
 import 'feature_pages/menu/feature_dashboard/dashboard_screen.dart';
-import 'feature_pages/menu/feature_dashboard/feature_profile/profile_screen.dart';
+import 'feature_pages/menu/feature_profile/profile_screen.dart';
 import 'feature_pages/menu/feature_inbox/inbox_screen.dart';
 import 'feature_pages/menu/feature_tim_agen/tim_agen_screen.dart';
 import 'feature_pages/pengaturan/feature_bantuan/bantuan_screen.dart';
