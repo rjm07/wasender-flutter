@@ -10,6 +10,7 @@ import 'package:wasender/app/core/services/navigation/navigation.dart';
 import 'package:wasender/app/core/services/preferences.dart';
 import 'package:logger/logger.dart';
 
+import '../../../ui/pages/feature_main/feature_pages/menu/feature_pesan/chats/chat_screen.dart';
 import '../../models/dashboard/dashboard_response.dart';
 import '../fcm.dart';
 
@@ -30,8 +31,15 @@ class FirebaseCloudMessagingService {
     }
   }
 
-  static Future<void> init() async {
-    await Firebase.initializeApp();
+  // await _firebaseMessaging.requestPermission(
+  // alert: true,
+  // badge: true,
+  // sound: true,
+  // );
+
+  Future<void> initialize() async {
+    // Request permissions for iOS
+
     if (Platform.isIOS) {
       String? apnsToken = await _firebaseMessaging.getAPNSToken();
 
@@ -41,108 +49,33 @@ class FirebaseCloudMessagingService {
     } else {
       _saveFCMToken();
     }
+
     requestPermission();
-    FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
-    FirebaseMessaging.onMessage.listen(onMessage);
+
+    // Handle foreground notifications
+    FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+      if (message.notification != null) {
+        logger.i('Foreground Notification: ${message.notification?.title}');
+      }
+      handleNotificationPayload(message.data);
+    });
+
+    // Handle background notifications
     FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
-      logger.i('Notification tapped: ${message.data}');
-      _onNotificationTap(message); // Trigger the navigation logic
+      logger.i('Notification tapped when app in background: ${message.data}');
+      handleNotificationPayload(message.data);
     });
-    FirebaseMessaging.instance.getInitialMessage().then((RemoteMessage? message) {
-      if (message != null) {
-        _onNotificationTap(message);
-      }
-    });
-  }
 
-  static Future<void> onBackgroundMessage(RemoteMessage message) async {
-    if (kDebugMode) {
-      print('onMessage: ${message.data}');
-      logger.i('onMessage: ${message.data}');
+    // Handle notification when the app is terminated
+    RemoteMessage? initialMessage = await _firebaseMessaging.getInitialMessage();
+    if (initialMessage != null) {
+      logger.i('Notification tapped when app is closed: ${initialMessage.data}');
+      handleNotificationPayload(initialMessage.data);
     }
 
-    final String? chatId = message.data['chatId'];
-    if (chatId != null) {
-      // Navigate to active chat screen
-      NavService.navigatorKey.currentState?.pushNamed(
-        '/chat',
-        arguments: {'chatId': chatId},
-      );
-    }
-
-    final String? messageTitle = message.notification?.title;
-    final String? messageBody = message.notification?.body;
-
-    if (messageTitle != null && messageBody != null) {
-      LocalNotificationsServices().showNotification(messageTitle, messageBody);
-    }
-  }
-
-  static Future<void> onMessage(RemoteMessage message) async {
-    if (kDebugMode) {
-      print('onMessage: ${message.data}');
-    }
-
-    // Trigger navigation or logic tied to the notification
-    _onNotificationTap(message);
-
-    // Optionally display a local notification
-    final String? messageTitle = message.notification?.title;
-    final String? messageBody = message.notification?.body;
-
-    if (messageTitle != null && messageBody != null) {
-      LocalNotificationsServices().showNotification(messageTitle, messageBody);
-    }
-  }
-
-  static Future<void> _onNotificationTap(RemoteMessage message) async {
-    final notificationData = message.data;
-    logger.i('Notification tapped: $notificationData');
-
-    if (notificationData.containsKey('room_chat')) {
-      final String? roomChat = notificationData['room_chat'];
-      final String? timestamp = notificationData['timestamp'];
-      final screen = notificationData['screen'];
-
-      if (roomChat != null) {
-        logger.i('Navigating to: $screen with roomChat: $roomChat');
-        NavService.navigatorKey.currentState?.pushNamed(
-          screen,
-          arguments: {
-            'room_chat': roomChat,
-            'timestamp': timestamp,
-          },
-        );
-      } else {
-        logger.e('Error: Missing room_chat or screen');
-      }
-    } else {
-      logger.e('Error: Notification data does not contain valid keys');
-    }
-  }
-
-  @pragma('vm:entry-point')
-  static Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
-    final notificationData = message.data;
-    final String? timestamp = notificationData['timestamp'];
-    logger.i('notificationData: ${message.data}');
-    if (notificationData.containsKey('room_chat')) {
-      final String? roomChat = notificationData['room_chat'] as String?;
-      final screen = notificationData['screen'];
-      NavService.navigatorKey.currentState?.pushNamed(
-        screen,
-        arguments: {
-          'room_chat': roomChat,
-          'timestamp': timestamp,
-        },
-      );
-    }
-    final String? messageTitle = message.notification?.title;
-    final String? messageBody = message.notification?.body;
-
-    if (messageTitle != null && messageBody != null) {
-      LocalNotificationsServices().showNotification(messageTitle, messageBody);
-    }
+    // Log the FCM token for testing/debugging purposes
+    String? token = await _firebaseMessaging.getToken();
+    logger.i('FCM Token: $token');
   }
 
   static Future<void> requestPermission() async {
@@ -167,20 +100,26 @@ class FirebaseCloudMessagingService {
     }
   }
 
-  static void notificationSetup(RemoteMessage message) {
-    final String? roomChat = message.data['room_chat'];
-    final String? timestamp = message.data['timestamp'];
-    final screen = message.data['screen'];
+  void handleNotificationPayload(Map<String, dynamic> data) {
+    if (data.containsKey('roomChat') && data.containsKey('senderNumber')) {
+      String roomChat = data['roomChat'] ?? '';
+      String senderNumber = data['senderNumber'] ?? '';
+      String fullName = data['fullname'] ?? '';
+      String timestamp = data['timestamp'] ?? '';
 
-    if (roomChat != null && screen != null) {
-      logger.i('Navigating to: $screen with roomChat: $roomChat');
+      logger.i('Navigating to ChatScreen with data: $data');
+
       NavService.navigatorKey.currentState?.pushNamed(
-        screen,
+        ChatScreen.routeName,
         arguments: {
           'room_chat': roomChat,
+          'senderNumber': senderNumber,
+          'fullname': fullName,
           'timestamp': timestamp,
         },
       );
+    } else {
+      logger.w('Notification payload missing required data: $data');
     }
   }
 }

@@ -22,9 +22,9 @@ class MyHttpOverrides extends HttpOverrides {
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
-  await LocalNotificationsServices.init();
-  await FirebaseCloudMessagingService.init();
 
+  FirebaseCloudMessagingService fcmService = FirebaseCloudMessagingService();
+  await fcmService.initialize();
   HttpOverrides.global = MyHttpOverrides();
 
   runApp(
