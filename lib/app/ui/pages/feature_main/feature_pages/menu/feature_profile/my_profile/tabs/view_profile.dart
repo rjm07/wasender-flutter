@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:wasender/app/ui/shared/widgets/view_profile/info_card.dart';
 import 'package:wasender/app/ui/shared/widgets/view_profile/section_header.dart';
 
+import '../../../../../../../../utils/lang/colors.dart';
+
 class ProfileViewScreen extends StatefulWidget {
   const ProfileViewScreen({super.key});
 
@@ -16,11 +18,11 @@ class _ProfileViewScreenState extends State<ProfileViewScreen> {
       padding: const EdgeInsets.only(top: 20.0),
       child: Scaffold(
         appBar: AppBar(
+          backgroundColor: AppColors.navBarColor,
           title: const Padding(
             padding: EdgeInsets.all(8.0),
             child: Text('Personal Information', style: TextStyle(color: Colors.black)),
           ),
-          backgroundColor: Colors.white,
           elevation: 0,
           automaticallyImplyLeading: false,
           actions: [

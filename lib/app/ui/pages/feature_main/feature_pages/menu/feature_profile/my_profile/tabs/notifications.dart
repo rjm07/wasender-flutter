@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../../../../../../../../shared/widgets/view_profile/info_card.dart';
+import '../../../../../../../shared/widgets/view_profile/info_card.dart';
 
 class ProfileNotificationsScreen extends StatefulWidget {
   const ProfileNotificationsScreen({super.key});
