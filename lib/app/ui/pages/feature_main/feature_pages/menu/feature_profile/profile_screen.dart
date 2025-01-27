@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:wasender/app/core/services/profile/profile_services.dart';
 import 'package:wasender/app/ui/pages/feature_main/feature_pages/menu/feature_profile/my_profile/my_profile.dart';
 
+import '../../../../../../core/models/profile/profile_data.dart';
+import '../../../../../../core/services/preferences.dart';
 import '../../../../../../utils/lang/colors.dart';
 import '../../../../../../utils/lang/images.dart';
 import '../../../../feature_login/login_screen.dart';
@@ -14,6 +18,31 @@ class ProfileScreen extends StatefulWidget {
 
 class _ProfileScreenState extends State<ProfileScreen> {
   bool _isDarkMode = true;
+
+  late Future<ProfileDataResponse?> _profileDataFuture;
+
+  @override
+  void initState() {
+    super.initState();
+
+    _profileDataFuture = getProfileData();
+  }
+
+  Future<ProfileDataResponse?> getProfileData() async {
+    final ProfileServices profileData = Provider.of<ProfileServices>(context, listen: false);
+    final String? tokenBearer = await LocalPrefs.getBearerToken();
+    debugPrint("tokenBearer: $tokenBearer");
+    if (tokenBearer != null) {
+      try {
+        final data = await profileData.getProfileData(tokenBearer);
+        return data; // Return the data
+      } catch (error) {
+        debugPrint("Error fetching dashboard data: $error");
+        return null; // Handle errors
+      }
+    }
+    return null; // Return null if tokenBearer is null
+  }
 
   @override
   Widget build(BuildContext context) {
