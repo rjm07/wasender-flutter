@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:wasender/app/app.dart';
 import 'package:wasender/app/core/services/firebase/cloud_messaging.dart';
+import 'package:wasender/app/core/services/profile/profile_services.dart';
 import 'dart:io';
 
 import 'app/core/services/auth.dart';
@@ -41,6 +42,9 @@ void main() async {
         ),
         ChangeNotifierProvider<PesanServices>(
           create: (_) => PesanServices(),
+        ),
+        ChangeNotifierProvider<ProfileServices>(
+          create: (_) => ProfileServices(),
         ),
       ],
       child: const WhatUpApp(),

@@ -29,4 +29,7 @@ class API {
 
   //FIREBASE APIS
   static String fcmUrl = "$versionUrl/device/token";
+
+  //PROFILE APIS
+  static String profileUrl = "$versionUrl/profile";
 }
