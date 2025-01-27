@@ -105,11 +105,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                 const Text('Customer',
                                     style: TextStyle(
                                         fontSize: 14, color: Colors.grey)),
-                                const Text('Verified',
+                                Text(profileDataResp.messageData?.inactive == "TRUE" ? "Not Verified" : "Verified",
                                     style: TextStyle(
                                         fontWeight: FontWeight.w600,
                                         fontSize: 16,
-                                        color: Colors.green)),
+                                        color: profileDataResp.messageData?.inactive == "TRUE" ? Colors.red : Colors.green)),
                               ],
                             ),
                           ),
