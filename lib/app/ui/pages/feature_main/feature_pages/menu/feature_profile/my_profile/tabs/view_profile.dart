@@ -2,10 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:wasender/app/ui/shared/widgets/view_profile/info_card.dart';
 import 'package:wasender/app/ui/shared/widgets/view_profile/section_header.dart';
 
+import '../../../../../../../../core/models/profile/profile_data.dart';
 import '../../../../../../../../utils/lang/colors.dart';
 
 class ProfileViewScreen extends StatefulWidget {
-  const ProfileViewScreen({super.key});
+  final ProfileData? profileData;
+
+  const ProfileViewScreen({super.key,required this.profileData});
 
   @override
   State<ProfileViewScreen> createState() => _ProfileViewScreenState();
@@ -44,64 +47,64 @@ class _ProfileViewScreenState extends State<ProfileViewScreen> {
             child: Padding(
               padding: const EdgeInsets.only(left: 24.0, right: 24.0, bottom: 16.0),
               child: ListView(
-                children: const [
-                  Text(
+                children: [
+                  const Text(
                     "Basic info, like your name and address, that you use on Nio Platform",
                     style: TextStyle(color: Colors.black54),
                   ),
-                  SizedBox(height: 20),
+                  const SizedBox(height: 20),
 
                   // Basics Section
-                  SectionHeader(
+                  const SectionHeader(
                     title: 'BASICS',
                   ),
-                  SizedBox(height: 10),
+                  const SizedBox(height: 10),
                   InfoCard(
                     children: [
                       InfoRow(
                         label: 'Full Name',
-                        value: 'Abu Bin Ishtiyak',
+                        value: widget.profileData?.fullName ?? 'Not Add Yet',
                       ),
                       InfoRow(
                         label: 'Display Name',
-                        value: 'Ishtiyak',
+                        value: widget.profileData?.fullName ?? 'Not Add Yet',
                       ),
                       InfoRow(
                         label: 'Email',
-                        value: 'info@softnio.com',
+                        value: widget.profileData?.email ?? 'Not Add Yet',
                       ),
-                      InfoRow(
+                      const InfoRow(
                         label: 'Phone Number',
                         value: 'Not Add Yet',
                       ),
-                      InfoRow(
+                      const InfoRow(
                         label: 'Date of Birth',
-                        value: '29 Feb 1986',
+                        value: 'Not Add Yet',
                       ),
-                      InfoRow(
+                      const InfoRow(
                         label: 'Address',
-                        value: '2337 Kildeer Drive, Kentucky Canada.',
+                        value: 'Not Add Yet',
                       )
                     ],
                   ),
-                  SizedBox(height: 20),
+                  const SizedBox(height: 20),
 
                   // Preferences Section
-                  SectionHeader(title: 'PREFERENCES'),
-                  SizedBox(height: 10),
-                  InfoCard(
+                  const SectionHeader(title: 'PREFERENCES'),
+                  const SizedBox(height: 10),
+                  const InfoCard(
                     children: [
                       InfoRow(
                         label: 'Language',
-                        value: 'English (United States)',
+                        value: 'Not Add Yet',
                       ),
                       InfoRow(
                         label: 'Date Format',
-                        value: 'M d, YYYY',
+                        value: 'Not Add Yet',
                       ),
                       InfoRow(
                         label: 'Time Zone',
-                        value: 'Bangladesh (GMT +6)',
+                        value: 'Not Add Yet',
                       )
                     ],
                   ),

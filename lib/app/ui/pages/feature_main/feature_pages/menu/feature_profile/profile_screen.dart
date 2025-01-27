@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:wasender/app/core/services/navigation/navigation.dart';
 import 'package:wasender/app/core/services/profile/profile_services.dart';
 import 'package:wasender/app/ui/pages/feature_main/feature_pages/menu/feature_profile/my_profile/my_profile.dart';
 
@@ -29,7 +30,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
   }
 
   Future<ProfileDataResponse?> getProfileData() async {
-    final ProfileServices profileData = Provider.of<ProfileServices>(context, listen: false);
+    final ProfileServices profileData =
+        Provider.of<ProfileServices>(context, listen: false);
     final String? tokenBearer = await LocalPrefs.getBearerToken();
     debugPrint("tokenBearer: $tokenBearer");
     if (tokenBearer != null) {
@@ -46,148 +48,187 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        backgroundColor: AppColors.navBarColor,
-        elevation: 0,
-        title: const Text(
-          'Profile',
-          style: TextStyle(color: Colors.black87, fontSize: 20),
-        ),
-      ),
-      body: Column(
-        children: [
-          Expanded(
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16.0),
-              child: ListView(
-                padding: const EdgeInsets.symmetric(horizontal: 16.0),
+    return FutureBuilder<ProfileDataResponse?>(
+        future: _profileDataFuture,
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return SizedBox(
+                height: MediaQuery.of(context).size.height / 4,
+                width: MediaQuery.of(context).size.width / 4,
+                child: const Center(
+                  child: CircularProgressIndicator(),
+                ));
+          } else if (snapshot.hasError) {
+            return Text("Error: ${snapshot.error}");
+          } else if (snapshot.hasData) {
+            final ProfileDataResponse profileDataResp =
+                snapshot.data as ProfileDataResponse;
+
+            return Scaffold(
+              appBar: AppBar(
+                backgroundColor: AppColors.navBarColor,
+                elevation: 0,
+                title: const Text(
+                  'Profile',
+                  style: TextStyle(color: Colors.black87, fontSize: 20),
+                ),
+              ),
+              body: Column(
                 children: [
-                  // Profile section
-                  const SizedBox(height: 16),
-                  Center(
-                    child: Column(
-                      children: [
-                        Image.asset(
-                          CustomIcons.iconProfilePicture, // Path to your asset
-                          height: 100,
-                          width: 100,
-                          fit: BoxFit.cover, // Adjust image fit as needed
-                        ),
-                        const SizedBox(height: 8),
-                        const Text(
-                          'admin@blipcom.id',
-                          style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-                        ),
-                        const SizedBox(height: 4),
-                        const Text('Customer', style: TextStyle(fontSize: 14, color: Colors.grey)),
-                        const Text('Verified',
-                            style: TextStyle(fontWeight: FontWeight.w600, fontSize: 16, color: Colors.green)),
-                      ],
-                    ),
-                  ),
-                  const SizedBox(height: 24),
-                  const Divider(height: 0.5, color: Colors.black26),
-                  const SizedBox(height: 24),
-                  // Options list
-                  Card(
-                    child: ListTile(
-                      iconColor: Colors.green.shade300,
-                      textColor: Colors.black54,
-                      leading: const Icon(Icons.person),
-                      title: const Text('View Profile'),
-                      onTap: () {
-                        Navigator.of(context).push(
-                          MaterialPageRoute(
-                            builder: (context) => const ViewProfileScreen(),
+                  Expanded(
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                      child: ListView(
+                        padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                        children: [
+                          // Profile section
+                          const SizedBox(height: 16),
+                          Center(
+                            child: Column(
+                              children: [
+                                Image.asset(
+                                  CustomIcons
+                                      .iconProfilePicture, // Path to your asset
+                                  height: 100,
+                                  width: 100,
+                                  fit: BoxFit
+                                      .cover, // Adjust image fit as needed
+                                ),
+                                const SizedBox(height: 8),
+                                Text(
+                                  profileDataResp.messageData?.email ?? '-',
+                                  style: const TextStyle(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.bold),
+                                ),
+                                const SizedBox(height: 4),
+                                const Text('Customer',
+                                    style: TextStyle(
+                                        fontSize: 14, color: Colors.grey)),
+                                const Text('Verified',
+                                    style: TextStyle(
+                                        fontWeight: FontWeight.w600,
+                                        fontSize: 16,
+                                        color: Colors.green)),
+                              ],
+                            ),
                           ),
-                        );
-                      },
-                    ),
-                  ),
-                  Card(
-                    child: ListTile(
-                      iconColor: Colors.green.shade300,
-                      textColor: Colors.black54,
-                      leading: const Icon(Icons.settings),
-                      title: const Text('Account Settings'),
-                      onTap: () {
-                        Navigator.of(context).push(
-                          MaterialPageRoute(
-                            builder: (context) => const ViewProfileScreen(initialTabIndex: 2), // Security Tab
+                          const SizedBox(height: 24),
+                          const Divider(height: 0.5, color: Colors.black26),
+                          const SizedBox(height: 24),
+                          // Options list
+                          Card(
+                            child: ListTile(
+                              iconColor: Colors.green.shade300,
+                              textColor: Colors.black54,
+                              leading: const Icon(Icons.person),
+                              title: const Text('View Profile'),
+                              onTap: () {
+                                NavService.push(
+                                  screen: ViewProfileScreen(
+                                    profileData: profileDataResp.messageData,
+                                  ),
+                                );
+                              },
+                            ),
                           ),
-                        );
-                      },
-                    ),
-                  ),
-                  Card(
-                    child: ListTile(
-                      iconColor: Colors.green.shade300,
-                      textColor: Colors.black54,
-                      leading: const Icon(Icons.timeline),
-                      title: const Text('Login Activity'),
-                      onTap: () {
-                        Navigator.of(context).push(
-                          MaterialPageRoute(
-                            builder: (context) => const ViewProfileScreen(initialTabIndex: 3), // Activity Tab
+                          Card(
+                            child: ListTile(
+                              iconColor: Colors.green.shade300,
+                              textColor: Colors.black54,
+                              leading: const Icon(Icons.settings),
+                              title: const Text('Account Settings'),
+                              onTap: () {
+                                NavService.push(
+                                  screen: ViewProfileScreen(
+                                    profileData: profileDataResp.messageData,
+                                    initialTabIndex: 2,
+                                  ),
+                                );
+                              },
+                            ),
                           ),
-                        );
-                      },
-                    ),
-                  ),
-                  Card(
-                    child: ListTile(
-                      leading: const Icon(Icons.dark_mode),
-                      title: const Text('Dark Mode'),
-                      iconColor: Colors.green.shade300,
-                      textColor: Colors.black54,
-                      trailing: Switch(
-                        value: _isDarkMode,
-                        onChanged: (bool value) {
-                          setState(() {
-                            _isDarkMode = value; // Toggle the switch state
-                          });
-                        },
-                        activeColor: Colors.green,
+                          Card(
+                            child: ListTile(
+                              iconColor: Colors.green.shade300,
+                              textColor: Colors.black54,
+                              leading: const Icon(Icons.timeline),
+                              title: const Text('Login Activity'),
+                              onTap: () {
+                                NavService.push(
+                                  screen: ViewProfileScreen(
+                                    profileData: profileDataResp.messageData,
+                                    initialTabIndex: 3,
+                                  ),
+                                );
+                              },
+                            ),
+                          ),
+                          Card(
+                            child: ListTile(
+                              leading: const Icon(Icons.dark_mode),
+                              title: const Text('Dark Mode'),
+                              iconColor: Colors.green.shade300,
+                              textColor: Colors.black54,
+                              trailing: Switch(
+                                value: _isDarkMode,
+                                onChanged: (bool value) {
+                                  setState(() {
+                                    _isDarkMode =
+                                        value; // Toggle the switch state
+                                  });
+                                },
+                                activeColor: Colors.green,
+                              ),
+                              onTap: () {
+                                // Optional: You can also toggle the switch when tapping the ListTile
+                                setState(() {
+                                  _isDarkMode = !_isDarkMode;
+                                });
+                              },
+                            ),
+                          ),
+                        ],
                       ),
-                      onTap: () {
-                        // Optional: You can also toggle the switch when tapping the ListTile
-                        setState(() {
-                          _isDarkMode = !_isDarkMode;
-                        });
-                      },
+                    ),
+                  ),
+                  // Spacer to push the button to the bottom
+                  Padding(
+                    padding: const EdgeInsets.only(
+                        left: 48, right: 48, bottom: 44.0),
+                    child: SizedBox(
+                      width: double
+                          .infinity, // Make the button expand to full width
+                      child: ElevatedButton.icon(
+                        onPressed: () {
+                          Navigator.of(context).pushAndRemoveUntil(
+                            MaterialPageRoute(
+                                builder: (context) => const LoginScreen()),
+                            (Route<dynamic> route) =>
+                                false, // Remove all previous routes
+                          );
+                        },
+                        style: ElevatedButton.styleFrom(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 30, vertical: 12),
+                          backgroundColor: Colors.grey,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(
+                                5.0), // Change the radius here
+                          ),
+                        ),
+                        icon: const Icon(Icons.logout, color: Colors.white),
+                        label: const Text('Sign Out',
+                            style: TextStyle(color: Colors.white)),
+                      ),
                     ),
                   ),
                 ],
               ),
-            ),
-          ),
-          // Spacer to push the button to the bottom
-          Padding(
-            padding: const EdgeInsets.only(left: 48, right: 48, bottom: 44.0),
-            child: SizedBox(
-              width: double.infinity, // Make the button expand to full width
-              child: ElevatedButton.icon(
-                onPressed: () {
-                  Navigator.of(context).pushAndRemoveUntil(
-                    MaterialPageRoute(builder: (context) => const LoginScreen()),
-                    (Route<dynamic> route) => false, // Remove all previous routes
-                  );
-                },
-                style: ElevatedButton.styleFrom(
-                  padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 12),
-                  backgroundColor: Colors.grey,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(5.0), // Change the radius here
-                  ),
-                ),
-                icon: const Icon(Icons.logout, color: Colors.white),
-                label: const Text('Sign Out', style: TextStyle(color: Colors.white)),
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
+            );
+          } else {
+            return Text("No data available");
+          }
+        });
   }
 }
