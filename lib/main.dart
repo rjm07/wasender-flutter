@@ -20,6 +20,7 @@ class MyHttpOverrides extends HttpOverrides {
 }
 
 void main() async {
+  //await LocalNotificationsServices.init();
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
 

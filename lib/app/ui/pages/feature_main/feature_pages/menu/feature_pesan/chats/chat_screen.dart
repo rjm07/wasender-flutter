@@ -167,8 +167,8 @@ class _ChatScreenState extends State<ChatScreen> {
       // Send the message through the API
       devices.sendMessage(
         widget.roomChat,
-        whatsappNumber ?? '',
         widget.senderNumber,
+        whatsappNumber ?? '',
         msg,
       );
     }

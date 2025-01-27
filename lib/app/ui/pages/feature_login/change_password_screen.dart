@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:wasender/app/ui/shared/widgets/custom_textfield.dart';
 
 import '../../../core/services/auth.dart';
+import '../../../utils/lang/colors.dart';
 import '../../shared/widgets/custom_button.dart';
 
 class ChangePasswordScreen extends StatefulWidget {
@@ -16,6 +17,8 @@ class _State extends State<ChangePasswordScreen> {
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
   final passwordController = TextEditingController();
   final confirmPasswordController = TextEditingController();
+  final passwordVisibilityNotifier = ValueNotifier<bool>(true);
+  final confirmPasswordVisibilityNotifier = ValueNotifier<bool>(true);
   var _isAuthenticating = false;
 
   void onSimpanDanLanjutPressed() async {
@@ -131,49 +134,62 @@ class _State extends State<ChangePasswordScreen> {
                           mainAxisAlignment: MainAxisAlignment.start,
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            LoginTextField(
-                                label: "Kata Sandi",
-                                hintText: "Kata Sandi",
-                                isObscure: true,
-                                controller: passwordController,
-                                validator: (String? value) {
-                                  if (value == null || value.isEmpty) {
-                                    setState(() {
-                                      _isAuthenticating = false;
-                                    });
-                                    return "This field is required";
-                                  } else {
-                                    setState(() {
-                                      _isAuthenticating = false;
-                                    });
+                            ValueListenableBuilder<bool>(
+                              valueListenable: passwordVisibilityNotifier,
+                              builder: (context, isObscure, child) {
+                                return LoginTextField(
+                                  label: "Kata Sandi",
+                                  hintText: "Kata Sandi",
+                                  isObscure: isObscure,
+                                  controller: passwordController,
+                                  suffixIcon: IconButton(
+                                    color: isObscure ? Colors.black54 : AppColors.primary,
+                                    icon: Icon(
+                                      isObscure ? Icons.visibility_off : Icons.visibility,
+                                    ),
+                                    onPressed: () {
+                                      passwordVisibilityNotifier.value = !isObscure;
+                                    },
+                                  ),
+                                  validator: (String? value) {
+                                    if (value == null || value.isEmpty) {
+                                      return "This field is required";
+                                    }
                                     return null;
-                                  }
-                                },
-                                onChanged: (text) {}),
-                            LoginTextField(
-                                label: "Konfirmasi Kata Sandi",
-                                hintText: "Konfirmasi Kata Sandi",
-                                isObscure: true,
-                                controller: confirmPasswordController,
-                                validator: (String? value) {
-                                  if (value == null || value.isEmpty) {
-                                    setState(() {
-                                      _isAuthenticating = false;
-                                    });
-                                    return "This field is required";
-                                  } else if (value != passwordController.text) {
-                                    setState(() {
-                                      _isAuthenticating = false;
-                                    });
-                                    return "Password and confirm password must be the same";
-                                  } else {
-                                    setState(() {
-                                      _isAuthenticating = false;
-                                    });
+                                  },
+                                  onChanged: (String) {},
+                                );
+                              },
+                            ),
+                            ValueListenableBuilder<bool>(
+                              valueListenable: confirmPasswordVisibilityNotifier,
+                              builder: (context, isObscure, child) {
+                                return LoginTextField(
+                                  label: "Konfirmasi Kata Sandi",
+                                  hintText: "Konfirmasi Kata Sandi",
+                                  isObscure: isObscure,
+                                  controller: confirmPasswordController,
+                                  suffixIcon: IconButton(
+                                    color: isObscure ? Colors.black54 : AppColors.primary,
+                                    icon: Icon(
+                                      isObscure ? Icons.visibility_off : Icons.visibility,
+                                    ),
+                                    onPressed: () {
+                                      confirmPasswordVisibilityNotifier.value = !isObscure;
+                                    },
+                                  ),
+                                  validator: (String? value) {
+                                    if (value == null || value.isEmpty) {
+                                      return "This field is required";
+                                    } else if (value != passwordController.text) {
+                                      return "Password and confirm password must be the same";
+                                    }
                                     return null;
-                                  }
-                                },
-                                onChanged: (text) {}),
+                                  },
+                                  onChanged: (String) {},
+                                );
+                              },
+                            ),
                           ],
                         ),
                       ],
