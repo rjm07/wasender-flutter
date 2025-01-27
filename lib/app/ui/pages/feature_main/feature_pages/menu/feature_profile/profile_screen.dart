@@ -172,7 +172,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                 NavService.push(
                                   screen: ViewProfileScreen(
                                     profileData: profileDataResp.messageData,
-                                    initialTabIndex: 2,
+                                    initialTabIndex: 1,
                                   ),
                                 );
                               },
@@ -188,7 +188,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                 NavService.push(
                                   screen: ViewProfileScreen(
                                     profileData: profileDataResp.messageData,
-                                    initialTabIndex: 3,
+                                    initialTabIndex: 2,
                                   ),
                                 );
                               },
