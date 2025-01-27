@@ -85,45 +85,56 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           const SizedBox(height: 16),
                           Center(
                             child: Column(
-                              children: [ClipOval(
-                                // Ensures the image is clipped to a circular shape
-                                child: Image.network(
-                                  profileDataResp.messageData?.avatar ?? CustomIcons.iconProfilePicture,
-                                  height: 90,
-                                  width: 90,
-                                  fit: BoxFit.cover,
-                                  // Adjust image fit as needed
-                                  loadingBuilder: (context, child, loadingProgress) {
-                                    if (loadingProgress == null) {
-                                      return child;
-                                    } else {
-                                      return Center(
-                                        child: CircularProgressIndicator(
-                                          value: loadingProgress.expectedTotalBytes != null
-                                              ? loadingProgress.cumulativeBytesLoaded /
-                                              (loadingProgress.expectedTotalBytes ?? 1)
-                                              : null,
-                                        ),
-                                      );
-                                    }
-                                  },
-                                  errorBuilder: (context, error, stackTrace) {
-                                    if (error.toString().contains('404') ||
-                                        error.toString().contains('HTTP request failed')) {
-                                      return Image.asset(
-                                        CustomIcons.iconProfilePicture, // Use the custom icon for the profile
-                                        height: 90,
-                                        width: 90,
-                                      );
-                                    } else {
-                                      return const Icon(
-                                        Icons.error, // Show a generic error icon for other errors
-                                        color: Colors.red,
-                                      );
-                                    }
-                                  },
+                              children: [
+                                ClipOval(
+                                  // Ensures the image is clipped to a circular shape
+                                  child: Image.network(
+                                    profileDataResp.messageData?.avatar ??
+                                        CustomIcons.iconProfilePicture,
+                                    height: 90,
+                                    width: 90,
+                                    fit: BoxFit.cover,
+                                    // Adjust image fit as needed
+                                    loadingBuilder:
+                                        (context, child, loadingProgress) {
+                                      if (loadingProgress == null) {
+                                        return child;
+                                      } else {
+                                        return Center(
+                                          child: CircularProgressIndicator(
+                                            value: loadingProgress
+                                                        .expectedTotalBytes !=
+                                                    null
+                                                ? loadingProgress
+                                                        .cumulativeBytesLoaded /
+                                                    (loadingProgress
+                                                            .expectedTotalBytes ??
+                                                        1)
+                                                : null,
+                                          ),
+                                        );
+                                      }
+                                    },
+                                    errorBuilder: (context, error, stackTrace) {
+                                      if (error.toString().contains('404') ||
+                                          error.toString().contains(
+                                              'HTTP request failed')) {
+                                        return Image.asset(
+                                          CustomIcons
+                                              .iconProfilePicture, // Use the custom icon for the profile
+                                          height: 90,
+                                          width: 90,
+                                        );
+                                      } else {
+                                        return const Icon(
+                                          Icons
+                                              .error, // Show a generic error icon for other errors
+                                          color: Colors.red,
+                                        );
+                                      }
+                                    },
+                                  ),
                                 ),
-                              ),
                                 const SizedBox(height: 8),
                                 Text(
                                   profileDataResp.messageData?.email ?? '-',
@@ -132,14 +143,22 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                       fontWeight: FontWeight.bold),
                                 ),
                                 const SizedBox(height: 4),
-                                const Text('Customer',
+                                Text(profileDataResp.messageData?.role ?? '-',
                                     style: TextStyle(
                                         fontSize: 14, color: Colors.grey)),
-                                Text(profileDataResp.messageData?.inactive == "TRUE" ? "Not Verified" : "Verified",
+                                Text(
+                                    profileDataResp.messageData?.inactive ==
+                                            "TRUE"
+                                        ? "Not Verified"
+                                        : "Verified",
                                     style: TextStyle(
                                         fontWeight: FontWeight.w600,
                                         fontSize: 16,
-                                        color: profileDataResp.messageData?.inactive == "TRUE" ? Colors.red : Colors.green)),
+                                        color: profileDataResp
+                                                    .messageData?.inactive ==
+                                                "TRUE"
+                                            ? Colors.red
+                                            : Colors.green)),
                               ],
                             ),
                           ),
