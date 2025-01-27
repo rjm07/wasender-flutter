@@ -1,13 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:wasender/app/ui/pages/feature_main/feature_pages/menu/feature_profile/my_profile/tabs/security.dart';
 import 'package:wasender/app/ui/pages/feature_main/feature_pages/menu/feature_profile/my_profile/tabs/view_profile.dart';
+import '../../../../../../../core/models/profile/profile_data.dart';
 import 'tabs/login_activity/login_activity.dart';
 import 'tabs/notifications.dart';
 
 class ViewProfileScreen extends StatefulWidget {
   final int initialTabIndex;
+  final ProfileData? profileData;
 
-  const ViewProfileScreen({super.key, this.initialTabIndex = 0}); // Default to tab 0
+  const ViewProfileScreen({super.key, this.initialTabIndex = 0, required this.profileData}); // Default to tab 0
+
 
   @override
   State<ViewProfileScreen> createState() => _ViewProfileScreenState();
@@ -67,11 +70,11 @@ class _ViewProfileScreenState extends State<ViewProfileScreen> with SingleTicker
       body: PageView(
         controller: _pageController,
         onPageChanged: _onPageChanged, // Handle page swipe to switch tab
-        children: const [
-          ProfileViewScreen(),
-          ProfileNotificationsScreen(),
-          ProfileLoginActivityScreen(),
-          ProfileSecurityScreen(),
+        children: [
+          ProfileViewScreen(profileData: widget.profileData),
+          const ProfileNotificationsScreen(),
+          ProfileLoginActivityScreen(loginLogData: widget.profileData!.loginLog,),
+          const ProfileSecurityScreen(),
         ],
       ),
     );
