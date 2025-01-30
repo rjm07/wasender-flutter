@@ -73,4 +73,21 @@ class NavService {
       );
     }
   }
+
+  static void popUntilAndPush({
+    required String popUntilRoute,
+    required Widget pushScreen,
+  }) {
+    final BuildContext? context = navigatorKey.currentContext;
+
+    if (context != null) {
+      Navigator.of(context).popUntil((route) => route.settings.name == popUntilRoute);
+
+      Navigator.of(context).push(
+        MaterialPageRoute(
+          builder: (_) => pushScreen,
+        ),
+      );
+    }
+  }
 }

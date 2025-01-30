@@ -1,186 +1,152 @@
+import 'dart:convert';
 import 'dart:io';
-import 'package:flutter/cupertino.dart';
-import 'package:provider/provider.dart';
-
 import 'package:firebase_core/firebase_core.dart';
-import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/foundation.dart';
-import 'package:wasender/app/core/services/local_notifications/local_notifications.dart';
+import 'package:flutter/material.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:logger/logger.dart';
+import '../../../ui/pages/feature_main/feature_pages/menu/feature_pesan/chats/chat_screen.dart';
 import 'package:wasender/app/core/services/navigation/navigation.dart';
 import 'package:wasender/app/core/services/preferences.dart';
-import 'package:logger/logger.dart';
-
-import '../../models/dashboard/dashboard_response.dart';
-import '../fcm.dart';
 
 class FirebaseCloudMessagingService {
-  static final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
   static final FirebaseMessaging _firebaseMessaging = FirebaseMessaging.instance;
+  static final FlutterLocalNotificationsPlugin _flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
   static final logger = Logger();
+  Map<String, dynamic>? _latestNotificationData;
 
-  static Future<void> _saveFCMToken() async {
-    String? fcmToken = await _firebaseMessaging.getToken();
-
-    if (fcmToken != null) {
-      if (kDebugMode) {
-        print('FCM Token: $fcmToken');
-        print('I went here');
-      }
-      LocalPrefs.saveFCMToken(fcmToken);
-    }
-  }
-
-  static Future<void> init() async {
+  Future<void> initialize() async {
     await Firebase.initializeApp();
-    if (Platform.isIOS) {
-      String? apnsToken = await _firebaseMessaging.getAPNSToken();
 
-      if (apnsToken != null) {
-        _saveFCMToken();
-      }
-    } else {
-      _saveFCMToken();
-    }
-    requestPermission();
-    FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
-    FirebaseMessaging.onMessage.listen(onMessage);
-    FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
-      logger.i('Notification tapped: ${message.data}');
-      _onNotificationTap(message); // Trigger the navigation logic
-    });
-    FirebaseMessaging.instance.getInitialMessage().then((RemoteMessage? message) {
-      if (message != null) {
-        _onNotificationTap(message);
-      }
-    });
-  }
+    // Initialize local notifications
+    const AndroidInitializationSettings androidInitSettings = AndroidInitializationSettings('@mipmap/ic_launcher');
 
-  static Future<void> onBackgroundMessage(RemoteMessage message) async {
-    if (kDebugMode) {
-      print('onMessage: ${message.data}');
-      logger.i('onMessage: ${message.data}');
-    }
+    const InitializationSettings initSettings = InitializationSettings(android: androidInitSettings);
 
-    final String? chatId = message.data['chatId'];
-    if (chatId != null) {
-      // Navigate to active chat screen
-      NavService.navigatorKey.currentState?.pushNamed(
-        '/chat',
-        arguments: {'chatId': chatId},
-      );
-    }
+    // await _flutterLocalNotificationsPlugin.initialize(initSettings,
+    //     onDidReceiveNotificationResponse: _onNotificationResponse);
 
-    final String? messageTitle = message.notification?.title;
-    final String? messageBody = message.notification?.body;
-
-    if (messageTitle != null && messageBody != null) {
-      LocalNotificationsServices().showNotification(messageTitle, messageBody);
-    }
-  }
-
-  static Future<void> onMessage(RemoteMessage message) async {
-    if (kDebugMode) {
-      print('onMessage: ${message.data}');
-    }
-
-    // Trigger navigation or logic tied to the notification
-    _onNotificationTap(message);
-
-    // Optionally display a local notification
-    final String? messageTitle = message.notification?.title;
-    final String? messageBody = message.notification?.body;
-
-    if (messageTitle != null && messageBody != null) {
-      LocalNotificationsServices().showNotification(messageTitle, messageBody);
-    }
-  }
-
-  static Future<void> _onNotificationTap(RemoteMessage message) async {
-    final notificationData = message.data;
-    logger.i('Notification tapped: $notificationData');
-
-    if (notificationData.containsKey('room_chat')) {
-      final String? roomChat = notificationData['room_chat'];
-      final String? timestamp = notificationData['timestamp'];
-      final screen = notificationData['screen'];
-
-      if (roomChat != null) {
-        logger.i('Navigating to: $screen with roomChat: $roomChat');
-        NavService.navigatorKey.currentState?.pushNamed(
-          screen,
-          arguments: {
-            'room_chat': roomChat,
-            'timestamp': timestamp,
-          },
-        );
-      } else {
-        logger.e('Error: Missing room_chat or screen');
-      }
-    } else {
-      logger.e('Error: Notification data does not contain valid keys');
-    }
-  }
-
-  @pragma('vm:entry-point')
-  static Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
-    final notificationData = message.data;
-    final String? timestamp = notificationData['timestamp'];
-    logger.i('notificationData: ${message.data}');
-    if (notificationData.containsKey('room_chat')) {
-      final String? roomChat = notificationData['room_chat'] as String?;
-      final screen = notificationData['screen'];
-      NavService.navigatorKey.currentState?.pushNamed(
-        screen,
-        arguments: {
-          'room_chat': roomChat,
-          'timestamp': timestamp,
-        },
-      );
-    }
-    final String? messageTitle = message.notification?.title;
-    final String? messageBody = message.notification?.body;
-
-    if (messageTitle != null && messageBody != null) {
-      LocalNotificationsServices().showNotification(messageTitle, messageBody);
-    }
-  }
-
-  static Future<void> requestPermission() async {
-    NotificationSettings settings = await _firebaseMessaging.requestPermission(
-      alert: true,
-      badge: true,
-      sound: true,
+    await _flutterLocalNotificationsPlugin.initialize(
+      initSettings,
+      onDidReceiveNotificationResponse: _onNotificationResponse, // Handles foreground/background clicks
     );
 
-    if (settings.authorizationStatus == AuthorizationStatus.authorized) {
-      if (kDebugMode) {
-        print('User granted permission');
+    // Request permissions for notifications
+    if (Platform.isIOS) {
+      await _firebaseMessaging.requestPermission(
+        alert: true,
+        badge: true,
+        sound: true,
+      );
+    }
+
+    await _saveFCMToken();
+    _setupNotificationHandlers();
+  }
+
+  Future<void> _saveFCMToken() async {
+    try {
+      String? fcmToken = await _firebaseMessaging.getToken();
+      if (fcmToken != null) {
+        logger.i('FCM Token: $fcmToken');
+        await LocalPrefs.saveFCMToken(fcmToken);
+      } else {
+        logger.w('FCM Token is null.');
       }
-    } else if (settings.authorizationStatus == AuthorizationStatus.provisional) {
-      if (kDebugMode) {
-        print('User granted provisional permission');
-      }
-    } else {
-      if (kDebugMode) {
-        print('User declined or has not accepted permission');
-      }
+    } catch (e) {
+      logger.e('Error saving FCM Token: $e');
     }
   }
 
-  static void notificationSetup(RemoteMessage message) {
-    final String? roomChat = message.data['room_chat'];
-    final String? timestamp = message.data['timestamp'];
-    final screen = message.data['screen'];
+  void _setupNotificationHandlers() {
+    FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+      logger.i('Foreground Notification: ${message.notification?.title}');
+      _showLocalNotification(message);
+      handleUserTriggeredNavigation();
+    });
 
-    if (roomChat != null && screen != null) {
-      logger.i('Navigating to: $screen with roomChat: $roomChat');
-      NavService.navigatorKey.currentState?.pushNamed(
-        screen,
-        arguments: {
-          'room_chat': roomChat,
-          'timestamp': timestamp,
-        },
+    FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
+      logger.i('Notification tapped (background): ${message.data}');
+      _storeNotificationPayload(message.data);
+      handleUserTriggeredNavigation();
+    });
+
+    _firebaseMessaging.getInitialMessage().then((RemoteMessage? message) {
+      if (message != null) {
+        logger.i('Notification tapped (terminated): ${message.data}');
+        _storeNotificationPayload(message.data);
+
+        // ⚠️ Delay navigation until after the app is fully loaded
+        Future.delayed(Duration(seconds: 1), () {
+          handleUserTriggeredNavigation();
+        });
+      }
+    });
+  }
+
+  void _showLocalNotification(RemoteMessage message) {
+    const AndroidNotificationDetails androidDetails = AndroidNotificationDetails(
+      'channel_id',
+      'channel_name',
+      channelDescription: 'channel_description',
+      importance: Importance.high,
+      priority: Priority.high,
+    );
+
+    const NotificationDetails notificationDetails = NotificationDetails(android: androidDetails);
+
+    _flutterLocalNotificationsPlugin.show(
+      message.hashCode,
+      message.notification?.title,
+      message.notification?.body,
+      notificationDetails,
+      payload: message.data.toString(),
+    );
+  }
+
+  void _onNotificationResponse(NotificationResponse response) {
+    if (response.payload != null) {
+      logger.i('Notification response payload: ${response.payload}');
+
+      final Map<String, dynamic> data = jsonDecode(response.payload!) as Map<String, dynamic>;
+      _storeNotificationPayload(data);
+      handleUserTriggeredNavigation();
+    } else {
+      logger.w('Notification response payload is null.');
+    }
+  }
+
+  void _storeNotificationPayload(Map<String, dynamic> data) {
+    _latestNotificationData = data;
+    logger.i('Stored notification data: $data');
+  }
+
+  void handleUserTriggeredNavigation() {
+    if (_latestNotificationData != null) {
+      final data = _latestNotificationData!;
+      String roomChat = data['roomChat'] ?? '';
+      String senderNumber = data['senderNumber'] ?? '';
+      String fullName = data['fullname'] ?? '';
+      String timestamp = data['timestamp'] ?? '';
+      String status = data['status'] ?? 'OPEN';
+
+      logger.i('Navigating to ChatScreen with data: $data and the status is: $status');
+
+      NavService.push(
+        screen: ChatScreen(
+          fullName: fullName,
+          timestamp: timestamp,
+          roomChat: roomChat,
+          senderNumber: senderNumber,
+          statusIsOpen: status,
+          onHandleTicket: () {},
+        ),
       );
+
+      _latestNotificationData = null; // Clear stored data
+    } else {
+      logger.w('No notification data available to navigate.');
     }
   }
 }

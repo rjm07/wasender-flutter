@@ -24,8 +24,11 @@ class _LoginScreenState extends State<LoginScreen> {
 
   late TextEditingController emailController;
   late TextEditingController passwordController;
+  final emailVisibilityNotifier = ValueNotifier<bool>(true);
+  final passwordVisibilityNotifier = ValueNotifier<bool>(true);
 
   var _isAuthenticating = false;
+  var _isEmailObscure = false;
 
   @override
   void initState() {
@@ -151,9 +154,12 @@ class _LoginScreenState extends State<LoginScreen> {
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
                         LoginTextField(
+                          onTap: () {
+                            emailController.clear();
+                          },
                           label: "Username / Email Address",
                           hintText: "Username / Email Address",
-                          isObscure: false,
+                          isObscure: _isEmailObscure,
                           controller: emailController,
                           validator: (String? value) {
                             if (value == null || value.isEmpty) {
@@ -165,27 +171,42 @@ class _LoginScreenState extends State<LoginScreen> {
                               return null;
                             }
                           },
-                          onChanged: (text) {},
+                          onChanged: (String) {},
+                          suffixIcon: null,
                         ),
                         const SizedBox(
                           height: 20,
                         ),
-                        LoginTextField(
-                          label: "Password",
-                          hintText: "Password",
-                          isObscure: true,
-                          controller: passwordController,
-                          validator: (String? value) {
-                            if (value == null || value.isEmpty) {
-                              setState(() {
-                                _isAuthenticating = false;
-                              });
-                              return "This field is required";
-                            } else {
-                              return null;
-                            }
+                        ValueListenableBuilder<bool>(
+                          valueListenable: passwordVisibilityNotifier,
+                          builder: (context, isObscure, child) {
+                            return LoginTextField(
+                              label: "Password",
+                              hintText: "Password",
+                              isObscure: isObscure,
+                              controller: passwordController,
+                              suffixIcon: IconButton(
+                                color: isObscure ? Colors.black54 : AppColors.primary,
+                                icon: Icon(
+                                  isObscure ? Icons.visibility_off : Icons.visibility,
+                                ),
+                                onPressed: () {
+                                  passwordVisibilityNotifier.value = !isObscure;
+                                },
+                              ),
+                              validator: (String? value) {
+                                if (value == null || value.isEmpty) {
+                                  setState(() {
+                                    _isAuthenticating = false;
+                                  });
+                                  return "This field is required";
+                                } else {
+                                  return null;
+                                }
+                              },
+                              onChanged: (String) {},
+                            );
                           },
-                          onChanged: (text) {},
                         ),
                         const SizedBox(
                           height: 60,

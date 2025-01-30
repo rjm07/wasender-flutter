@@ -96,6 +96,8 @@ class _ActiveChatScreenState extends State<ActiveChatScreen> {
             roomChat: conversation.roomChat ?? '',
             notify: conversation.notify ?? '',
             remoteJid: conversation.senderNumber ?? '',
+            isBot: conversation.isBot ?? false,
+            status: conversation.status.toString(),
             messages: Messages(
               agentId: conversation.agentId,
               agentName: conversation.agentName,
@@ -200,7 +202,7 @@ class _ActiveChatScreenState extends State<ActiveChatScreen> {
                                         senderNumber: chatData.messages.senderNumber,
                                         fullName: chatData.messages.senderName,
                                         timestamp: chatData.messages.messageTimestampStr,
-                                        statusIsOpen: false,
+                                        statusIsOpen: chatData.status.toString(),
                                         onHandleTicket: widget.onHandleTicket,
                                       ),
                                     ),

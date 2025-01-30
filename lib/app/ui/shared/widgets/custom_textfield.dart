@@ -10,6 +10,8 @@ class LoginTextField extends StatelessWidget {
     required this.controller,
     required this.validator,
     required this.onChanged,
+    required this.suffixIcon,
+    this.onTap,
   });
 
   final String label;
@@ -18,6 +20,8 @@ class LoginTextField extends StatelessWidget {
   final TextEditingController? controller;
   final String? Function(String?)? validator;
   final void Function(String)? onChanged;
+  final void Function()? onTap;
+  final IconButton? suffixIcon;
 
   @override
   Widget build(BuildContext context) {
@@ -25,12 +29,14 @@ class LoginTextField extends StatelessWidget {
       padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
       child: SizedBox(
         child: TextFormField(
+          onTap: onTap,
           autovalidateMode: AutovalidateMode.onUserInteraction,
           controller: controller,
           style: const TextStyle(color: Colors.black, fontSize: 14.0),
           autocorrect: false,
           obscureText: isObscure,
           decoration: InputDecoration(
+            suffixIcon: suffixIcon,
             labelText: label,
             contentPadding: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 10.0),
             hintText: hintText,

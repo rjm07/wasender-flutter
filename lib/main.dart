@@ -1,5 +1,8 @@
 import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:provider/provider.dart';
 import 'package:wasender/app/app.dart';
 import 'package:wasender/app/core/services/firebase/cloud_messaging.dart';
@@ -20,12 +23,24 @@ class MyHttpOverrides extends HttpOverrides {
   }
 }
 
+Future<dynamic> myBackgroundMessageHandler(RemoteMessage message) async {
+  if (message.notification != null) {
+    print(
+        'On Background: ${message.notification?.title}/${message.notification!.body}/${message.notification!.titleLocKey}');
+  }
+  print('Received background message ${message.messageId}');
+  return Future.value(true);
+}
+
+final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
+
 void main() async {
+  //await LocalNotificationsServices.init();
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
-  await LocalNotificationsServices.init();
-  await FirebaseCloudMessagingService.init();
 
+  FirebaseCloudMessagingService fcmService = FirebaseCloudMessagingService();
+  await fcmService.initialize();
   HttpOverrides.global = MyHttpOverrides();
 
   runApp(

@@ -18,6 +18,7 @@ import '../../../../../../shared/widgets/custom_button.dart';
 import '../../../../../../shared/widgets/handle_ticket.dart';
 import '../../../../../../shared/widgets/msg_widget/other_msg_widget.dart';
 import '../../../../../../shared/widgets/msg_widget/own_msg_widget.dart';
+import '../pesan_screen.dart';
 import 'chat_user_profile.dart';
 
 class ChatScreen extends StatefulWidget {
@@ -38,7 +39,7 @@ class ChatScreen extends StatefulWidget {
   final String timestamp;
   final String roomChat;
   final String senderNumber;
-  final bool statusIsOpen;
+  final String statusIsOpen;
   final void Function() onHandleTicket;
 
   @override
@@ -64,7 +65,8 @@ class _ChatScreenState extends State<ChatScreen> {
       getChatBoxConversation();
     });
     final socketService = SocketService();
-    if (widget.statusIsOpen == true) {
+    logger.i('statusIsOpen: ${widget.statusIsOpen}');
+    if (widget.statusIsOpen.toUpperCase() == 'OPEN') {
       socketService.listen(true, onConnectActive);
     } else {
       socketService.listen(false, onConnectActive);
@@ -167,8 +169,8 @@ class _ChatScreenState extends State<ChatScreen> {
       // Send the message through the API
       devices.sendMessage(
         widget.roomChat,
-        whatsappNumber ?? '',
         widget.senderNumber,
+        whatsappNumber ?? '',
         msg,
       );
     }
@@ -223,7 +225,12 @@ class _ChatScreenState extends State<ChatScreen> {
     void onTicketAccepted() async {
       try {
         await devices.assignTicket(widget.roomChat, widget.senderNumber);
-        NavService.pop(pages: 2);
+        //NavService.pop(pages: 2);
+        //NavService.jumpToPageID('/pesan');
+        NavService.popUntilAndPush(
+          popUntilRoute: '/dashboard',
+          pushScreen: PesanScreen(),
+        );
       } catch (error) {
         // Close the dialog and show a SnackBar with the error message
         NavService.pop();
@@ -365,7 +372,7 @@ class _ChatScreenState extends State<ChatScreen> {
               ),
             ),
           ),
-          widget.statusIsOpen == true
+          widget.statusIsOpen.toUpperCase() == 'OPEN'
               ? Container(
                   color: Colors.white,
                   child: Padding(
@@ -405,7 +412,7 @@ class _ChatScreenState extends State<ChatScreen> {
                                     HandleStatusLabelWidget(
                                         icon: CustomIcons.iconHTStatus,
                                         title: 'Status',
-                                        status: widget.statusIsOpen ? 'OPEN' : ''),
+                                        status: widget.statusIsOpen.toUpperCase() == 'TRUE' ? 'OPEN' : 'CLOSED'),
                                     SizedBox(height: 8),
                                     HandleGenericLabelWidget(
                                         icon: CustomIcons.iconHTIncomingEmail,

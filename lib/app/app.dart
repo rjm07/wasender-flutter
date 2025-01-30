@@ -37,7 +37,7 @@ class WhatUpApp extends StatelessWidget {
               timestamp: '',
               roomChat: '',
               senderNumber: '',
-              statusIsOpen: false,
+              statusIsOpen: '',
               onHandleTicket: () {},
             ),
         // Add additional routes as needed

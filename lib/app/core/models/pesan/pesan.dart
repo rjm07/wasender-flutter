@@ -45,24 +45,30 @@ class ChatBoxResponseData {
 }
 
 class ChatBoxDataList {
+  final bool isBot;
   final Messages messages;
   final String notify;
   final String remoteJid;
   final String roomChat;
+  final String status;
 
   ChatBoxDataList({
+    required this.isBot,
     required this.messages,
     required this.notify,
     required this.remoteJid,
     required this.roomChat,
+    required this.status,
   });
 
   factory ChatBoxDataList.fromJson(Map<String, dynamic> json) {
     return ChatBoxDataList(
+      isBot: json['is_bot'] as bool,
       messages: Messages.fromJson(json['messages']),
       notify: json['notify'] as String,
       remoteJid: json['remote_jid'] as String,
       roomChat: json['room_chat'] as String,
+      status: json['status'] as String,
     );
   }
 }

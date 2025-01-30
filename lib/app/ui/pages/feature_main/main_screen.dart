@@ -121,9 +121,9 @@ class _MainScreenState extends State<MainScreen> {
     ),
   ];
 
-  void requestNotificationPermission() async {
-    await FirebaseCloudMessagingService.requestPermission();
-  }
+  // void requestNotificationPermission() async {
+  //   await FirebaseCloudMessagingService.requestPermission();
+  // }
 
   @override
   void dispose() {
