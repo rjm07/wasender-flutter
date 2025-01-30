@@ -49,6 +49,7 @@ class PesanServices extends ChangeNotifier {
         deviceKey,
         page,
         perPage,
+        showErrorSnackbar,
       );
       if (isPagination) {
         chatBoxDataDetails.addAll(chatBoxDataDetail);
@@ -61,6 +62,7 @@ class PesanServices extends ChangeNotifier {
         deviceKey,
         page,
         perPage,
+        showErrorSnackbar,
       );
       if (isPagination) {
         chatBoxDataDetails.addAll(chatBoxDataDetail);
@@ -73,6 +75,7 @@ class PesanServices extends ChangeNotifier {
         deviceKey,
         page,
         perPage,
+        showErrorSnackbar,
       );
       if (isPagination) {
         chatBoxDataDetails.addAll(chatBoxDataDetail);
@@ -139,6 +142,7 @@ class PesanServices extends ChangeNotifier {
     String deviceKey,
     int page,
     int perPage,
+    Function(String) showErrorSnackbar,
   ) async {
     final queryParams = {
       'page': page,
@@ -176,6 +180,8 @@ class PesanServices extends ChangeNotifier {
           return [];
         }
       } else {
+        final String message = jsonDecode(response.body)["message_desc"];
+        showErrorSnackbar(message);
         throw Exception('Error: ${response.statusCode} - ${response.reasonPhrase}');
       }
     } catch (error, stackTrace) {
@@ -190,6 +196,7 @@ class PesanServices extends ChangeNotifier {
     String deviceKey,
     int page,
     int perPage,
+    Function(String) showErrorSnackbar,
   ) async {
     final queryParams = {
       'page': page,
@@ -227,6 +234,8 @@ class PesanServices extends ChangeNotifier {
           return [];
         }
       } else {
+        final String message = jsonDecode(response.body)["message_desc"];
+        showErrorSnackbar(message);
         throw Exception('Error: ${response.statusCode} - ${response.reasonPhrase}');
       }
     } catch (error, stackTrace) {
@@ -241,6 +250,7 @@ class PesanServices extends ChangeNotifier {
     String deviceKey,
     int page,
     int perPage,
+    Function(String) showErrorSnackbar,
   ) async {
     final queryParams = {
       'page': page,
@@ -278,6 +288,8 @@ class PesanServices extends ChangeNotifier {
           return [];
         }
       } else {
+        final String message = jsonDecode(response.body)["message_desc"];
+        showErrorSnackbar(message);
         throw Exception('Error: ${response.statusCode} - ${response.reasonPhrase}');
       }
     } catch (error, stackTrace) {
