@@ -63,6 +63,7 @@ class FirebaseCloudMessagingService {
     FirebaseMessaging.onMessage.listen((RemoteMessage message) {
       logger.i('Foreground Notification: ${message.notification?.title}');
       _showLocalNotification(message);
+      handleUserTriggeredNavigation();
     });
 
     FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
@@ -107,13 +108,10 @@ class FirebaseCloudMessagingService {
   void _onNotificationResponse(NotificationResponse response) {
     if (response.payload != null) {
       logger.i('Notification response payload: ${response.payload}');
-      try {
-        final Map<String, dynamic> data = jsonDecode(response.payload!) as Map<String, dynamic>;
-        _storeNotificationPayload(data);
-        handleUserTriggeredNavigation();
-      } catch (e) {
-        logger.e('Error decoding notification payload: $e');
-      }
+
+      final Map<String, dynamic> data = jsonDecode(response.payload!) as Map<String, dynamic>;
+      _storeNotificationPayload(data);
+      handleUserTriggeredNavigation();
     } else {
       logger.w('Notification response payload is null.');
     }

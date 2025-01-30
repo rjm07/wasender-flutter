@@ -8,6 +8,7 @@ import '../../../../../../utils/lang/images.dart';
 import 'chats/chat_categories/active_chat_screen.dart';
 
 class PesanScreen extends StatefulWidget {
+  static const routeName = '/pesan';
   final int initialPageIndex;
   const PesanScreen({super.key, this.initialPageIndex = 0});
 

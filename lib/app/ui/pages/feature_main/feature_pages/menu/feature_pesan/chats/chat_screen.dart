@@ -18,6 +18,7 @@ import '../../../../../../shared/widgets/custom_button.dart';
 import '../../../../../../shared/widgets/handle_ticket.dart';
 import '../../../../../../shared/widgets/msg_widget/other_msg_widget.dart';
 import '../../../../../../shared/widgets/msg_widget/own_msg_widget.dart';
+import '../pesan_screen.dart';
 import 'chat_user_profile.dart';
 
 class ChatScreen extends StatefulWidget {
@@ -224,7 +225,12 @@ class _ChatScreenState extends State<ChatScreen> {
     void onTicketAccepted() async {
       try {
         await devices.assignTicket(widget.roomChat, widget.senderNumber);
-        NavService.pop(pages: 2);
+        //NavService.pop(pages: 2);
+        //NavService.jumpToPageID('/pesan');
+        NavService.popUntilAndPush(
+          popUntilRoute: '/dashboard',
+          pushScreen: PesanScreen(),
+        );
       } catch (error) {
         // Close the dialog and show a SnackBar with the error message
         NavService.pop();
