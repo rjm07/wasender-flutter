@@ -80,6 +80,7 @@ class IDData {
 }
 
 class Conversation {
+  final bool? isBot;
   final String? id;
   final String? type;
   final String? chat;
@@ -104,6 +105,7 @@ class Conversation {
   final String? messageId;
 
   Conversation({
+    this.isBot,
     this.id,
     this.type,
     this.chat,
@@ -130,6 +132,7 @@ class Conversation {
 
   factory Conversation.fromJson(Map<String, dynamic> json) {
     return Conversation(
+      isBot: json['is_bot'] as bool?,
       id: json['id'] as String?,
       type: json['type'] as String?,
       chat: json['chat'] as String?,

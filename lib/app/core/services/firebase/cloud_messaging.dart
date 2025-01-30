@@ -24,8 +24,13 @@ class FirebaseCloudMessagingService {
 
     const InitializationSettings initSettings = InitializationSettings(android: androidInitSettings);
 
-    await _flutterLocalNotificationsPlugin.initialize(initSettings,
-        onDidReceiveNotificationResponse: _onNotificationResponse);
+    // await _flutterLocalNotificationsPlugin.initialize(initSettings,
+    //     onDidReceiveNotificationResponse: _onNotificationResponse);
+
+    await _flutterLocalNotificationsPlugin.initialize(
+      initSettings,
+      onDidReceiveNotificationResponse: _onNotificationResponse, // Handles foreground/background clicks
+    );
 
     // Request permissions for notifications
     if (Platform.isIOS) {
@@ -70,7 +75,11 @@ class FirebaseCloudMessagingService {
       if (message != null) {
         logger.i('Notification tapped (terminated): ${message.data}');
         _storeNotificationPayload(message.data);
-        handleUserTriggeredNavigation();
+
+        // ⚠️ Delay navigation until after the app is fully loaded
+        Future.delayed(Duration(seconds: 1), () {
+          handleUserTriggeredNavigation();
+        });
       }
     });
   }
@@ -122,9 +131,9 @@ class FirebaseCloudMessagingService {
       String senderNumber = data['senderNumber'] ?? '';
       String fullName = data['fullname'] ?? '';
       String timestamp = data['timestamp'] ?? '';
-      bool isStatusOpen = data['isStatusOpen'] ?? false;
+      String isStatusOpen = data['isStatusOpen'] ?? 'False';
 
-      logger.i('Navigating to ChatScreen with data: $data');
+      logger.i('Navigating to ChatScreen with data: $data and the status is: $isStatusOpen');
 
       NavService.push(
         screen: ChatScreen(
