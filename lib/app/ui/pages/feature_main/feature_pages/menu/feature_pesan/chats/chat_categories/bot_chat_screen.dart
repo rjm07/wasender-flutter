@@ -93,6 +93,8 @@ class _BotChatScreenState extends State<BotChatScreen> {
             roomChat: conversation.roomChat ?? '',
             notify: conversation.notify ?? '',
             remoteJid: conversation.senderNumber ?? '',
+            isBot: conversation.isBot ?? false,
+            status: conversation.status.toString(),
             messages: Messages(
               agentId: conversation.agentId,
               agentName: conversation.agentName,

@@ -141,7 +141,7 @@ class FirebaseCloudMessagingService {
           timestamp: timestamp,
           roomChat: roomChat,
           senderNumber: senderNumber,
-          statusIsOpen: isStatusOpen,
+          statusIsOpen: false,
           onHandleTicket: () {},
         ),
       );
