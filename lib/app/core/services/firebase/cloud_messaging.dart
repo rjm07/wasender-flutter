@@ -131,9 +131,9 @@ class FirebaseCloudMessagingService {
       String senderNumber = data['senderNumber'] ?? '';
       String fullName = data['fullname'] ?? '';
       String timestamp = data['timestamp'] ?? '';
-      String isStatusOpen = data['isStatusOpen'] ?? 'False';
+      String status = data['status'] ?? 'OPEN';
 
-      logger.i('Navigating to ChatScreen with data: $data and the status is: $isStatusOpen');
+      logger.i('Navigating to ChatScreen with data: $data and the status is: $status');
 
       NavService.push(
         screen: ChatScreen(
@@ -141,7 +141,7 @@ class FirebaseCloudMessagingService {
           timestamp: timestamp,
           roomChat: roomChat,
           senderNumber: senderNumber,
-          statusIsOpen: false,
+          statusIsOpen: status,
           onHandleTicket: () {},
         ),
       );

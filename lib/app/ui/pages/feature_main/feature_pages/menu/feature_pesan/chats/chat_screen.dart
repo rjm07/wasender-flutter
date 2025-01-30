@@ -38,7 +38,7 @@ class ChatScreen extends StatefulWidget {
   final String timestamp;
   final String roomChat;
   final String senderNumber;
-  final bool statusIsOpen;
+  final String statusIsOpen;
   final void Function() onHandleTicket;
 
   @override
@@ -64,7 +64,8 @@ class _ChatScreenState extends State<ChatScreen> {
       getChatBoxConversation();
     });
     final socketService = SocketService();
-    if (widget.statusIsOpen == true) {
+    logger.i('statusIsOpen: ${widget.statusIsOpen}');
+    if (widget.statusIsOpen.toUpperCase() == 'OPEN') {
       socketService.listen(true, onConnectActive);
     } else {
       socketService.listen(false, onConnectActive);
@@ -365,7 +366,7 @@ class _ChatScreenState extends State<ChatScreen> {
               ),
             ),
           ),
-          widget.statusIsOpen == true
+          widget.statusIsOpen.toUpperCase() == 'OPEN'
               ? Container(
                   color: Colors.white,
                   child: Padding(
@@ -405,7 +406,7 @@ class _ChatScreenState extends State<ChatScreen> {
                                     HandleStatusLabelWidget(
                                         icon: CustomIcons.iconHTStatus,
                                         title: 'Status',
-                                        status: widget.statusIsOpen ? 'OPEN' : ''),
+                                        status: widget.statusIsOpen.toUpperCase() == 'TRUE' ? 'OPEN' : 'CLOSED'),
                                     SizedBox(height: 8),
                                     HandleGenericLabelWidget(
                                         icon: CustomIcons.iconHTIncomingEmail,

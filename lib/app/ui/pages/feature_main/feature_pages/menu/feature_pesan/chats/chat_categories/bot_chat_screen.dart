@@ -193,7 +193,7 @@ class _BotChatScreenState extends State<BotChatScreen> {
                                       senderNumber: chatData.messages.senderNumber,
                                       fullName: chatData.messages.senderName,
                                       timestamp: chatData.messages.messageTimestampStr,
-                                      statusIsOpen: true,
+                                      statusIsOpen: chatData.status.toString(),
                                       onHandleTicket: widget.onHandleTicket,
                                     ),
                                   );
