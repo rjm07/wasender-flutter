@@ -115,7 +115,9 @@ class _ChatScreenState extends State<ChatScreen> {
       // Parse the incoming data
       final Map<String, dynamic> response = Map<String, dynamic>.from(data);
       debugPrint('response: $response');
-      debugPrint('I went step 1');
+      if (kDebugMode) {
+        print('I went step 1');
+      }
       // Extract sender_id and compare it with your own ID
       final String? agentId = response['agent_id'];
       final String? fkUserID = await LocalPrefs.getFKUserID();
