@@ -115,20 +115,21 @@ class _ChatScreenState extends State<ChatScreen> {
       // Parse the incoming data
       final Map<String, dynamic> response = Map<String, dynamic>.from(data);
       debugPrint('response: $response');
-
+      debugPrint('I went step 1');
       // Extract sender_id and compare it with your own ID
       final String? agentId = response['agent_id'];
       final String? fkUserID = await LocalPrefs.getFKUserID();
 
       if (agentId == fkUserID) {
         final Conversation conversation = Conversation.fromJson(response);
-
+        debugPrint('I went step 2');
         logger.i('response: $response');
         logger.e('conversation: $conversation');
 
         if (mounted) {
           setState(() {
             logger.i('setState: $response');
+            debugPrint('I went step 3');
 
             // Check if an object with the same id exists in the list
             final int index = _messages.indexWhere((msg) => msg.messageId == conversation.messageId);
@@ -169,8 +170,8 @@ class _ChatScreenState extends State<ChatScreen> {
       // Send the message through the API
       devices.sendMessage(
         widget.roomChat,
-        widget.senderNumber,
         whatsappNumber ?? '',
+        widget.senderNumber,
         msg,
       );
     }
@@ -225,10 +226,8 @@ class _ChatScreenState extends State<ChatScreen> {
     void onTicketAccepted() async {
       try {
         await devices.assignTicket(widget.roomChat, widget.senderNumber);
-        //NavService.pop(pages: 2);
-        //NavService.jumpToPageID('/pesan');
         NavService.popUntilAndPush(
-          popUntilRoute: '/dashboard',
+          popUntilRoute: '/main',
           pushScreen: PesanScreen(),
         );
       } catch (error) {

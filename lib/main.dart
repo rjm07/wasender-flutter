@@ -38,7 +38,6 @@ void main() async {
   //await LocalNotificationsServices.init();
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
-
   FirebaseCloudMessagingService fcmService = FirebaseCloudMessagingService();
   await fcmService.initialize();
   HttpOverrides.global = MyHttpOverrides();
@@ -67,5 +66,8 @@ void main() async {
   );
 }
 
-//to run in dev mode
-//flutter run --dart-define-from-file=.env/dev.json
+// to run in dev mode
+// flutter run --dart-define-from-file=.env/dev.json
+
+// build apk
+// flutter build apk --flavor prod --dart-define-from-file=.env/prod.json --target lib/main.dart

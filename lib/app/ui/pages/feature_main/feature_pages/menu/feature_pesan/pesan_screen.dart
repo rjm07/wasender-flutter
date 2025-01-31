@@ -104,7 +104,7 @@ class _PesanScreenState extends State<PesanScreen> with SingleTickerProviderStat
         leading: IconButton(
           icon: Icon(Icons.arrow_back, color: Colors.black),
           onPressed: () {
-            NavService.pop(pages: 2);
+            NavService.jumpToPageID('/main');
           },
         ),
         title: Row(
