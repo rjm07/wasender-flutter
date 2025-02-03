@@ -11,7 +11,6 @@ import 'dart:io';
 
 import 'app/core/services/auth.dart';
 import 'app/core/services/fcm.dart';
-import 'app/core/services/local_notifications/local_notifications.dart';
 import 'app/core/services/perangkat_saya/perangkat_saya.dart';
 import 'app/core/services/pesan/pesan.dart';
 
@@ -25,10 +24,14 @@ class MyHttpOverrides extends HttpOverrides {
 
 Future<dynamic> myBackgroundMessageHandler(RemoteMessage message) async {
   if (message.notification != null) {
-    print(
-        'On Background: ${message.notification?.title}/${message.notification!.body}/${message.notification!.titleLocKey}');
+    if (kDebugMode) {
+      print(
+          'On Background: ${message.notification?.title}/${message.notification!.body}/${message.notification!.titleLocKey}');
+    }
   }
-  print('Received background message ${message.messageId}');
+  if (kDebugMode) {
+    print('Received background message ${message.messageId}');
+  }
   return Future.value(true);
 }
 

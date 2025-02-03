@@ -182,12 +182,15 @@ class _ChatScreenState extends State<ChatScreen> {
   }
 
   void _sendMedia() async {
+    final PesanServices devices = Provider.of<PesanServices>(context, listen: false);
     final ImagePicker picker = ImagePicker();
     final XFile? pickedFile = await picker.pickImage(source: ImageSource.gallery);
 
     if (pickedFile != null) {
       final File file = File(pickedFile.path);
-      final PesanServices devices = Provider.of<PesanServices>(context, listen: false);
+
+      // Obtain PesanServices before awaiting
+
       final String? whatsappNumber = await LocalPrefs.getWhatsappNumber();
 
       // Send the media file through the API
