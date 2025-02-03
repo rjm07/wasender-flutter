@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../../../../../../../../utils/lang/colors.dart';
+
 class ProfileSecurityScreen extends StatefulWidget {
   const ProfileSecurityScreen({super.key});
 
@@ -25,23 +27,25 @@ class _ProfileSecurityScreenState extends State<ProfileSecurityScreen> {
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text('Security Settings', style: TextStyle(color: Colors.black)),
+                SizedBox(height: 20),
+                Text('Security Settings', style: TextStyle(fontWeight: FontWeight.w500, color: Colors.black87)),
+                SizedBox(height: 4),
                 Text(
                   "These settings helps you keep your account secure",
-                  style: TextStyle(fontSize: 12, color: Colors.black54),
+                  style: TextStyle(fontSize: 12, fontWeight: FontWeight.w400, color: Colors.black54),
                 ),
                 SizedBox(height: 20),
               ],
             ),
           ),
-          backgroundColor: Colors.white,
+          backgroundColor: AppColors.navBarColor,
           elevation: 0,
           automaticallyImplyLeading: false,
 
           iconTheme: const IconThemeData(color: Colors.black), // Change back icon color
         ),
         body: Padding(
-          padding: const EdgeInsets.only(left: 24.0, right: 24.0, bottom: 120),
+          padding: const EdgeInsets.only(top: 16.0, left: 24.0, right: 24.0, bottom: 120),
           child: Container(
             decoration: BoxDecoration(
               border: Border.all(color: Colors.grey.shade300),
@@ -95,13 +99,14 @@ class _ProfileSecurityScreenState extends State<ProfileSecurityScreen> {
               Text(
                 'Save my Activity Logs',
                 style: TextStyle(
-                  fontWeight: FontWeight.bold,
+                  fontWeight: FontWeight.w500,
+                  color: Colors.black87,
                   fontSize: 18.0,
                 ),
               ),
               SizedBox(height: 4),
               Text(
-                'You can save all your activity logs including unusual activity detected.',
+                'You can save all your activity logs including\n unusual activity detected.',
                 style: TextStyle(fontSize: 12, color: Colors.black54),
               ),
             ],
@@ -116,6 +121,8 @@ class _ProfileSecurityScreenState extends State<ProfileSecurityScreen> {
             });
           },
           activeColor: Colors.green,
+          inactiveThumbColor: Colors.grey,
+          inactiveTrackColor: Colors.grey.shade300,
         ),
       ],
     );
@@ -132,19 +139,24 @@ class _ProfileSecurityScreenState extends State<ProfileSecurityScreen> {
             Text(
               'Change Password',
               style: TextStyle(
-                fontWeight: FontWeight.bold,
+                fontWeight: FontWeight.w500,
+                color: Colors.black87,
                 fontSize: 18.0,
               ),
             ),
             SizedBox(height: 4),
             Text(
               'Set a unique password to protect\n your account',
+              style: TextStyle(
+                color: Colors.black54,
+                fontSize: 12,
+              ),
               maxLines: 2,
             ),
             SizedBox(height: 4),
             Text(
-              'Last changed: Oct 2, 2019',
-              style: TextStyle(color: Colors.grey),
+              ' Last changed: Oct 2, 2019',
+              style: TextStyle(fontSize: 12, color: Colors.black45),
             ),
           ],
         ),
