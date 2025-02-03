@@ -8,6 +8,7 @@ import '../../../../../../core/models/profile/profile_data.dart';
 import '../../../../../../core/services/preferences.dart';
 import '../../../../../../utils/lang/colors.dart';
 import '../../../../../../utils/lang/images.dart';
+import '../../../../../shared/widgets/profile_card.dart';
 import '../../../../feature_login/login_screen.dart';
 
 class ProfileScreen extends StatefulWidget {
@@ -30,8 +31,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   }
 
   Future<ProfileDataResponse?> getProfileData() async {
-    final ProfileServices profileData =
-        Provider.of<ProfileServices>(context, listen: false);
+    final ProfileServices profileData = Provider.of<ProfileServices>(context, listen: false);
     final String? tokenBearer = await LocalPrefs.getBearerToken();
     debugPrint("tokenBearer: $tokenBearer");
     if (tokenBearer != null) {
@@ -61,8 +61,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
           } else if (snapshot.hasError) {
             return Text("Error: ${snapshot.error}");
           } else if (snapshot.hasData) {
-            final ProfileDataResponse profileDataResp =
-                snapshot.data as ProfileDataResponse;
+            final ProfileDataResponse profileDataResp = snapshot.data as ProfileDataResponse;
 
             return Scaffold(
               appBar: AppBar(
@@ -89,27 +88,20 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                 ClipOval(
                                   // Ensures the image is clipped to a circular shape
                                   child: Image.network(
-                                    profileDataResp.messageData?.avatar ??
-                                        CustomIcons.iconProfilePicture,
+                                    profileDataResp.messageData?.avatar ?? CustomIcons.iconProfilePicture,
                                     height: 90,
                                     width: 90,
                                     fit: BoxFit.cover,
                                     // Adjust image fit as needed
-                                    loadingBuilder:
-                                        (context, child, loadingProgress) {
+                                    loadingBuilder: (context, child, loadingProgress) {
                                       if (loadingProgress == null) {
                                         return child;
                                       } else {
                                         return Center(
                                           child: CircularProgressIndicator(
-                                            value: loadingProgress
-                                                        .expectedTotalBytes !=
-                                                    null
-                                                ? loadingProgress
-                                                        .cumulativeBytesLoaded /
-                                                    (loadingProgress
-                                                            .expectedTotalBytes ??
-                                                        1)
+                                            value: loadingProgress.expectedTotalBytes != null
+                                                ? loadingProgress.cumulativeBytesLoaded /
+                                                    (loadingProgress.expectedTotalBytes ?? 1)
                                                 : null,
                                           ),
                                         );
@@ -117,18 +109,15 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                     },
                                     errorBuilder: (context, error, stackTrace) {
                                       if (error.toString().contains('404') ||
-                                          error.toString().contains(
-                                              'HTTP request failed')) {
+                                          error.toString().contains('HTTP request failed')) {
                                         return Image.asset(
-                                          CustomIcons
-                                              .iconProfilePicture, // Use the custom icon for the profile
+                                          CustomIcons.iconProfilePicture, // Use the custom icon for the profile
                                           height: 90,
                                           width: 90,
                                         );
                                       } else {
                                         return const Icon(
-                                          Icons
-                                              .error, // Show a generic error icon for other errors
+                                          Icons.error, // Show a generic error icon for other errors
                                           color: Colors.red,
                                         );
                                       }
@@ -138,25 +127,16 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                 const SizedBox(height: 8),
                                 Text(
                                   profileDataResp.messageData?.email ?? '-',
-                                  style: const TextStyle(
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.bold),
+                                  style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                                 ),
                                 const SizedBox(height: 4),
                                 Text(profileDataResp.messageData?.role ?? '-',
-                                    style: TextStyle(
-                                        fontSize: 14, color: Colors.grey)),
-                                Text(
-                                    profileDataResp.messageData?.inactive ==
-                                            "TRUE"
-                                        ? "Not Verified"
-                                        : "Verified",
+                                    style: TextStyle(fontSize: 14, color: Colors.grey)),
+                                Text(profileDataResp.messageData?.inactive == "TRUE" ? "Not Verified" : "Verified",
                                     style: TextStyle(
                                         fontWeight: FontWeight.w600,
                                         fontSize: 16,
-                                        color: profileDataResp
-                                                    .messageData?.inactive ==
-                                                "TRUE"
+                                        color: profileDataResp.messageData?.inactive == "TRUE"
                                             ? Colors.red
                                             : Colors.green)),
                               ],
@@ -166,73 +146,57 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           const Divider(height: 0.5, color: Colors.black26),
                           const SizedBox(height: 24),
                           // Options list
-                          Card(
-                            child: ListTile(
-                              iconColor: Colors.green.shade300,
-                              textColor: Colors.black54,
-                              leading: const Icon(Icons.person),
-                              title: const Text('View Profile'),
-                              onTap: () {
-                                NavService.push(
-                                  screen: ViewProfileScreen(
-                                    profileData: profileDataResp.messageData,
-                                  ),
-                                );
-                              },
-                            ),
+                          ProfileCard(
+                            icon: const Icon(Icons.person),
+                            title: 'View Profile',
+                            onTap: () {
+                              NavService.push(
+                                screen: ViewProfileScreen(
+                                  profileData: profileDataResp.messageData,
+                                ),
+                              );
+                            },
                           ),
-                          Card(
-                            child: ListTile(
-                              iconColor: Colors.green.shade300,
-                              textColor: Colors.black54,
-                              leading: const Icon(Icons.settings),
-                              title: const Text('Account Settings'),
-                              onTap: () {
-                                NavService.push(
-                                  screen: ViewProfileScreen(
-                                    profileData: profileDataResp.messageData,
-                                    initialTabIndex: 1,
-                                  ),
-                                );
-                              },
-                            ),
+                          ProfileCard(
+                            icon: const Icon(Icons.settings),
+                            title: 'Account Settings',
+                            onTap: () {
+                              NavService.push(
+                                screen: ViewProfileScreen(
+                                  profileData: profileDataResp.messageData,
+                                  initialTabIndex: 1,
+                                ),
+                              );
+                            },
                           ),
-                          Card(
-                            child: ListTile(
-                              iconColor: Colors.green.shade300,
-                              textColor: Colors.black54,
-                              leading: const Icon(Icons.timeline),
-                              title: const Text('Login Activity'),
-                              onTap: () {
-                                NavService.push(
-                                  screen: ViewProfileScreen(
-                                    profileData: profileDataResp.messageData,
-                                    initialTabIndex: 2,
-                                  ),
-                                );
-                              },
-                            ),
+                          ProfileCard(
+                            icon: const Icon(Icons.timeline),
+                            title: 'Login Activity',
+                            onTap: () {
+                              NavService.push(
+                                screen: ViewProfileScreen(
+                                  profileData: profileDataResp.messageData,
+                                  initialTabIndex: 2,
+                                ),
+                              );
+                            },
                           ),
-                          Card(
-                            child: ListTile(
-                              leading: const Icon(Icons.dark_mode),
-                              title: const Text('Dark Mode'),
-                              iconColor: Colors.green.shade300,
-                              textColor: Colors.black54,
-                              trailing: Switch(
-                                value: _isDarkMode,
-                                onChanged: (bool value) {
-                                  setState(() {
-                                    _isDarkMode =
-                                        value; // Toggle the switch state
-                                  });
-                                },
-                                activeColor: Colors.green,
-                              ),
-                              onTap: () {
-                                // Optional: You can also toggle the switch when tapping the ListTile
+
+                          ProfileCard(
+                            icon: const Icon(Icons.dark_mode),
+                            title: 'Dark Mode',
+                            isDarkMode: true,
+                            onTap: () {
+                              // Optional: You can also toggle the switch when tapping the ListTile
+                              setState(() {
+                                _isDarkMode = !_isDarkMode;
+                              });
+                            },
+                            trailing: Switch(
+                              value: _isDarkMode,
+                              onChanged: (bool value) {
                                 setState(() {
-                                  _isDarkMode = !_isDarkMode;
+                                  _isDarkMode = value; // Toggle the switch state
                                 });
                               },
                             ),
@@ -243,32 +207,25 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   ),
                   // Spacer to push the button to the bottom
                   Padding(
-                    padding: const EdgeInsets.only(
-                        left: 48, right: 48, bottom: 44.0),
+                    padding: const EdgeInsets.only(left: 48, right: 48, bottom: 44.0),
                     child: SizedBox(
-                      width: double
-                          .infinity, // Make the button expand to full width
+                      width: double.infinity, // Make the button expand to full width
                       child: ElevatedButton.icon(
                         onPressed: () {
                           Navigator.of(context).pushAndRemoveUntil(
-                            MaterialPageRoute(
-                                builder: (context) => const LoginScreen()),
-                            (Route<dynamic> route) =>
-                                false, // Remove all previous routes
+                            MaterialPageRoute(builder: (context) => const LoginScreen()),
+                            (Route<dynamic> route) => false, // Remove all previous routes
                           );
                         },
                         style: ElevatedButton.styleFrom(
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 30, vertical: 12),
+                          padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 12),
                           backgroundColor: Colors.grey,
                           shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(
-                                5.0), // Change the radius here
+                            borderRadius: BorderRadius.circular(5.0), // Change the radius here
                           ),
                         ),
                         icon: const Icon(Icons.logout, color: Colors.white),
-                        label: const Text('Sign Out',
-                            style: TextStyle(color: Colors.white)),
+                        label: const Text('Sign Out', style: TextStyle(color: Colors.white)),
                       ),
                     ),
                   ),

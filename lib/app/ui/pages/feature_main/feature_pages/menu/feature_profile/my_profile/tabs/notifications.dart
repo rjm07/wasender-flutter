@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../../../../../../../../utils/lang/colors.dart';
 import '../../../../../../../shared/widgets/view_profile/info_card.dart';
 
 class ProfileNotificationsScreen extends StatefulWidget {
@@ -23,12 +24,12 @@ class _ProfileNotificationsScreenState extends State<ProfileNotificationsScreen>
       child: Scaffold(
         appBar: AppBar(
           title: const Padding(
-            padding: EdgeInsets.all(8.0),
+            padding: EdgeInsets.only(top: 16.0, bottom: 16.0, left: 8.0, right: 8.0),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text('Notification Settings', style: TextStyle(color: Colors.black)),
+                Text('Notification Settings', style: TextStyle(color: Colors.black87)),
                 Text(
                   "You will get only notification when have enabled.",
                   style: TextStyle(fontSize: 12, color: Colors.black54),
@@ -36,14 +37,14 @@ class _ProfileNotificationsScreenState extends State<ProfileNotificationsScreen>
               ],
             ),
           ),
-          backgroundColor: Colors.white,
+          backgroundColor: AppColors.navBarColor,
           elevation: 0,
           automaticallyImplyLeading: false,
 
-          iconTheme: const IconThemeData(color: Colors.black), // Change back icon color
+          iconTheme: const IconThemeData(color: Colors.black87), // Change back icon color
         ),
         body: Padding(
-          padding: const EdgeInsets.only(left: 24.0, right: 24.0, bottom: 16.0),
+          padding: const EdgeInsets.only(top: 16.0, left: 24.0, right: 24.0, bottom: 16.0),
           child: InfoCard(
             children: [
               const Column(
@@ -54,6 +55,7 @@ class _ProfileNotificationsScreenState extends State<ProfileNotificationsScreen>
                     'Security Alerts',
                     style: TextStyle(
                       fontWeight: FontWeight.bold,
+                      color: Colors.black87,
                       fontSize: 18.0,
                     ),
                   ),
@@ -121,7 +123,9 @@ class _ProfileNotificationsScreenState extends State<ProfileNotificationsScreen>
       title: Text(title, style: const TextStyle(fontSize: 14, color: Colors.black87)),
       value: value,
       onChanged: onChanged,
-      activeColor: Colors.green, // Green color for active switch
+      activeColor: Colors.green,
+      inactiveThumbColor: Colors.grey,
+      inactiveTrackColor: Colors.grey.shade300,
     );
   }
 }
