@@ -1,6 +1,5 @@
 import 'dart:convert';
 
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:wasender/app/core/services/preferences.dart';
 import 'package:http/http.dart' as http;

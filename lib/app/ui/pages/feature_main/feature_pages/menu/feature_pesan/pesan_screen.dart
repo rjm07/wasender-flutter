@@ -23,7 +23,7 @@ class _PesanScreenState extends State<PesanScreen> with SingleTickerProviderStat
   int closedBadgeCount = 0;
   int openBadgeCount = 0;
 
-  int _selectedFilterIndex = 0; // Track the selected filter
+  //int _selectedFilterIndex = 0; // Track the selected filter
 
   @override
   void initState() {
@@ -55,11 +55,11 @@ class _PesanScreenState extends State<PesanScreen> with SingleTickerProviderStat
   }
 
   // Method to handle filter selection
-  void _onFilterSelected(int index) {
-    setState(() {
-      _selectedFilterIndex = index;
-    });
-  }
+  // void _onFilterSelected(int index) {
+  //   setState(() {
+  //     _selectedFilterIndex = index;
+  //   });
+  // }
 
   // Method to handle page changes via swipes
   void _onPageChanged(int index) {
@@ -104,7 +104,7 @@ class _PesanScreenState extends State<PesanScreen> with SingleTickerProviderStat
         leading: IconButton(
           icon: Icon(Icons.arrow_back, color: Colors.black),
           onPressed: () {
-            NavService.pop(pages: 2);
+            NavService.jumpToPageID('/main');
           },
         ),
         title: Row(

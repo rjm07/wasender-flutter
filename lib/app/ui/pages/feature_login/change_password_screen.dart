@@ -157,7 +157,7 @@ class _State extends State<ChangePasswordScreen> {
                                     }
                                     return null;
                                   },
-                                  onChanged: (String) {},
+                                  onChanged: (String text) {},
                                 );
                               },
                             ),
@@ -186,7 +186,7 @@ class _State extends State<ChangePasswordScreen> {
                                     }
                                     return null;
                                   },
-                                  onChanged: (String) {},
+                                  onChanged: (String text) {},
                                 );
                               },
                             ),

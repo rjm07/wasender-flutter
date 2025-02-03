@@ -9,7 +9,6 @@ import '../../../core/services/navigation/navigation.dart';
 import '../../../utils/lang/colors.dart';
 import '../../shared/widgets/custom_button.dart';
 import '../../shared/widgets/custom_textfield.dart';
-import '../feature_main/main_screen.dart';
 import 'change_password_screen.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -28,7 +27,7 @@ class _LoginScreenState extends State<LoginScreen> {
   final passwordVisibilityNotifier = ValueNotifier<bool>(true);
 
   var _isAuthenticating = false;
-  var _isEmailObscure = false;
+  final _isEmailObscure = false;
 
   @override
   void initState() {
@@ -171,7 +170,7 @@ class _LoginScreenState extends State<LoginScreen> {
                               return null;
                             }
                           },
-                          onChanged: (String) {},
+                          onChanged: (String value) {},
                           suffixIcon: null,
                         ),
                         const SizedBox(
@@ -204,7 +203,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                   return null;
                                 }
                               },
-                              onChanged: (String) {},
+                              onChanged: (String value) {},
                             );
                           },
                         ),

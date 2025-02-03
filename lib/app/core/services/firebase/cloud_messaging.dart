@@ -1,8 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:logger/logger.dart';
@@ -24,12 +22,11 @@ class FirebaseCloudMessagingService {
 
     const InitializationSettings initSettings = InitializationSettings(android: androidInitSettings);
 
-    // await _flutterLocalNotificationsPlugin.initialize(initSettings,
-    //     onDidReceiveNotificationResponse: _onNotificationResponse);
-
     await _flutterLocalNotificationsPlugin.initialize(
       initSettings,
+
       onDidReceiveNotificationResponse: _onNotificationResponse, // Handles foreground/background clicks
+      // onDidReceiveBackgroundNotificationResponse: _onNotificationResponse,
     );
 
     // Request permissions for notifications
@@ -85,7 +82,7 @@ class FirebaseCloudMessagingService {
     });
   }
 
-  void _showLocalNotification(RemoteMessage message) {
+  void _showLocalNotification(RemoteMessage message) async {
     const AndroidNotificationDetails androidDetails = AndroidNotificationDetails(
       'channel_id',
       'channel_name',
@@ -96,12 +93,13 @@ class FirebaseCloudMessagingService {
 
     const NotificationDetails notificationDetails = NotificationDetails(android: androidDetails);
 
-    _flutterLocalNotificationsPlugin.show(
+    await _flutterLocalNotificationsPlugin.show(
       message.hashCode,
       message.notification?.title,
       message.notification?.body,
       notificationDetails,
-      payload: message.data.toString(),
+      payload: jsonEncode(message.data),
+      // payload: message.data.toString(),
     );
   }
 
