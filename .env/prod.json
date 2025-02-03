@@ -1,7 +1,8 @@
 
 {
-  "baseUrl": "https://wasender.pytavia.id",
-  "wasenderKey": "SOCOM-KEY-SW7b6KbWU3",
-  "wasenderSec": "SOCOM-SEC-q15fx7rEeX",
+  "baseUrl": "https://api.whatup.id",
+  "socketURL" : "https://whatup.id",
+  "whatupKey": "WHATUP-KEY-SW7b6KbWU3",
+  "whatupSec": "WHATUP-SEC-q15fx7rEeX",
   "hashKey": "67721160-d317-4ff3-82be-194626be0844"
 }

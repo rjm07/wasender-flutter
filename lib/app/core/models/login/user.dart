@@ -8,6 +8,7 @@ class User {
     required this.role,
     required this.userActivation,
     required this.userName,
+    required this.passwordBySystem,
   });
 
   final String accessToken;
@@ -18,6 +19,7 @@ class User {
   final String role;
   final bool userActivation;
   final String userName;
+  final String passwordBySystem;
 
   factory User.fromJson(Map<String, dynamic> json) {
     return User(
@@ -26,6 +28,7 @@ class User {
         clientID: json["client_id"] as String,
         fkUserID: json["fk_user_id"] as String,
         fullName: json["fullname"] as String,
+        passwordBySystem: json["password_by_system"] as String,
         role: json["role"] as String,
         userActivation: json["user_activation"] as bool,
         userName: json["username"] as String);

@@ -1,10 +1,15 @@
+import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:wasender/app/utils/lang/images.dart';
 
 import '../../../core/services/auth.dart';
+import '../../../core/services/navigation/navigation.dart';
+import '../../../utils/lang/colors.dart';
 import '../../shared/widgets/custom_button.dart';
 import '../../shared/widgets/custom_textfield.dart';
+import 'change_password_screen.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -18,8 +23,11 @@ class _LoginScreenState extends State<LoginScreen> {
 
   late TextEditingController emailController;
   late TextEditingController passwordController;
+  final emailVisibilityNotifier = ValueNotifier<bool>(true);
+  final passwordVisibilityNotifier = ValueNotifier<bool>(true);
 
   var _isAuthenticating = false;
+  final _isEmailObscure = false;
 
   @override
   void initState() {
@@ -30,9 +38,10 @@ class _LoginScreenState extends State<LoginScreen> {
 
   @override
   void dispose() {
-    super.dispose();
     emailController.dispose();
     passwordController.dispose();
+
+    super.dispose();
   }
 
   @override
@@ -47,35 +56,63 @@ class _LoginScreenState extends State<LoginScreen> {
       final messenger = ScaffoldMessenger.of(context); // Store reference to avoid using context in async gap
 
       if (formKey.currentState!.validate()) {
-        auth.login(emailController.text, passwordController.text).onError((error, stackTrace) {
+        auth.login(emailController.text, passwordController.text).then((result) {
+          setState(() {
+            _isAuthenticating = false;
+          });
+
+          if (result?.messageDesc == 'LOGIN SUCCESS' || result?.messageDesc == 'LOGIN SUCCES') {
+            if (result?.messageData['password_by_system'] == "FALSE") {
+              if (kDebugMode) {
+                print('I went here: ${result?.messageData['password_by_system']}');
+              }
+              setState(() {
+                Firebase.initializeApp();
+                auth.updateBrandIdFuture();
+                emailController.clear();
+                passwordController.clear();
+              });
+            } else {
+              NavService.push(screen: ChangePasswordScreen());
+            }
+          }
+        }).onError((error, stackTrace) {
+          // Handle unexpected errors (e.g., network issues)
           setState(() {
             _isAuthenticating = false;
           });
           final snackBar = SnackBar(
             backgroundColor: Colors.red,
             content: Text(
-              error.toString(),
+              "An unexpected error occurred: ${error.toString()}",
               style: const TextStyle(
                 color: Colors.white,
               ),
             ),
           );
-          messenger.showSnackBar(snackBar); // Use messenger instead of ScaffoldMessenger.of(context)
+          messenger.showSnackBar(snackBar);
+        });
+      } else {
+        setState(() {
+          _isAuthenticating = false;
         });
       }
     }
 
     return Scaffold(
-      appBar: AppBar(title: const Text(''), actions: const [
-        Spacer(),
-        Padding(
-          padding: EdgeInsets.only(right: 40.0),
-          child: Text(
-            'v1.0.0.0',
-            style: TextStyle(fontSize: 14.0, fontWeight: FontWeight.w200, color: Colors.black87),
-          ),
-        ),
-      ]),
+      appBar: AppBar(
+          title: const Text(''),
+          actions: const [
+            Spacer(),
+            Padding(
+              padding: EdgeInsets.only(right: 40.0),
+              child: Text(
+                'v1.0.0.0',
+                style: TextStyle(fontSize: 14.0, fontWeight: FontWeight.w200, color: Colors.black87),
+              ),
+            ),
+          ],
+          backgroundColor: AppColors.navBarColor),
       body: Form(
         key: formKey,
         autovalidateMode: AutovalidateMode.onUserInteraction,
@@ -93,18 +130,17 @@ class _LoginScreenState extends State<LoginScreen> {
                   const SizedBox(
                     height: 44,
                   ),
-                  Image.asset(
-                    CustomImages.imageWaSenderLogo,
-                    height: 180,
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 100, vertical: 60.0),
+                    child: Image.asset(
+                      CustomImages.imageWaSenderLogo,
+                      height: MediaQuery.of(context).size.height / 12,
+                    ),
                   ),
                   const Column(children: [
                     Text(
-                      'Sign In',
-                      style: TextStyle(fontSize: 24.0, fontWeight: FontWeight.bold, color: Colors.black87),
-                    ),
-                    Text(
-                      'WhatsApp Sender',
-                      style: TextStyle(fontSize: 14.0, fontWeight: FontWeight.w300, color: Colors.black87),
+                      'Please sign in with WhatUp',
+                      style: TextStyle(fontSize: 16.0, fontWeight: FontWeight.w400, color: Colors.black87),
                     ),
                   ]),
                   const SizedBox(
@@ -117,9 +153,12 @@ class _LoginScreenState extends State<LoginScreen> {
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
                         LoginTextField(
+                          onTap: () {
+                            emailController.clear();
+                          },
                           label: "Username / Email Address",
                           hintText: "Username / Email Address",
-                          isObscure: false,
+                          isObscure: _isEmailObscure,
                           controller: emailController,
                           validator: (String? value) {
                             if (value == null || value.isEmpty) {
@@ -131,27 +170,42 @@ class _LoginScreenState extends State<LoginScreen> {
                               return null;
                             }
                           },
-                          onChanged: (text) {},
+                          onChanged: (String value) {},
+                          suffixIcon: null,
                         ),
                         const SizedBox(
                           height: 20,
                         ),
-                        LoginTextField(
-                          label: "Password",
-                          hintText: "Password",
-                          isObscure: true,
-                          controller: passwordController,
-                          validator: (String? value) {
-                            if (value == null || value.isEmpty) {
-                              setState(() {
-                                _isAuthenticating = false;
-                              });
-                              return "This field is required";
-                            } else {
-                              return null;
-                            }
+                        ValueListenableBuilder<bool>(
+                          valueListenable: passwordVisibilityNotifier,
+                          builder: (context, isObscure, child) {
+                            return LoginTextField(
+                              label: "Password",
+                              hintText: "Password",
+                              isObscure: isObscure,
+                              controller: passwordController,
+                              suffixIcon: IconButton(
+                                color: isObscure ? Colors.black54 : AppColors.primary,
+                                icon: Icon(
+                                  isObscure ? Icons.visibility_off : Icons.visibility,
+                                ),
+                                onPressed: () {
+                                  passwordVisibilityNotifier.value = !isObscure;
+                                },
+                              ),
+                              validator: (String? value) {
+                                if (value == null || value.isEmpty) {
+                                  setState(() {
+                                    _isAuthenticating = false;
+                                  });
+                                  return "This field is required";
+                                } else {
+                                  return null;
+                                }
+                              },
+                              onChanged: (String value) {},
+                            );
                           },
-                          onChanged: (text) {},
                         ),
                         const SizedBox(
                           height: 60,

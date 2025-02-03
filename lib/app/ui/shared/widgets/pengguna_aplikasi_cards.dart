@@ -21,7 +21,7 @@ class PenggunaAplikasiCard extends StatelessWidget {
         borderRadius: BorderRadius.circular(12.0),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.1), // Shadow color
+            color: Colors.black12, // Shadow color
             spreadRadius: 2, // Spread radius
             blurRadius: 6, // Blur radius
             offset: const Offset(0, 3), // Offset for the shadow (x, y)

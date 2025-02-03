@@ -45,32 +45,38 @@ class ChatBoxResponseData {
 }
 
 class ChatBoxDataList {
+  final bool isBot;
   final Messages messages;
   final String notify;
   final String remoteJid;
   final String roomChat;
+  final String status;
 
   ChatBoxDataList({
+    required this.isBot,
     required this.messages,
     required this.notify,
     required this.remoteJid,
     required this.roomChat,
+    required this.status,
   });
 
   factory ChatBoxDataList.fromJson(Map<String, dynamic> json) {
     return ChatBoxDataList(
+      isBot: json['is_bot'] as bool,
       messages: Messages.fromJson(json['messages']),
       notify: json['notify'] as String,
       remoteJid: json['remote_jid'] as String,
       roomChat: json['room_chat'] as String,
+      status: json['status'] as String,
     );
   }
 }
 
 class Messages {
-  final String agentId;
-  final String agentName;
-  final bool broadcast;
+  final String? agentId;
+  final String? agentName;
+  final dynamic broadcast;
   final String category;
   final String chat;
   final bool fromMe;
@@ -85,13 +91,13 @@ class Messages {
   final String senderNumber;
   final String sessionId;
   final int status;
-  final String ticketId;
-  final String ticketNumber;
+  final String? ticketId;
+  final String? ticketNumber;
   final String type;
 
   Messages({
-    required this.agentId,
-    required this.agentName,
+    this.agentId,
+    this.agentName,
     required this.broadcast,
     required this.category,
     required this.chat,
@@ -114,9 +120,9 @@ class Messages {
 
   factory Messages.fromJson(Map<String, dynamic> json) {
     return Messages(
-      agentId: json['agent_id'] as String,
-      agentName: json['agent_name'] as String,
-      broadcast: json['broadcast'] as bool,
+      agentId: json['agent_id'] as String?,
+      agentName: json['agent_name'] as String?,
+      broadcast: json['broadcast'],
       category: json['category'] as String,
       chat: json['chat'] as String,
       fromMe: json['from_me'] as bool,
@@ -131,8 +137,8 @@ class Messages {
       senderNumber: json['sender_number'] as String,
       sessionId: json['session_id'] as String,
       status: json['status'] as int,
-      ticketId: json['ticket_id'] as String,
-      ticketNumber: json['ticket_number'] as String,
+      ticketId: json['ticket_id'] as String?,
+      ticketNumber: json['ticket_number'] as String?,
       type: json['type'] as String,
     );
   }
@@ -144,8 +150,8 @@ class MessageContent {
   final String? name;
   final String? thumb;
   final bool? mentionedJid;
-  final bool? quotedMessage;
-  final bool? stanzaId;
+  final dynamic quotedMessage;
+  final dynamic stanzaId;
   final String? text;
 
   MessageContent({
@@ -166,8 +172,8 @@ class MessageContent {
       name: json['name'] as String?,
       thumb: json['thumb'] as String?,
       mentionedJid: json['mentionedJid'] as bool?,
-      quotedMessage: json['quotedMessage'] as bool?,
-      stanzaId: json['stanzaId'] as bool?,
+      quotedMessage: json['quotedMessage'],
+      stanzaId: json['stanzaId'],
       text: json['text'] as String?,
     );
   }

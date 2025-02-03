@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../../../../../shared/widgets/working_in_progress.dart';
+
 class TimAgenScreen extends StatefulWidget {
   const TimAgenScreen({super.key});
 
@@ -14,7 +16,11 @@ class _TimAgenScreenState extends State<TimAgenScreen> {
       body: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Center(child: Text('Tim Agen Screen')),
+          Center(
+            child: WidgetWorkingInProgress(
+              title: 'Tim Agen',
+            ),
+          ),
         ],
       ),
     );

@@ -1,4 +1,4 @@
-package com.blipcom.wasender.wasender
+package com.blipcom.whatup
 
 import io.flutter.embedding.android.FlutterActivity
 

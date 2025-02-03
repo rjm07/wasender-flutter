@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "167557340983",
+    "project_id": "whatup-wa-api",
+    "storage_bucket": "whatup-wa-api.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:167557340983:android:ce12d9f029c7c3200d84b2",
+        "android_client_info": {
+          "package_name": "com.blipcom.whatup"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC0CVuARPD2lSvqW3jRHxnCQSuVfXJ9BLY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:167557340983:android:d97d974fc9d9f65d0d84b2",
+        "android_client_info": {
+          "package_name": "com.example.fcmexample"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC0CVuARPD2lSvqW3jRHxnCQSuVfXJ9BLY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

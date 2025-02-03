@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -38,20 +39,16 @@ class _AuthWrapperState extends State<AuthWrapper> {
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.done) {
               final String? brandId = snapshot.data;
-
-              if (brandId == null) {
-                return const LoginScreen();
-              } else {
-                return const MainScreen();
+              if (kDebugMode) {
+                print('brandId: $snapshot');
               }
-            } else if (snapshot.hasError) {
-              return Center(
-                child: Text('${snapshot.error}'),
-              );
+              if (brandId == null) {
+                return const LoginScreen(); // Navigate to login if no token
+              } else {
+                return const MainScreen(); // Otherwise, show the main screen
+              }
             } else {
-              return const Center(
-                child: CircularProgressIndicator(),
-              );
+              return const LoginScreen();
             }
           },
         );
