@@ -82,10 +82,13 @@ class Messages {
   final bool fromMe;
   final bool greeting;
   final String id;
+  final String? inboxType;
+  final bool? isBot;
   final MessageContent message;
   final int messageTimestamp;
-  final String messageTimestampStr;
+  final dynamic messageTimestampStr;
   final String messageId;
+  final String progress;
   final String receipt;
   final String senderName;
   final String senderNumber;
@@ -104,11 +107,14 @@ class Messages {
     required this.fromMe,
     required this.greeting,
     required this.id,
+    this.inboxType,
+    this.isBot,
     required this.message,
     required this.messageTimestamp,
     required this.messageTimestampStr,
     required this.messageId,
     required this.receipt,
+    required this.progress,
     required this.senderName,
     required this.senderNumber,
     required this.sessionId,
@@ -128,10 +134,13 @@ class Messages {
       fromMe: json['from_me'] as bool,
       greeting: json['greeting'] as bool,
       id: json['id'] as String,
+      inboxType: json['inbox_type'] as String?,
+      isBot: json['is_bot'] as bool?,
       message: MessageContent.fromJson(json['message']),
-      messageTimestamp: json['messageTimestamp'] as int,
+      messageTimestamp: json['messageTimestamp'],
       messageTimestampStr: json['messageTimestamp_str'] as String,
       messageId: json['message_id'] as String,
+      progress: json['progress'] as String,
       receipt: json['receipt'] as String,
       senderName: json['sender_name'] as String,
       senderNumber: json['sender_number'] as String,
