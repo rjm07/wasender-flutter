@@ -8,6 +8,7 @@ import '../../../../core/services/navigation/navigation.dart';
 import '../../../../utils/lang/images.dart';
 import '../../../shared/widgets/custom_list_tiles.dart';
 import '../../../shared/widgets/wrappers/auth_wrapper.dart';
+import '../feature_pages/menu/feature_perangkat_saya/perangkat_saya_screen.dart';
 import '../feature_pages/menu/feature_profile/profile_screen.dart';
 import '../feature_pages/menu/feature_inbox/chat/pesan_screen.dart';
 import '../feature_pages/pengaturan/feature_bantuan/bantuan_screen.dart';
@@ -99,7 +100,14 @@ class _SideBarMenuScreenState extends State<SideBarMenuScreen> {
                         SMListTiles(
                           image: CustomIcons.iconPerangkatSaya,
                           title: 'Perangkat Saya',
-                          onTap: () => _onTileTap(1),
+                          onTap: () //=> _onTileTap(1),
+                              {
+                            Navigator.of(context).push(
+                              MaterialPageRoute(
+                                builder: (context) => const PerangkatSayaScreen(),
+                              ),
+                            );
+                          },
                         ),
                         SMListTiles(
                           image: CustomIcons.iconInbox,
