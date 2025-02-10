@@ -15,11 +15,11 @@ class ChatBoxResponse {
 
   factory ChatBoxResponse.fromJson(Map<String, dynamic> json) {
     return ChatBoxResponse(
-      messageAction: json['message_action'] as String,
+      messageAction: json['message_action'],
       messageData: ChatBoxResponseData.fromJson(json['message_data']),
-      messageDesc: json['message_desc'] as String,
-      messageId: json['message_id'] as String,
-      statusCode: json['status_code'] as int,
+      messageDesc: json['message_desc'],
+      messageId: json['message_id'],
+      statusCode: json['status_code'],
     );
   }
 }
@@ -38,8 +38,8 @@ class ChatBoxResponseData {
   factory ChatBoxResponseData.fromJson(Map<String, dynamic> json) {
     return ChatBoxResponseData(
       data: (json['data'] as List).map((item) => ChatBoxDataList.fromJson(item)).toList(),
-      message: json['message'] as String,
-      success: json['success'] as bool,
+      message: json['message'],
+      success: json['success'],
     );
   }
 }
@@ -63,12 +63,12 @@ class ChatBoxDataList {
 
   factory ChatBoxDataList.fromJson(Map<String, dynamic> json) {
     return ChatBoxDataList(
-      isBot: json['is_bot'] as bool,
+      isBot: json['is_bot'],
       messages: Messages.fromJson(json['messages']),
-      notify: json['notify'] as String,
-      remoteJid: json['remote_jid'] as String,
-      roomChat: json['room_chat'] as String,
-      status: json['status'] as String,
+      notify: json['notify'],
+      remoteJid: json['remote_jid'],
+      roomChat: json['room_chat'],
+      status: json['status'],
     );
   }
 }
@@ -85,7 +85,7 @@ class Messages {
   final String? inboxType;
   final bool? isBot;
   final MessageContent message;
-  final int messageTimestamp;
+  final String messageTimestamp;
   final dynamic messageTimestampStr;
   final String messageId;
   final String progress;
@@ -115,40 +115,40 @@ class Messages {
     required this.messageId,
     required this.receipt,
     required this.progress,
-    required this.senderName,
+    required String? senderName,
     required this.senderNumber,
     required this.sessionId,
     required this.status,
     required this.ticketId,
     required this.ticketNumber,
     required this.type,
-  });
+  }) : senderName = senderName ?? senderNumber;
 
   factory Messages.fromJson(Map<String, dynamic> json) {
     return Messages(
-      agentId: json['agent_id'] as String?,
-      agentName: json['agent_name'] as String?,
+      agentId: json['agent_id'],
+      agentName: json['agent_name'],
       broadcast: json['broadcast'],
-      category: json['category'] as String,
-      chat: json['chat'] as String,
-      fromMe: json['from_me'] as bool,
-      greeting: json['greeting'] as bool,
-      id: json['id'] as String,
-      inboxType: json['inbox_type'] as String?,
-      isBot: json['is_bot'] as bool?,
+      category: json['category'],
+      chat: json['chat'],
+      fromMe: json['from_me'],
+      greeting: json['greeting'],
+      id: json['id'],
+      inboxType: json['inbox_type'],
+      isBot: json['is_bot'],
       message: MessageContent.fromJson(json['message']),
       messageTimestamp: json['messageTimestamp'],
-      messageTimestampStr: json['messageTimestamp_str'] as String,
-      messageId: json['message_id'] as String,
-      progress: json['progress'] as String,
-      receipt: json['receipt'] as String,
-      senderName: json['sender_name'] as String,
-      senderNumber: json['sender_number'] as String,
-      sessionId: json['session_id'] as String,
-      status: json['status'] as int,
-      ticketId: json['ticket_id'] as String?,
-      ticketNumber: json['ticket_number'] as String?,
-      type: json['type'] as String,
+      messageTimestampStr: json['messageTimestamp_str'],
+      messageId: json['message_id'],
+      progress: json['progress'],
+      receipt: json['receipt'],
+      senderName: json['sender_name'] ?? '',
+      senderNumber: json['sender_number'],
+      sessionId: json['session_id'],
+      status: json['status'],
+      ticketId: json['ticket_id'],
+      ticketNumber: json['ticket_number'],
+      type: json['type'],
     );
   }
 }
@@ -176,14 +176,24 @@ class MessageContent {
 
   factory MessageContent.fromJson(Map<String, dynamic> json) {
     return MessageContent(
-      caption: json['caption'] as String?,
-      file: json['file'] as String?,
-      name: json['name'] as String?,
-      thumb: json['thumb'] as String?,
-      mentionedJid: json['mentionedJid'] as bool?,
+      caption: json['caption'],
+      file: json['file'],
+      name: json['name'],
+      thumb: json['thumb'],
+      mentionedJid: json['mentionedJid'],
       quotedMessage: json['quotedMessage'],
       stanzaId: json['stanzaId'],
-      text: json['text'] as String?,
+      text: json['text'],
     );
+  }
+
+  bool get hasQuotedMessage => quotedMessage is Map<String, dynamic>;
+
+  Map<String, dynamic>? get quotedMessageAsMap {
+    return hasQuotedMessage ? quotedMessage as Map<String, dynamic> : null;
+  }
+
+  bool get quotedMessageAsBool {
+    return quotedMessage is bool ? quotedMessage as bool : false;
   }
 }

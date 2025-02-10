@@ -7,8 +7,9 @@ import '../../../../core/services/auth.dart';
 import '../../../../core/services/navigation/navigation.dart';
 import '../../../../utils/lang/images.dart';
 import '../../../shared/widgets/custom_list_tiles.dart';
+import '../../../shared/widgets/wrappers/auth_wrapper.dart';
 import '../feature_pages/menu/feature_profile/profile_screen.dart';
-import '../feature_pages/menu/feature_pesan/pesan_screen.dart';
+import '../feature_pages/menu/feature_inbox/chat/pesan_screen.dart';
 import '../feature_pages/pengaturan/feature_bantuan/bantuan_screen.dart';
 
 class SideBarMenuScreen extends StatefulWidget {
@@ -103,19 +104,18 @@ class _SideBarMenuScreenState extends State<SideBarMenuScreen> {
                         SMListTiles(
                           image: CustomIcons.iconInbox,
                           title: 'Inbox',
-                          onTap: () => _onTileTap(2),
+                          onTap: () {
+                            Navigator.of(context).push(
+                              MaterialPageRoute(
+                                builder: (context) => const ChatHomeScreen(),
+                              ),
+                            );
+                          },
                         ),
                         SMListTiles(
                           image: CustomIcons.iconPesan,
                           title: 'Pesan',
-                          onTap: () // => _onTileTap(3),
-                              {
-                            Navigator.of(context).push(
-                              MaterialPageRoute(
-                                builder: (context) => const PesanScreen(),
-                              ),
-                            );
-                          },
+                          onTap: () => _onTileTap(3),
                         ),
                         SMListTiles(
                           image: CustomIcons.iconMainDashboard,
@@ -159,19 +159,19 @@ class _SideBarMenuScreenState extends State<SideBarMenuScreen> {
                         SMListTiles(
                           image: CustomIcons.iconInbox,
                           title: 'Inbox',
-                          onTap: () => _onTileTap(2),
-                        ),
-                        SMListTiles(
-                          image: CustomIcons.iconPesan,
-                          title: 'Pesan',
                           onTap: () //=> _onTileTap(2),
                               {
                             Navigator.of(context).push(
                               MaterialPageRoute(
-                                builder: (context) => const PesanScreen(),
+                                builder: (context) => const ChatHomeScreen(),
                               ),
                             );
                           },
+                        ),
+                        SMListTiles(
+                          image: CustomIcons.iconPesan,
+                          title: 'Pesan',
+                          onTap: () => _onTileTap(3),
                         ),
                         SMListTiles(
                           image: CustomIcons.iconKontak,
