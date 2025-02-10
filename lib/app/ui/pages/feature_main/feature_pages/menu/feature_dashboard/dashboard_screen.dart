@@ -313,12 +313,15 @@ class _DashboardScreenState extends State<DashboardScreen> with WidgetsBindingOb
                             itemCount: perangkatTerhubung?.length,
                             itemBuilder: (context, index) {
                               final device = perangkatTerhubung?[index];
-                              return PerangkatTerhubungCard(
-                                color: Colors.lightBlue.shade100,
-                                image: CustomIcons.iconWhatsAppGeneric2,
-                                name: device['id'] ?? 'Unknown',
-                                number: device['whatsapp_number'] ?? 'N/A',
-                                status: device['status'] ?? 'Active',
+                              return Padding(
+                                padding: const EdgeInsets.symmetric(vertical: 8.0),
+                                child: PerangkatTerhubungCard(
+                                  color: Colors.lightBlue.shade100,
+                                  image: CustomIcons.iconWhatsAppGeneric2,
+                                  name: device['id'] ?? 'Unknown',
+                                  number: device['whatsapp_number'] ?? 'N/A',
+                                  status: device['status'] ?? 'Active',
+                                ),
                               );
                             },
                           ),

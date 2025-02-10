@@ -3,8 +3,8 @@ import 'package:wasender/app/core/services/navigation/navigation.dart';
 import 'package:wasender/app/ui/pages/feature_login/change_password_screen.dart';
 import 'package:wasender/app/ui/pages/feature_login/login_screen.dart';
 import 'package:wasender/app/ui/pages/feature_main/feature_pages/menu/feature_dashboard/dashboard_screen.dart';
-import 'package:wasender/app/ui/pages/feature_main/feature_pages/menu/feature_pesan/chats/chat_screen.dart';
-import 'package:wasender/app/ui/pages/feature_main/feature_pages/menu/feature_pesan/pesan_screen.dart';
+import 'package:wasender/app/ui/pages/feature_main/feature_pages/menu/feature_inbox/chat/chats/chat_screen.dart';
+import 'package:wasender/app/ui/pages/feature_main/feature_pages/menu/feature_inbox/chat/pesan_screen.dart';
 import 'package:wasender/app/ui/pages/feature_main/main_screen.dart';
 import 'package:wasender/app/ui/shared/widgets/wrappers/auth_wrapper.dart';
 import 'package:wasender/app/utils/lang/theme.dart';
@@ -33,7 +33,7 @@ class WhatUpApp extends StatelessWidget {
         '/main': (context) => MainScreen(),
         '/change_password': (context) => ChangePasswordScreen(),
         '/dashboard': (context) => DashboardScreen(),
-        '/pesan': (context) => PesanScreen(),
+        '/pesan': (context) => ChatHomeScreen(),
         ChatScreen.routeName: (context) => ChatScreen(
               fullName: '',
               timestamp: '',
