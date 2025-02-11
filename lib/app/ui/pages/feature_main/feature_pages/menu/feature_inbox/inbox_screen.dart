@@ -1,0 +1,28 @@
+import 'package:flutter/material.dart';
+
+import '../../../../../shared/widgets/working_in_progress.dart';
+
+class InboxScreen extends StatefulWidget {
+  const InboxScreen({super.key});
+
+  @override
+  State<InboxScreen> createState() => _InboxScreenState();
+}
+
+class _InboxScreenState extends State<InboxScreen> {
+  @override
+  Widget build(BuildContext context) {
+    return const Scaffold(
+      body: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Center(
+            child: WidgetWorkingInProgress(
+              title: 'Inbox',
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}

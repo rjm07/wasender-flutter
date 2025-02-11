@@ -1,13 +1,22 @@
 class CustomIcons {
   static String iconAccountSettings = "assets/icons/icon_account_settings.png";
+  static String iconAddContact = "assets/icons/icon_add_contact.png";
+  static String iconAddDevice = "assets/icons/icon_add_device.png";
   static String iconBantuan = "assets/icons/icon_bantuan.png";
   static String iconBerlanggan = "assets/icons/icon_berlanggan.png";
   static String iconBurgerMenu = "assets/icons/icon_burger_menu.png";
   static String iconCalendar = "assets/icons/icon_calendar.png";
   static String iconCamera = "assets/icons/icon_camera.png";
   static String iconEditCircle = "assets/icons/icon_edit.png";
+  static String iconEyeClosed = "assets/icons/icon_eye_closed.png";
+  static String iconEyeOpened = "assets/icons/icon_eye_open.png";
   static String iconFloatingActionButtonWhite = "assets/icons/icon_floating_action_button_white.png";
   static String iconGearGreen = "assets/icons/icon_gear_green.png";
+  static String iconHandleTicket = "assets/icons/icon_handle_ticket.png";
+  static String iconHTAttention = "assets/icons/icon_ht_attention.png";
+  static String iconHTClock = "assets/icons/icon_ht_clock.png";
+  static String iconHTIncomingEmail = "assets/icons/icon_ht_incoming_email.png";
+  static String iconHTStatus = "assets/icons/icon_ht_status.png";
   static String iconInbox = "assets/icons/icon_inbox.png";
   static String iconKeluar = "assets/icons/icon_keluar.png";
   static String iconKontak = "assets/icons/icon_kontak.png";
@@ -31,10 +40,12 @@ class CustomIcons {
   static String iconTambahPerangkat = "assets/icons/icon_tambah_perangkat.png";
   static String iconTimAgen = "assets/icons/icon_tim_agen.png";
   static String iconMoreVertical = "assets/icons/icon_vertical_more.png";
-  static String iconViewProfile = "assets/icons/icon_profile.png";
+  static String iconViewContact = "assets/icons/icon_view_contact.png";
+  static String iconViewProfile = "assets/icons/icon_view_profile.png";
   static String iconViewProfileFill = "assets/icons/icon_profile_fill.png";
   static String iconWhatsAppGeneric = "assets/icons/icon_whatsapp_generic.png";
   static String iconWhatsAppGeneric2 = "assets/icons/icon_whatsapp_generic_2.png";
+  static String iconWorkingInProgress = "assets/icons/icon_wip.png";
 }
 
 class CustomImages {

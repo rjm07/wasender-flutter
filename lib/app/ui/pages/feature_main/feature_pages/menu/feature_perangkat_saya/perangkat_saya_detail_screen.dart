@@ -10,10 +10,10 @@ class PerangkatSayaDetailScreen extends StatefulWidget {
   final String whatsappNumber;
 
   @override
-  State<PerangkatSayaDetailScreen> createState() => _LoginScreenState();
+  State<PerangkatSayaDetailScreen> createState() => _PerangkatSayaDetailScreenState();
 }
 
-class _LoginScreenState extends State<PerangkatSayaDetailScreen> {
+class _PerangkatSayaDetailScreenState extends State<PerangkatSayaDetailScreen> {
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
 
   late TextEditingController idPerangkatController;

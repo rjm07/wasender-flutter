@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../../../utils/lang/colors.dart';
+
 class AvatarWithInitials extends StatelessWidget {
   final String fullName;
   final String? imageUrl;
@@ -7,10 +9,14 @@ class AvatarWithInitials extends StatelessWidget {
   const AvatarWithInitials({super.key, required this.fullName, this.imageUrl});
 
   String getInitials(String name) {
-    List<String> nameParts = name.split(" ");
+    if (name.trim().isEmpty) {
+      return "?"; // Fallback in case fullName is empty
+    }
+
+    List<String> nameParts = name.trim().split(" ");
     String initials = "";
     if (nameParts.isNotEmpty) initials += nameParts[0][0];
-    if (nameParts.length > 1) initials += nameParts[0][1];
+    if (nameParts.length > 1) initials += nameParts[1][0];
     return initials.toUpperCase();
   }
 
@@ -18,14 +24,14 @@ class AvatarWithInitials extends StatelessWidget {
   Widget build(BuildContext context) {
     return CircleAvatar(
       radius: 30, // Adjust the size of the avatar
-      backgroundColor: Colors.orangeAccent, // Background color for initials
+      backgroundColor: AppColors.primary, // Background color for initials
       backgroundImage: imageUrl != null ? NetworkImage(imageUrl!) : null, // Load image if available
       child: imageUrl == null
           ? Text(
               getInitials(fullName),
               style: const TextStyle(
                 color: Colors.white,
-                fontSize: 20,
+                fontSize: 16,
                 fontWeight: FontWeight.bold,
               ),
             )
