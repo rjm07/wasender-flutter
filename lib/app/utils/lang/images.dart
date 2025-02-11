@@ -1,6 +1,7 @@
 class CustomIcons {
   static String iconAccountSettings = "assets/icons/icon_account_settings.png";
   static String iconAddContact = "assets/icons/icon_add_contact.png";
+  static String iconAddDevice = "assets/icons/icon_add_device.png";
   static String iconBantuan = "assets/icons/icon_bantuan.png";
   static String iconBerlanggan = "assets/icons/icon_berlanggan.png";
   static String iconBurgerMenu = "assets/icons/icon_burger_menu.png";

@@ -4,8 +4,12 @@ import 'package:wasender/app/core/services/perangkat_saya/perangkat_saya.dart';
 import 'package:wasender/app/ui/pages/feature_main/feature_pages/menu/feature_perangkat_saya/perangkat_saya_detail_screen.dart';
 import 'package:wasender/app/ui/shared/widgets/perangkat_saya_cards.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
+import '../../../../../../core/models/perangkat_saya/device_list.dart';
 import '../../../../../../core/models/perangkat_saya/perangkat_saya.dart';
+import '../../../../../../core/services/navigation/navigation.dart';
 import '../../../../../../core/services/preferences.dart';
+import '../../../../../../utils/lang/colors.dart';
+import '../../../../../../utils/lang/images.dart';
 import '../../../../../../utils/snackbar/snackbar.dart';
 
 class PerangkatSayaScreen extends StatefulWidget {
@@ -43,7 +47,7 @@ class _PerangkatSayaScreenState extends State<PerangkatSayaScreen> {
     final String? tokenBearer = await LocalPrefs.getBearerToken();
     debugPrint("tokenBearer: $tokenBearer");
     if (tokenBearer != null) {
-      devices.updateDeviceListFuture(
+      devices.updateAllDeviceListFuture(
         tokenBearer,
         showErrorSnackbar: (String errorMessage) {
           SnackbarUtil.showErrorSnackbar(context, errorMessage);
@@ -65,7 +69,7 @@ class _PerangkatSayaScreenState extends State<PerangkatSayaScreen> {
 
         final String? tokenBearer = await LocalPrefs.getBearerToken();
         if (tokenBearer != null) {
-          devices.updateDeviceListFuture(
+          devices.updateAllDeviceListFuture(
             tokenBearer,
             isPagination: true,
             showErrorSnackbar: (String errorMessage) {
@@ -109,6 +113,47 @@ class _PerangkatSayaScreenState extends State<PerangkatSayaScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        title: Row(
+          children: [
+            Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text('Perangkat Saya',
+                    style: TextStyle(color: Colors.black54, fontSize: 20, fontWeight: FontWeight.w400)),
+                Text('Daftar informasi perangkat yang terdaftar',
+                    style: TextStyle(color: Colors.black38, fontSize: 12, fontWeight: FontWeight.w400)),
+              ],
+            ),
+            Spacer(),
+            IconButton(
+              icon: Icon(Icons.notifications, color: AppColors.primary),
+              onPressed: () {},
+            ),
+            const SizedBox(width: 16),
+            GestureDetector(
+              onTap: () {},
+              child: Image.asset(
+                CustomIcons.iconAddDevice,
+                height: 20,
+                width: 20,
+                color: AppColors.primary,
+              ),
+            ),
+            SizedBox(width: 8),
+          ],
+        ),
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back, color: Colors.black),
+          onPressed: () {
+            NavService.jumpToPageID('/main');
+          },
+        ),
+        backgroundColor: AppColors.navBarColor,
+        centerTitle: false,
+        elevation: 1,
+      ),
       body: SafeArea(
         child: Consumer<PerangkatSayaServices>(
           builder: (context, devices, child) {
@@ -124,39 +169,45 @@ class _PerangkatSayaScreenState extends State<PerangkatSayaScreen> {
                 controller: _scrollController,
                 padding: const EdgeInsets.symmetric(horizontal: 18.0, vertical: 24.0),
                 children: [
-                  ...devices.perangkatSayaDataDetails.map((PerangkatSayaDataList device) {
-                    return Slidable(
-                      endActionPane: ActionPane(
-                        extentRatio: 0.3,
-                        motion: const ScrollMotion(),
-                        children: [
-                          SlidableAction(
-                            spacing: 2,
-                            onPressed: (context) => {},
-                            backgroundColor: Colors.red,
-                            foregroundColor: Colors.white,
-                            icon: Icons.delete,
-                            label: 'Delete',
-                          ),
-                        ],
-                      ),
-                      child: GestureDetector(
-                        onTap: () {
-                          Navigator.of(context).push(
-                            MaterialPageRoute(
-                              builder: (context) => PerangkatSayaDetailScreen(
-                                whatsappNumber: device.whatsappNumber,
-                              ),
+                  ...devices.perangkatSayaTerhubungDataDetails.map((Device device) {
+                    return Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 8.0),
+                      child: Slidable(
+                        endActionPane: ActionPane(
+                          extentRatio: 0.3,
+                          motion: const ScrollMotion(),
+                          children: [
+                            SlidableAction(
+                              spacing: 2,
+                              onPressed: (context) => {},
+                              backgroundColor: Colors.red,
+                              foregroundColor: Colors.white,
+                              icon: Icons.delete,
+                              label: 'Delete',
                             ),
-                          );
-                        },
-                        child: PerangkatSayaCard(
-                          color: Colors.white,
-                          title: 'title',
-                          isActive: device.isActive,
-                          deviceID: device.id,
-                          devicePkey: device.pKey,
-                          devicePhoneNumber: device.whatsappNumber,
+                          ],
+                        ),
+                        child: GestureDetector(
+                          onTap: () {
+                            Navigator.of(context).push(
+                              MaterialPageRoute(
+                                builder: (context) => PerangkatSayaDetailScreen(
+                                  whatsappNumber: device.whatsappNumber,
+                                ),
+                              ),
+                            );
+                          },
+                          child: PerangkatSayaCard(
+                            color: Colors.white,
+                            title: 'title',
+                            role: "Technical Support",
+                            isActive: device.isActive,
+                            category: device.inboxType,
+                            deviceID: device.id,
+                            dueDate: DateTime.now().toString(),
+                            devicePkey: device.pkey,
+                            devicePhoneNumber: device.whatsappNumber,
+                          ),
                         ),
                       ),
                     );

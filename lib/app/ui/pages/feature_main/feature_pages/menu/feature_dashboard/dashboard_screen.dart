@@ -40,6 +40,7 @@ class _DashboardScreenState extends State<DashboardScreen> with WidgetsBindingOb
     _dashboardFuture = getDashboardData();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       getDeviceList();
+      getAllDevices();
     });
     WidgetsBinding.instance.addObserver(this);
     socketService.initializeSocket();
@@ -64,6 +65,27 @@ class _DashboardScreenState extends State<DashboardScreen> with WidgetsBindingOb
       });
     }
     sendFCMToken();
+  }
+
+  Future<void> getAllDevices() async {
+    final PerangkatSayaServices devices = Provider.of<PerangkatSayaServices>(context, listen: false);
+    final String? tokenBearer = await LocalPrefs.getBearerToken();
+    debugPrint("tokenBearer: $tokenBearer");
+    debugPrint("Getting all devices");
+    if (tokenBearer != null) {
+      await devices.updateAllDeviceListFuture(tokenBearer, showErrorSnackbar: (String errorMessage) {
+        final snackBar = SnackBar(
+          backgroundColor: Colors.red,
+          content: Text(
+            errorMessage.toString(),
+            style: const TextStyle(
+              color: Colors.white,
+            ),
+          ),
+        );
+        scaffoldMessenger?.showSnackBar(snackBar);
+      });
+    }
   }
 
   static Future<void> sendFCMToken() async {
@@ -313,12 +335,15 @@ class _DashboardScreenState extends State<DashboardScreen> with WidgetsBindingOb
                             itemCount: perangkatTerhubung?.length,
                             itemBuilder: (context, index) {
                               final device = perangkatTerhubung?[index];
-                              return PerangkatTerhubungCard(
-                                color: Colors.lightBlue.shade100,
-                                image: CustomIcons.iconWhatsAppGeneric2,
-                                name: device['id'] ?? 'Unknown',
-                                number: device['whatsapp_number'] ?? 'N/A',
-                                status: device['status'] ?? 'Active',
+                              return Padding(
+                                padding: const EdgeInsets.symmetric(vertical: 8.0),
+                                child: PerangkatTerhubungCard(
+                                  color: Colors.lightBlue.shade100,
+                                  image: CustomIcons.iconWhatsAppGeneric2,
+                                  name: device['id'] ?? 'Unknown',
+                                  number: device['whatsapp_number'] ?? 'N/A',
+                                  status: device['status'] ?? 'Active',
+                                ),
                               );
                             },
                           ),

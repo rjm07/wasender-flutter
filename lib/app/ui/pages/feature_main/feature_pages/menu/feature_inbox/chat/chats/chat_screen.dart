@@ -8,16 +8,16 @@ import 'package:logger/logger.dart';
 import 'package:provider/provider.dart';
 import 'package:wasender/app/core/models/pesan/pesan_conversation.dart';
 
-import '../../../../../../../core/services/navigation/navigation.dart';
-import '../../../../../../../core/services/pesan/pesan.dart';
-import '../../../../../../../core/services/preferences.dart';
-import '../../../../../../../core/services/socket_io/socket.dart';
-import '../../../../../../../utils/lang/images.dart';
-import '../../../../../../shared/widgets/avatar_with_initials.dart';
-import '../../../../../../shared/widgets/custom_button.dart';
-import '../../../../../../shared/widgets/handle_ticket.dart';
-import '../../../../../../shared/widgets/msg_widget/other_msg_widget.dart';
-import '../../../../../../shared/widgets/msg_widget/own_msg_widget.dart';
+import '../../../../../../../../core/services/navigation/navigation.dart';
+import '../../../../../../../../core/services/pesan/pesan.dart';
+import '../../../../../../../../core/services/preferences.dart';
+import '../../../../../../../../core/services/socket_io/socket.dart';
+import '../../../../../../../../utils/lang/images.dart';
+import '../../../../../../../shared/widgets/avatar_with_initials.dart';
+import '../../../../../../../shared/widgets/custom_button.dart';
+import '../../../../../../../shared/widgets/handle_ticket.dart';
+import '../../../../../../../shared/widgets/msg_widget/other_msg_widget.dart';
+import '../../../../../../../shared/widgets/msg_widget/own_msg_widget.dart';
 import '../pesan_screen.dart';
 import 'chat_user_profile.dart';
 
@@ -233,7 +233,7 @@ class _ChatScreenState extends State<ChatScreen> {
         await devices.assignTicket(widget.roomChat, widget.senderNumber);
         NavService.popUntilAndPush(
           popUntilRoute: '/main',
-          pushScreen: PesanScreen(),
+          pushScreen: ChatHomeScreen(),
         );
       } catch (error) {
         // Close the dialog and show a SnackBar with the error message

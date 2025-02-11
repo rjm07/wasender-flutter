@@ -2,26 +2,27 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:logger/logger.dart';
 import 'package:provider/provider.dart';
-import '../../../../../../../../core/models/pesan/pesan.dart';
-import '../../../../../../../../core/models/pesan/pesan_conversation.dart';
-import '../../../../../../../../core/services/pesan/pesan.dart';
-import '../../../../../../../../core/services/preferences.dart';
-import '../../../../../../../../core/services/socket_io/socket.dart';
-import '../../../../../../../../utils/snackbar/snackbar.dart';
-import '../../../../../../../shared/widgets/custom_list_tiles.dart';
+import '../../../../../../../../../core/models/pesan/pesan.dart';
+import '../../../../../../../../../core/models/pesan/pesan_conversation.dart';
+import '../../../../../../../../../core/services/navigation/navigation.dart';
+import '../../../../../../../../../core/services/pesan/pesan.dart';
+import '../../../../../../../../../core/services/preferences.dart';
+import '../../../../../../../../../core/services/socket_io/socket.dart';
+import '../../../../../../../../../utils/snackbar/snackbar.dart';
+import '../../../../../../../../shared/widgets/custom_list_tiles.dart';
 import '../chat_screen.dart';
 
-class ActiveChatScreen extends StatefulWidget {
-  const ActiveChatScreen({
+class BotChatScreen extends StatefulWidget {
+  const BotChatScreen({
     super.key,
     required this.onHandleTicket,
   });
   final void Function() onHandleTicket;
   @override
-  State<ActiveChatScreen> createState() => _ActiveChatScreenState();
+  State<BotChatScreen> createState() => _BotChatScreenState();
 }
 
-class _ActiveChatScreenState extends State<ActiveChatScreen> {
+class _BotChatScreenState extends State<BotChatScreen> {
   final logger = Logger();
   late String pKey = 'pKey';
   List<ChatBoxDataList> userChatBox = [];
@@ -29,11 +30,12 @@ class _ActiveChatScreenState extends State<ActiveChatScreen> {
   @override
   void initState() {
     super.initState();
+
     WidgetsBinding.instance.addPostFrameCallback((_) {
       getChatBoxList();
     });
     final socketService = SocketService();
-    socketService.listen(false, onConnectActive);
+    socketService.listen(true, onConnectActive);
   }
 
   Future<void> getChatBoxList() async {
@@ -45,26 +47,21 @@ class _ActiveChatScreenState extends State<ActiveChatScreen> {
     pKey = deviceKey ?? '';
 
     if (tokenBearer != null) {
-      try {
-        // Update the chat box list
-        await devices.updateChatBoxListFuture(
-          'active',
-          tokenBearer,
-          deviceKey ?? '',
-          showErrorSnackbar: (String errorMessage) {
-            // Ensure the widget is still active
-            SnackbarUtil.showErrorSnackbar(context, errorMessage);
-          },
-        );
+      // Update the chat box list
+      await devices.updateChatBoxListFuture(
+        'open',
+        tokenBearer,
+        deviceKey ?? '',
+        showErrorSnackbar: (String errorMessage) {
+          SnackbarUtil.showErrorSnackbar(context, errorMessage);
+        },
+      );
 
-        // Assign the fetched data to userChatBox
-        if (mounted) {
-          setState(() {
-            userChatBox = devices.chatBoxDataDetails;
-          });
-        }
-      } catch (e) {
-        debugPrint("Error in getChatBoxList: $e");
+      // Assign the fetched data to userChatBox
+      if (mounted) {
+        setState(() {
+          userChatBox = devices.chatBoxDataDetails;
+        });
       }
     }
   }
@@ -117,7 +114,7 @@ class _ActiveChatScreenState extends State<ActiveChatScreen> {
                 stanzaId: conversation.message?.stanzaId,
                 text: conversation.message?.text,
               ),
-              messageTimestamp: conversation.messageTimestamp ?? 0,
+              messageTimestamp: conversation.messageTimestamp ?? "",
               messageTimestampStr: conversation.messageTimestampStr ?? '',
               messageId: conversation.messageId ?? '',
               receipt: conversation.receipt ?? '',
@@ -127,7 +124,7 @@ class _ActiveChatScreenState extends State<ActiveChatScreen> {
               status: conversation.status ?? 0,
               ticketId: conversation.ticketId ?? '',
               ticketNumber: conversation.ticketNumber ?? '',
-              type: conversation.type ?? '',
+              type: conversation.type ?? '', progress: '',
             ),
           );
 
@@ -152,11 +149,6 @@ class _ActiveChatScreenState extends State<ActiveChatScreen> {
     } catch (e) {
       debugPrint('Error processing incoming message: $e');
     }
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
   }
 
   @override
@@ -195,16 +187,14 @@ class _ActiveChatScreenState extends State<ActiveChatScreen> {
                                 description: chatData.messages.message.text ?? '',
                                 time: chatData.messages.messageTimestampStr,
                                 onTap: () {
-                                  Navigator.of(context).push(
-                                    MaterialPageRoute(
-                                      builder: (context) => ChatScreen(
-                                        roomChat: chatData.roomChat,
-                                        senderNumber: chatData.messages.senderNumber,
-                                        fullName: chatData.messages.senderName,
-                                        timestamp: chatData.messages.messageTimestampStr,
-                                        statusIsOpen: chatData.status.toString(),
-                                        onHandleTicket: widget.onHandleTicket,
-                                      ),
+                                  NavService.push(
+                                    screen: ChatScreen(
+                                      roomChat: chatData.roomChat,
+                                      senderNumber: chatData.messages.senderNumber,
+                                      fullName: chatData.messages.senderName,
+                                      timestamp: chatData.messages.messageTimestampStr,
+                                      statusIsOpen: chatData.status.toString(),
+                                      onHandleTicket: widget.onHandleTicket,
                                     ),
                                   );
                                 },

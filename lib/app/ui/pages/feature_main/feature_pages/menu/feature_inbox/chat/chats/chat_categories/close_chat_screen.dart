@@ -2,12 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:logger/logger.dart';
 import 'package:socket_io_client/socket_io_client.dart' as socket_io;
 import 'package:provider/provider.dart';
-import '../../../../../../../../core/models/pesan/pesan.dart';
-import '../../../../../../../../core/services/pesan/pesan.dart';
-import '../../../../../../../../core/services/preferences.dart';
-import '../../../../../../../../core/services/socket_io/socket.dart';
-import '../../../../../../../../utils/snackbar/snackbar.dart';
-import '../../../../../../../shared/widgets/custom_list_tiles.dart';
+import '../../../../../../../../../core/models/pesan/pesan.dart';
+import '../../../../../../../../../core/services/pesan/pesan.dart';
+import '../../../../../../../../../core/services/preferences.dart';
+import '../../../../../../../../../core/services/socket_io/socket.dart';
+import '../../../../../../../../../utils/snackbar/snackbar.dart';
+import '../../../../../../../../shared/widgets/custom_list_tiles.dart';
 import '../chat_screen.dart';
 
 class ClosedChatScreen extends StatefulWidget {

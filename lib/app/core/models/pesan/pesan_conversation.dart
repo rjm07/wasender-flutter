@@ -89,7 +89,7 @@ class Conversation {
   final bool? fromMe;
   final String? senderName;
   final String? senderNumber;
-  final int? messageTimestamp;
+  final String? messageTimestamp;
   final String? messageTimestampStr;
   final Message? message;
   final String? receipt;
@@ -141,7 +141,7 @@ class Conversation {
       fromMe: json['from_me'] as bool?,
       senderName: json['sender_name'] as String?,
       senderNumber: json['sender_number'] as String?,
-      messageTimestamp: json['messageTimestamp'] as int?,
+      messageTimestamp: json['messageTimestamp'] as String?,
       messageTimestampStr: json['messageTimestamp_str'] as String?,
       message: Message.fromJson(json['message']),
       receipt: json['receipt'] as String?,

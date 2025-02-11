@@ -4,9 +4,10 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:logger/logger.dart';
-import '../../../ui/pages/feature_main/feature_pages/menu/feature_pesan/chats/chat_screen.dart';
 import 'package:wasender/app/core/services/navigation/navigation.dart';
 import 'package:wasender/app/core/services/preferences.dart';
+
+import '../../../ui/pages/feature_main/feature_pages/menu/feature_inbox/chat/chats/chat_screen.dart';
 
 class FirebaseCloudMessagingService {
   static final FirebaseMessaging _firebaseMessaging = FirebaseMessaging.instance;

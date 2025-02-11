@@ -6,12 +6,13 @@ import 'package:wasender/app/ui/pages/feature_main/feature_pages/menu/feature_ko
 import 'package:wasender/app/ui/pages/feature_main/feature_pages/menu/feature_pembayaran/pembayaran_screen.dart';
 import 'package:wasender/app/ui/pages/feature_main/feature_pages/menu/feature_pengguna/pengguna_screen.dart';
 import 'package:wasender/app/ui/pages/feature_main/feature_pages/menu/feature_perangkat_saya/perangkat_saya_screen.dart';
-import 'package:wasender/app/ui/pages/feature_main/feature_pages/menu/feature_pesan/pesan_screen.dart';
+import 'package:wasender/app/ui/pages/feature_main/feature_pages/menu/feature_inbox/chat/pesan_screen.dart';
 import 'package:wasender/app/ui/pages/feature_main/menu/sidebar_menu_screen.dart';
 import '../../../core/services/preferences.dart';
 import '../../../utils/lang/colors.dart';
 import '../../../utils/lang/images.dart';
 import 'feature_pages/menu/feature_dashboard/dashboard_screen.dart';
+import 'feature_pages/menu/feature_pesan/pesan_screen.dart';
 import 'feature_pages/menu/feature_profile/profile_screen.dart';
 import 'feature_pages/menu/feature_inbox/inbox_screen.dart';
 import 'feature_pages/menu/feature_tim_agen/tim_agen_screen.dart';
@@ -170,51 +171,51 @@ class _MainScreenState extends State<MainScreen> {
         },
         children: userRole.toUpperCase() == 'ADMIN' ? _agentPages : _adminPages,
       ),
-      floatingActionButton: SpeedDial(
-        // Initial FAB with four squares icon like in the first image
-        icon: Icons.apps_rounded,
-        backgroundColor: AppColors.primary,
-        activeIcon: Icons.close,
-        activeBackgroundColor: Colors.blue,
-        spacing: 12,
-        spaceBetweenChildren: 12,
-        overlayColor: Colors.black26,
-
-        children: [
-          SpeedDialChild(
-            child: const Icon(Icons.arrow_forward, color: Colors.white),
-            label: 'Berlangganan',
-            labelStyle: const TextStyle(fontSize: 12, fontWeight: FontWeight.w400, color: Colors.white),
-            labelBackgroundColor: Colors.transparent,
-            labelShadow: [
-              const BoxShadow(
-                color: Colors.transparent,
-              ),
-            ],
-            backgroundColor: AppColors.primary,
-            onTap: () {
-              //print('Tambah Perangkat pressed');
-            },
-          ),
-          SpeedDialChild(
-            child: const Icon(Icons.add, color: Colors.white),
-            label: 'Tambah Perangkat',
-            labelStyle: const TextStyle(fontSize: 12, fontWeight: FontWeight.w400, color: Colors.white),
-            labelBackgroundColor: Colors.transparent,
-            labelShadow: [
-              const BoxShadow(
-                color: Colors.transparent,
-              ),
-            ],
-            backgroundColor: AppColors.primary,
-            onTap: () {
-              if (kDebugMode) {
-                print('Berlangganan pressed');
-              }
-            },
-          ),
-        ],
-      ),
+      // floatingActionButton: SpeedDial(
+      //   // Initial FAB with four squares icon like in the first image
+      //   icon: Icons.apps_rounded,
+      //   backgroundColor: AppColors.primary,
+      //   activeIcon: Icons.close,
+      //   activeBackgroundColor: Colors.blue,
+      //   spacing: 12,
+      //   spaceBetweenChildren: 12,
+      //   overlayColor: Colors.black26,
+      //
+      //   children: [
+      //     SpeedDialChild(
+      //       child: const Icon(Icons.arrow_forward, color: Colors.white),
+      //       label: 'Berlangganan',
+      //       labelStyle: const TextStyle(fontSize: 12, fontWeight: FontWeight.w400, color: Colors.white),
+      //       labelBackgroundColor: Colors.transparent,
+      //       labelShadow: [
+      //         const BoxShadow(
+      //           color: Colors.transparent,
+      //         ),
+      //       ],
+      //       backgroundColor: AppColors.primary,
+      //       onTap: () {
+      //         //print('Tambah Perangkat pressed');
+      //       },
+      //     ),
+      //     SpeedDialChild(
+      //       child: const Icon(Icons.add, color: Colors.white),
+      //       label: 'Tambah Perangkat',
+      //       labelStyle: const TextStyle(fontSize: 12, fontWeight: FontWeight.w400, color: Colors.white),
+      //       labelBackgroundColor: Colors.transparent,
+      //       labelShadow: [
+      //         const BoxShadow(
+      //           color: Colors.transparent,
+      //         ),
+      //       ],
+      //       backgroundColor: AppColors.primary,
+      //       onTap: () {
+      //         if (kDebugMode) {
+      //           print('Berlangganan pressed');
+      //         }
+      //       },
+      //     ),
+      //   ],
+      // ),
     );
   }
 }
