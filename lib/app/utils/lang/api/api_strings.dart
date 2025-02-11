@@ -20,6 +20,7 @@ class API {
   // DEVICES APIS
   static String deviceUrl = "$versionUrl/device/";
   static String deviceListUrl = "$versionUrl/device/lists";
+  static String devicePerangkatSayaUrl = "$versionUrl/device/information";
 
   // MESSAGE APIS
   static String messageUrl = "$versionUrl/message/";

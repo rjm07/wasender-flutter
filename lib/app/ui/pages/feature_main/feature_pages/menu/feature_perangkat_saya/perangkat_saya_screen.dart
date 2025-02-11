@@ -4,6 +4,7 @@ import 'package:wasender/app/core/services/perangkat_saya/perangkat_saya.dart';
 import 'package:wasender/app/ui/pages/feature_main/feature_pages/menu/feature_perangkat_saya/perangkat_saya_detail_screen.dart';
 import 'package:wasender/app/ui/shared/widgets/perangkat_saya_cards.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
+import '../../../../../../core/models/perangkat_saya/device_list.dart';
 import '../../../../../../core/models/perangkat_saya/perangkat_saya.dart';
 import '../../../../../../core/services/navigation/navigation.dart';
 import '../../../../../../core/services/preferences.dart';
@@ -46,7 +47,7 @@ class _PerangkatSayaScreenState extends State<PerangkatSayaScreen> {
     final String? tokenBearer = await LocalPrefs.getBearerToken();
     debugPrint("tokenBearer: $tokenBearer");
     if (tokenBearer != null) {
-      devices.updateDeviceListFuture(
+      devices.updateAllDeviceListFuture(
         tokenBearer,
         showErrorSnackbar: (String errorMessage) {
           SnackbarUtil.showErrorSnackbar(context, errorMessage);
@@ -68,7 +69,7 @@ class _PerangkatSayaScreenState extends State<PerangkatSayaScreen> {
 
         final String? tokenBearer = await LocalPrefs.getBearerToken();
         if (tokenBearer != null) {
-          devices.updateDeviceListFuture(
+          devices.updateAllDeviceListFuture(
             tokenBearer,
             isPagination: true,
             showErrorSnackbar: (String errorMessage) {
@@ -168,7 +169,7 @@ class _PerangkatSayaScreenState extends State<PerangkatSayaScreen> {
                 controller: _scrollController,
                 padding: const EdgeInsets.symmetric(horizontal: 18.0, vertical: 24.0),
                 children: [
-                  ...devices.perangkatSayaDataDetails.map((PerangkatSayaDataList device) {
+                  ...devices.perangkatSayaTerhubungDataDetails.map((Device device) {
                     return Padding(
                       padding: const EdgeInsets.symmetric(vertical: 8.0),
                       child: Slidable(
@@ -199,9 +200,12 @@ class _PerangkatSayaScreenState extends State<PerangkatSayaScreen> {
                           child: PerangkatSayaCard(
                             color: Colors.white,
                             title: 'title',
+                            role: "Technical Support",
                             isActive: device.isActive,
+                            category: device.inboxType,
                             deviceID: device.id,
-                            devicePkey: device.pKey,
+                            dueDate: DateTime.now().toString(),
+                            devicePkey: device.pkey,
                             devicePhoneNumber: device.whatsappNumber,
                           ),
                         ),

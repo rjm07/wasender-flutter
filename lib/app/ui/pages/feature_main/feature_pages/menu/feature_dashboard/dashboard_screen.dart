@@ -40,6 +40,7 @@ class _DashboardScreenState extends State<DashboardScreen> with WidgetsBindingOb
     _dashboardFuture = getDashboardData();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       getDeviceList();
+      getAllDevices();
     });
     WidgetsBinding.instance.addObserver(this);
     socketService.initializeSocket();
@@ -64,6 +65,27 @@ class _DashboardScreenState extends State<DashboardScreen> with WidgetsBindingOb
       });
     }
     sendFCMToken();
+  }
+
+  Future<void> getAllDevices() async {
+    final PerangkatSayaServices devices = Provider.of<PerangkatSayaServices>(context, listen: false);
+    final String? tokenBearer = await LocalPrefs.getBearerToken();
+    debugPrint("tokenBearer: $tokenBearer");
+    debugPrint("Getting all devices");
+    if (tokenBearer != null) {
+      await devices.updateAllDeviceListFuture(tokenBearer, showErrorSnackbar: (String errorMessage) {
+        final snackBar = SnackBar(
+          backgroundColor: Colors.red,
+          content: Text(
+            errorMessage.toString(),
+            style: const TextStyle(
+              color: Colors.white,
+            ),
+          ),
+        );
+        scaffoldMessenger?.showSnackBar(snackBar);
+      });
+    }
   }
 
   static Future<void> sendFCMToken() async {

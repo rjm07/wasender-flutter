@@ -23,6 +23,7 @@ class PerangkatSayaData {
 class PerangkatSayaDataList {
   const PerangkatSayaDataList({
     required this.id,
+    required this.inboxType,
     required this.isActive,
     required this.pKey,
     required this.sessionID,
@@ -30,6 +31,7 @@ class PerangkatSayaDataList {
   });
 
   final String id;
+  final String? inboxType;
   final bool isActive;
   final String pKey;
   final String sessionID;
@@ -38,6 +40,7 @@ class PerangkatSayaDataList {
   factory PerangkatSayaDataList.fromJson(Map<String, dynamic> json) {
     return PerangkatSayaDataList(
       id: json["id"] as String,
+      inboxType: json["inbox_type"] as String?,
       isActive: json["is_active"] as bool,
       pKey: json["pkey"] as String,
       sessionID: json["session_id"] as String,

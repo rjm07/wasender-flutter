@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter/cupertino.dart';
+import 'package:wasender/app/core/models/perangkat_saya/device_list.dart';
 
 import '../../../utils/lang/api/api_strings.dart';
 import '../../models/dashboard/dashboard_all_device.dart';
@@ -16,6 +17,7 @@ class PerangkatSayaServices extends ChangeNotifier {
   int perPage = 10;
   bool isLoading = false;
   List<PerangkatSayaDataList> perangkatSayaDataDetails = [];
+  List<Device> perangkatSayaTerhubungDataDetails = [];
 
   void incrementPage() {
     page++;
@@ -44,6 +46,31 @@ class PerangkatSayaServices extends ChangeNotifier {
         perangkatSayaDataDetails.addAll(newDevices);
       } else {
         perangkatSayaDataDetails = newDevices;
+      }
+
+      notifyListeners();
+    } catch (error) {
+      showErrorSnackbar('Error: $error');
+    }
+  }
+
+  Future<void> updateAllDeviceListFuture(
+    String token, {
+    bool isPagination = false,
+    required Function(String) showErrorSnackbar, // Error callback
+  }) async {
+    try {
+      final newDevices = await getAllDeviceList(
+        token,
+        showErrorSnackbar,
+        page,
+        perPage,
+      );
+
+      if (isPagination) {
+        perangkatSayaTerhubungDataDetails.addAll(newDevices);
+      } else {
+        perangkatSayaTerhubungDataDetails = newDevices;
       }
 
       notifyListeners();
@@ -103,6 +130,60 @@ class PerangkatSayaServices extends ChangeNotifier {
         }
       } else {
         throw Exception('Error: ${response.statusCode} - ${response.reasonPhrase} test');
+      }
+    } catch (error, stackTrace) {
+      debugPrintStack(stackTrace: stackTrace);
+      throw Exception(error.toString());
+    }
+  }
+
+  Future<List<Device>> getAllDeviceList(
+    String token,
+    Function(String) showErrorSnackbar,
+    int page,
+    int perPage,
+  ) async {
+    final queryParams = {
+      'page': page,
+      'per_page': perPage,
+    };
+    final keys = queryParams.keys.toList()..sort();
+    String sequence = keys.map((key) => queryParams[key]!).join();
+    if (sequence.isEmpty) {
+      sequence = "NA";
+    }
+    final Uri uri = Uri.parse("${API.baseUrl}${API.devicePerangkatSayaUrl}");
+
+    debugPrint("Calling $uri");
+
+    try {
+      final response = await http.get(
+        uri,
+        headers: {
+          "Authorization": "Bearer $token",
+        },
+      );
+
+      debugPrint(response.body);
+
+      if (response.statusCode == 200) {
+        final Map<String, dynamic> json = jsonDecode(response.body) as Map<String, dynamic>;
+        final DeviceResponse deviceResponse = DeviceResponse.fromJson(json);
+
+        // Correcting the way messageData is accessed
+        final AllDeviceData data = deviceResponse.messageData.data;
+        final List<Device> devices = data.perangkatTerhubung;
+
+        if (devices.isNotEmpty) {
+          await LocalPrefs.saveDeviceKey(devices[0].pkey);
+          await LocalPrefs.saveWhatsappNumber(devices[0].whatsappNumber);
+        }
+
+        return devices;
+      } else {
+        final String message = jsonDecode(response.body)["message_desc"];
+        showErrorSnackbar('Error: ${response.statusCode} - $message');
+        throw Exception(message);
       }
     } catch (error, stackTrace) {
       debugPrintStack(stackTrace: stackTrace);
