@@ -2,12 +2,12 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:wasender/app/core/services/preferences.dart';
+import 'package:wasender/app/ui/pages/feature_main/feature_pages/menu/feature_inbox/inbox_screen.dart';
 import 'package:wasender/app/ui/pages/feature_main/feature_pages/pengaturan/feature_paket/paket_screen.dart';
 import '../../../../core/services/auth.dart';
 import '../../../../core/services/navigation/navigation.dart';
 import '../../../../utils/lang/images.dart';
 import '../../../shared/widgets/custom_list_tiles.dart';
-import '../../../shared/widgets/wrappers/auth_wrapper.dart';
 import '../feature_pages/menu/feature_perangkat_saya/perangkat_saya_screen.dart';
 import '../feature_pages/menu/feature_profile/profile_screen.dart';
 import '../feature_pages/menu/feature_inbox/chat/pesan_screen.dart';
@@ -115,7 +115,7 @@ class _SideBarMenuScreenState extends State<SideBarMenuScreen> {
                           onTap: () {
                             Navigator.of(context).push(
                               MaterialPageRoute(
-                                builder: (context) => const ChatHomeScreen(),
+                                builder: (context) => const InboxScreen(),
                               ),
                             );
                           },

@@ -13,6 +13,7 @@ class PerangkatSayaCard extends StatelessWidget {
   final String dueDate;
   final String devicePkey;
   final String devicePhoneNumber;
+  final bool isInbox;
 
   const PerangkatSayaCard({
     super.key,
@@ -25,12 +26,12 @@ class PerangkatSayaCard extends StatelessWidget {
     required this.dueDate,
     required this.devicePkey,
     required this.devicePhoneNumber,
+    required this.isInbox,
   });
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.all(16.0),
       decoration: BoxDecoration(
         color: color,
         borderRadius: BorderRadius.circular(12.0),
@@ -49,77 +50,138 @@ class PerangkatSayaCard extends StatelessWidget {
         children: [
           Row(
             children: [
-              Container(
-                width: 50.0, // Width of the circle
-                height: 50.0, // Height of the circle
-                decoration: const BoxDecoration(
-                  color: AppColors.primary, // Background color (green)
-                  shape: BoxShape.circle, // Circular shape
-                ),
-                child: Center(
-                  child: AvatarWithInitials(
-                    fullName: (deviceID.isEmpty || double.tryParse(deviceID) != null) ? 'Anonymous' : deviceID,
-                    imageUrl: null,
-                  ),
+              Padding(
+                padding: const EdgeInsets.only(top: 16.0, left: 16.0, bottom: 0.0, right: 0.0),
+                child: Row(
+                  children: [
+                    Container(
+                      width: 50.0, // Width of the circle
+                      height: 50.0, // Height of the circle
+                      decoration: const BoxDecoration(
+                        color: AppColors.primary, // Background color (green)
+                        shape: BoxShape.circle, // Circular shape
+                      ),
+                      child: Center(
+                        child: AvatarWithInitials(
+                          fullName: (deviceID.isEmpty || double.tryParse(deviceID) != null) ? 'Anonymous' : deviceID,
+                          imageUrl: null,
+                        ),
+                      ),
+                    ),
+                    SizedBox(width: 12),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          "Device ID",
+                          style: TextStyle(
+                            color: AppColors.primary, // Lighter blue text color
+                            fontSize: 12,
+                          ),
+                        ),
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              deviceID,
+                              style: TextStyle(
+                                color: Colors.black54, // White text for the main count
+                                fontSize: 14,
+                                fontWeight: FontWeight.w500,
+                              ),
+                            ),
+                            Text(
+                              devicePkey,
+                              style: TextStyle(
+                                color: Colors.black54, // White text for the main count
+                                fontSize: 12,
+                                fontWeight: FontWeight.w500,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ],
                 ),
               ),
-              SizedBox(width: 12),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    "Device ID",
-                    style: TextStyle(
-                      color: AppColors.primary, // Lighter blue text color
-                      fontSize: 12,
-                    ),
-                  ),
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        deviceID,
-                        style: TextStyle(
-                          color: Colors.black54, // White text for the main count
-                          fontSize: 14,
-                          fontWeight: FontWeight.w500,
-                        ),
-                      ),
-                      Text(
-                        devicePkey,
-                        style: TextStyle(
-                          color: Colors.black54, // White text for the main count
-                          fontSize: 12,
-                          fontWeight: FontWeight.w500,
-                        ),
-                      ),
-                    ],
-                  ),
-                ],
+              Spacer(),
+              Visibility(
+                visible: isInbox == false,
+                child: IconButton(
+                  icon: Icon(Icons.more_vert),
+                  onPressed: () {
+                    // Handle menu action
+                    showMenu(
+                      context: context,
+                      position: RelativeRect.fromLTRB(100, 100, 0, 0),
+                      items: [
+                        PopupMenuItem(child: Text("Edit")),
+                        PopupMenuItem(child: Text("Delete")),
+                      ],
+                    );
+                  },
+                ),
               ),
             ],
           ),
           const SizedBox(height: 12),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    "Name",
-                    style: TextStyle(
-                      color: AppColors.primary, // Lighter blue text color
-                      fontSize: 12,
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16.0),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      "Name",
+                      style: TextStyle(
+                        color: AppColors.primary, // Lighter blue text color
+                        fontSize: 12,
+                      ),
                     ),
-                  ),
-                  Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 12.0),
-                    child: Column(
+                    Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 12.0),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            role,
+                            style: TextStyle(
+                              color: Colors.black54, // White text for the main count
+                              fontSize: 14,
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                          Text(
+                            devicePhoneNumber,
+                            style: TextStyle(
+                              color: Colors.black54, // White text for the main count
+                              fontSize: 14,
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      "Inbox / Due at",
+                      style: TextStyle(
+                        color: AppColors.primary, // Lighter blue text color
+                        fontSize: 12,
+                      ),
+                    ),
+                    Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          role,
+                          category,
                           style: TextStyle(
                             color: Colors.black54, // White text for the main count
                             fontSize: 14,
@@ -127,7 +189,7 @@ class PerangkatSayaCard extends StatelessWidget {
                           ),
                         ),
                         Text(
-                          devicePhoneNumber,
+                          dueDate,
                           style: TextStyle(
                             color: Colors.black54, // White text for the main count
                             fontSize: 14,
@@ -136,107 +198,69 @@ class PerangkatSayaCard extends StatelessWidget {
                         ),
                       ],
                     ),
-                  ),
-                ],
-              ),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    "Inbox / Due at",
-                    style: TextStyle(
-                      color: AppColors.primary, // Lighter blue text color
-                      fontSize: 12,
+                  ],
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(height: 12),
+          Divider(
+            thickness: 0.5,
+            color: AppColors.primary,
+            indent: 0,
+            endIndent: 0,
+          ),
+          Padding(
+            padding: const EdgeInsets.only(left: 16.0, right: 16.0, top: 4.0, bottom: 12.0),
+            child: Row(
+              children: [
+                Container(
+                  decoration: BoxDecoration(
+                      border: Border.all(color: AppColors.primary, width: 1), borderRadius: BorderRadius.circular(5)),
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Row(
+                      children: [
+                        Text(
+                          'FREE / 200',
+                          style: TextStyle(
+                            fontSize: 14,
+                            fontWeight: FontWeight.w500,
+                            color: AppColors.primary,
+                          ),
+                        ),
+                      ],
                     ),
                   ),
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
+                ),
+                Spacer(),
+                Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 10),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min, // Ensures the row takes only the needed space
                     children: [
-                      Text(
-                        category,
-                        style: TextStyle(
-                          color: Colors.black54, // White text for the main count
-                          fontSize: 14,
-                          fontWeight: FontWeight.w500,
+                      Container(
+                        width: 10,
+                        height: 10,
+                        decoration: BoxDecoration(
+                          color: isActive ? Colors.green : Colors.redAccent.shade700,
+                          shape: BoxShape.circle,
                         ),
                       ),
+                      const SizedBox(width: 8), // Spacing between the circle and text
                       Text(
-                        dueDate,
+                        isActive ? "CONNECTED" : "DISCONNECTED",
                         style: TextStyle(
-                          color: Colors.black54, // White text for the main count
+                          color: isActive ? Colors.green : Colors.redAccent.shade700,
                           fontSize: 14,
                           fontWeight: FontWeight.w500,
                         ),
                       ),
                     ],
                   ),
-                ],
-              ),
-            ],
-          ),
-          const SizedBox(height: 12),
-          Row(
-            children: [
-              Spacer(),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const Text(
-                    "Paket & Kuota",
-                    style: TextStyle(
-                      color: Colors.black54, // Lighter blue text color
-                      fontSize: 12,
-                    ),
-                  ),
-                  const SizedBox(height: 8),
-                  Container(
-                    decoration: BoxDecoration(
-                        border: Border.all(color: AppColors.primary, width: 1), borderRadius: BorderRadius.circular(5)),
-                    child: Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Row(
-                        children: [
-                          Text(
-                            'FREE / 200',
-                            style: TextStyle(
-                              fontSize: 14,
-                              fontWeight: FontWeight.w500,
-                              color: AppColors.primary,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-              const SizedBox(width: 20),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const Text(
-                    "Status",
-                    style: TextStyle(
-                      color: Colors.black54, // Lighter blue text color
-                      fontSize: 12,
-                    ),
-                  ),
-                  const SizedBox(height: 8),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 10),
-                    child: Text(
-                      isActive ? "CONNECTED" : "DISCONNECTED",
-                      style: TextStyle(
-                        color:
-                            isActive ? AppColors.primary : Colors.redAccent.shade700, // White text for the main count
-                        fontSize: 14,
-                        fontWeight: FontWeight.w500,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ],
+                ),
+              ],
+            ),
           ),
         ],
       ),

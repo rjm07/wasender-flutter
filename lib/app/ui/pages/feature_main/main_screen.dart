@@ -146,7 +146,11 @@ class _MainScreenState extends State<MainScreen> {
           backgroundColor: userRole.toUpperCase() == 'ADMIN' ? AppColors.navBarColor : AppColors.navBarColor),
 
       // Conditionally display Drawer for Android
-      drawer: isIOS ? null : SideBarMenuScreen(pageController: _pageController),
+      drawer: isIOS
+          ? null
+          : SideBarMenuScreen(
+              pageController: _pageController,
+            ),
       // Conditionally display BottomNavigationBar for iOS
       bottomNavigationBar: isIOS
           ? BottomNavigationBar(
