@@ -60,7 +60,7 @@ class ChatUserListTile extends StatelessWidget {
         width: 60, // Set a fixed width
         height: 60, // Set a fixed height
         child: AvatarWithInitials(
-          fullName: (fullName.isEmpty || double.tryParse(fullName) != null) ? 'Anonymous' : fullName,
+          fullName: _sanitizeFullName(fullName),
           imageUrl: null,
         ),
       ),
@@ -85,5 +85,10 @@ class ChatUserListTile extends StatelessWidget {
       ),
       onTap: onTap,
     );
+  }
+
+  String _sanitizeFullName(String name) {
+    name = name.trim().replaceAll(RegExp(r'\s+'), ' '); // Normalize spaces
+    return (name.isEmpty || double.tryParse(name) != null) ? 'Anonymous' : name;
   }
 }

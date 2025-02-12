@@ -9,9 +9,12 @@ import '../../../../../../core/services/navigation/navigation.dart';
 import '../../../../../../core/services/preferences.dart';
 import '../../../../../../utils/lang/colors.dart';
 import '../../../../../../utils/snackbar/snackbar.dart';
+import 'chat/chat_home_screen.dart';
 
 class InboxScreen extends StatefulWidget {
-  const InboxScreen({super.key});
+  const InboxScreen({super.key, required this.devices});
+
+  final List<Device> devices;
 
   @override
   State<InboxScreen> createState() => _InboxScreenState();
@@ -150,7 +153,7 @@ class _InboxScreenState extends State<InboxScreen> {
             } else {
               return ListView(
                 controller: _scrollController,
-                padding: const EdgeInsets.symmetric(horizontal: 18.0, vertical: 24.0),
+                padding: const EdgeInsets.symmetric(horizontal: 18.0, vertical: 12.0),
                 children: [
                   ...devices.perangkatSayaTerhubungDataDetails.map((Device device) {
                     return Padding(
@@ -174,8 +177,9 @@ class _InboxScreenState extends State<InboxScreen> {
                           onTap: () {
                             Navigator.of(context).push(
                               MaterialPageRoute(
-                                builder: (context) => PerangkatSayaDetailScreen(
-                                  whatsappNumber: device.whatsappNumber,
+                                builder: (context) => ChatHomeScreen(
+                                  pKey: device.pkey,
+                                  ifFromInbox: true,
                                 ),
                               ),
                             );

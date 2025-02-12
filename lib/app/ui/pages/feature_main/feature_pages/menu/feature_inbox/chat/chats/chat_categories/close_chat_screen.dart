@@ -14,8 +14,10 @@ class ClosedChatScreen extends StatefulWidget {
   const ClosedChatScreen({
     super.key,
     required this.onHandleTicket,
+    required this.pKey,
   });
   final void Function() onHandleTicket;
+  final String pKey;
 
   @override
   State<ClosedChatScreen> createState() => _ClosedChatScreenState();
@@ -25,7 +27,6 @@ class _ClosedChatScreenState extends State<ClosedChatScreen> {
   final logger = Logger();
   late socket_io.Socket? socket;
   final SocketService socketService = SocketService();
-  late String pKey = 'pKey';
   List<ChatBoxDataList> userChatBox = [];
 
   @override
@@ -40,17 +41,17 @@ class _ClosedChatScreenState extends State<ClosedChatScreen> {
   Future<void> getChatBoxList() async {
     final PesanServices devices = Provider.of<PesanServices>(context, listen: false);
     final String? tokenBearer = await LocalPrefs.getBearerToken();
-    final String? deviceKey = await LocalPrefs.getDeviceKey();
+    // final String? deviceKey = await LocalPrefs.getDeviceKey();
     debugPrint("tokenBearer: $tokenBearer");
-    debugPrint("deviceKey: $deviceKey");
-    pKey = deviceKey ?? '';
+    // debugPrint("deviceKey: $deviceKey");
+    // pKey = deviceKey ?? '';
 
     if (tokenBearer != null) {
       // Update the chat box list
       await devices.updateChatBoxListFuture(
         'closed',
         tokenBearer,
-        deviceKey ?? '',
+        widget.pKey,
         showErrorSnackbar: (String errorMessage) {
           SnackbarUtil.showErrorSnackbar(context, errorMessage);
         },

@@ -62,7 +62,6 @@ class PerangkatSayaServices extends ChangeNotifier {
     try {
       final newDevices = await getAllDeviceList(
         token,
-        showErrorSnackbar,
         page,
         perPage,
       );
@@ -139,7 +138,6 @@ class PerangkatSayaServices extends ChangeNotifier {
 
   Future<List<Device>> getAllDeviceList(
     String token,
-    Function(String) showErrorSnackbar,
     int page,
     int perPage,
   ) async {
@@ -182,7 +180,6 @@ class PerangkatSayaServices extends ChangeNotifier {
         return devices;
       } else {
         final String message = jsonDecode(response.body)["message_desc"];
-        showErrorSnackbar('Error: ${response.statusCode} - $message');
         throw Exception(message);
       }
     } catch (error, stackTrace) {

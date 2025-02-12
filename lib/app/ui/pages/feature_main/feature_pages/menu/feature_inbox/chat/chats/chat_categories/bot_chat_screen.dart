@@ -16,15 +16,17 @@ class BotChatScreen extends StatefulWidget {
   const BotChatScreen({
     super.key,
     required this.onHandleTicket,
+    required this.pKey,
   });
   final void Function() onHandleTicket;
+  final String pKey;
   @override
   State<BotChatScreen> createState() => _BotChatScreenState();
 }
 
 class _BotChatScreenState extends State<BotChatScreen> {
   final logger = Logger();
-  late String pKey = 'pKey';
+  //late String pKey = 'pKey';
   List<ChatBoxDataList> userChatBox = [];
 
   @override
@@ -44,14 +46,14 @@ class _BotChatScreenState extends State<BotChatScreen> {
     final String? deviceKey = await LocalPrefs.getDeviceKey();
     debugPrint("tokenBearer: $tokenBearer");
     debugPrint("deviceKey: $deviceKey");
-    pKey = deviceKey ?? '';
+    //pKey = deviceKey ?? '';
 
     if (tokenBearer != null) {
       // Update the chat box list
       await devices.updateChatBoxListFuture(
         'open',
         tokenBearer,
-        deviceKey ?? '',
+        widget.pKey,
         showErrorSnackbar: (String errorMessage) {
           SnackbarUtil.showErrorSnackbar(context, errorMessage);
         },
@@ -98,7 +100,7 @@ class _BotChatScreenState extends State<BotChatScreen> {
             messages: Messages(
               agentId: conversation.agentId,
               agentName: conversation.agentName,
-              broadcast: conversation.message?.caption,
+              broadcast: conversation.broadcast ?? false,
               category: conversation.category ?? '',
               chat: conversation.chat ?? '',
               fromMe: conversation.fromMe ?? false,
@@ -114,7 +116,7 @@ class _BotChatScreenState extends State<BotChatScreen> {
                 stanzaId: conversation.message?.stanzaId,
                 text: conversation.message?.text,
               ),
-              messageTimestamp: conversation.messageTimestamp ?? "",
+              messageTimestamp: conversation.messageTimestamp ?? 0,
               messageTimestampStr: conversation.messageTimestampStr ?? '',
               messageId: conversation.messageId ?? '',
               receipt: conversation.receipt ?? '',

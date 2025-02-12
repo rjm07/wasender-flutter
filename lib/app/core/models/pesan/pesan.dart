@@ -76,7 +76,7 @@ class ChatBoxDataList {
 class Messages {
   final String? agentId;
   final String? agentName;
-  final dynamic broadcast;
+  final bool broadcast;
   final String category;
   final String chat;
   final bool fromMe;
@@ -85,8 +85,8 @@ class Messages {
   final String? inboxType;
   final bool? isBot;
   final MessageContent message;
-  final String messageTimestamp;
-  final dynamic messageTimestampStr;
+  final int messageTimestamp;
+  final String messageTimestampStr;
   final String messageId;
   final String progress;
   final String receipt;
@@ -113,22 +113,22 @@ class Messages {
     required this.messageTimestamp,
     required this.messageTimestampStr,
     required this.messageId,
-    required this.receipt,
     required this.progress,
-    required String? senderName,
+    required this.receipt,
+    required this.senderName,
     required this.senderNumber,
     required this.sessionId,
     required this.status,
-    required this.ticketId,
-    required this.ticketNumber,
+    this.ticketId,
+    this.ticketNumber,
     required this.type,
-  }) : senderName = senderName ?? senderNumber;
+  });
 
   factory Messages.fromJson(Map<String, dynamic> json) {
     return Messages(
       agentId: json['agent_id'],
       agentName: json['agent_name'],
-      broadcast: json['broadcast'],
+      broadcast: json['broadcast'] ?? false,
       category: json['category'],
       chat: json['chat'],
       fromMe: json['from_me'],
@@ -142,7 +142,7 @@ class Messages {
       messageId: json['message_id'],
       progress: json['progress'],
       receipt: json['receipt'],
-      senderName: json['sender_name'] ?? '',
+      senderName: json['sender_name'] ?? json['sender_number'],
       senderNumber: json['sender_number'],
       sessionId: json['session_id'],
       status: json['status'],
@@ -164,14 +164,14 @@ class MessageContent {
   final String? text;
 
   MessageContent({
-    required this.caption,
-    required this.file,
-    required this.name,
-    required this.thumb,
-    required this.mentionedJid,
-    required this.quotedMessage,
-    required this.stanzaId,
-    required this.text,
+    this.caption,
+    this.file,
+    this.name,
+    this.thumb,
+    this.mentionedJid,
+    this.quotedMessage,
+    this.stanzaId,
+    this.text,
   });
 
   factory MessageContent.fromJson(Map<String, dynamic> json) {

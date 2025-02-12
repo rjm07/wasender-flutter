@@ -15,15 +15,16 @@ class ActiveChatScreen extends StatefulWidget {
   const ActiveChatScreen({
     super.key,
     required this.onHandleTicket,
+    required this.pKey,
   });
   final void Function() onHandleTicket;
+  final String pKey;
   @override
   State<ActiveChatScreen> createState() => _ActiveChatScreenState();
 }
 
 class _ActiveChatScreenState extends State<ActiveChatScreen> {
   final logger = Logger();
-  late String pKey = 'pKey';
   List<ChatBoxDataList> userChatBox = [];
 
   @override
@@ -42,7 +43,7 @@ class _ActiveChatScreenState extends State<ActiveChatScreen> {
     final String? deviceKey = await LocalPrefs.getDeviceKey();
     debugPrint("tokenBearer: $tokenBearer");
     debugPrint("deviceKey: $deviceKey");
-    pKey = deviceKey ?? '';
+    //pKey = deviceKey ?? '';
 
     if (tokenBearer != null) {
       try {
@@ -50,7 +51,7 @@ class _ActiveChatScreenState extends State<ActiveChatScreen> {
         await devices.updateChatBoxListFuture(
           'active',
           tokenBearer,
-          deviceKey ?? '',
+          widget.pKey,
           showErrorSnackbar: (String errorMessage) {
             // Ensure the widget is still active
             SnackbarUtil.showErrorSnackbar(context, errorMessage);
@@ -101,7 +102,7 @@ class _ActiveChatScreenState extends State<ActiveChatScreen> {
             messages: Messages(
               agentId: conversation.agentId,
               agentName: conversation.agentName,
-              broadcast: conversation.message?.caption,
+              broadcast: conversation.broadcast ?? false,
               category: conversation.category ?? '',
               chat: conversation.chat ?? '',
               fromMe: conversation.fromMe ?? false,
@@ -117,7 +118,7 @@ class _ActiveChatScreenState extends State<ActiveChatScreen> {
                 stanzaId: conversation.message?.stanzaId,
                 text: conversation.message?.text,
               ),
-              messageTimestamp: conversation.messageTimestamp ?? "",
+              messageTimestamp: conversation.messageTimestamp ?? 0,
               messageTimestampStr: conversation.messageTimestampStr ?? '',
               messageId: conversation.messageId ?? '',
               receipt: conversation.receipt ?? '',

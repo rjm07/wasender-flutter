@@ -84,12 +84,13 @@ class Conversation {
   final String? id;
   final String? type;
   final String? chat;
+  final bool? broadcast;
   final String? category;
   final String? notify;
   final bool? fromMe;
   final String? senderName;
   final String? senderNumber;
-  final String? messageTimestamp;
+  final int? messageTimestamp;
   final String? messageTimestampStr;
   final Message? message;
   final String? receipt;
@@ -107,6 +108,7 @@ class Conversation {
   Conversation({
     this.isBot,
     this.id,
+    this.broadcast,
     this.type,
     this.chat,
     this.category,
@@ -136,12 +138,13 @@ class Conversation {
       id: json['id'] as String?,
       type: json['type'] as String?,
       chat: json['chat'] as String?,
+      broadcast: json['broadcast'] as bool?,
       category: json['category'] as String?,
       notify: json['notify'] as String?,
       fromMe: json['from_me'] as bool?,
       senderName: json['sender_name'] as String?,
       senderNumber: json['sender_number'] as String?,
-      messageTimestamp: json['messageTimestamp'] as String?,
+      messageTimestamp: json['messageTimestamp'] as int?,
       messageTimestampStr: json['messageTimestamp_str'] as String?,
       message: Message.fromJson(json['message']),
       receipt: json['receipt'] as String?,
