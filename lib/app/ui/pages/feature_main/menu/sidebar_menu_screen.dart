@@ -2,21 +2,23 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:wasender/app/core/services/preferences.dart';
+import 'package:wasender/app/ui/pages/feature_main/feature_pages/menu/feature_inbox/inbox_screen.dart';
 import 'package:wasender/app/ui/pages/feature_main/feature_pages/pengaturan/feature_paket/paket_screen.dart';
+import '../../../../core/models/perangkat_saya/device_list.dart';
 import '../../../../core/services/auth.dart';
 import '../../../../core/services/navigation/navigation.dart';
 import '../../../../utils/lang/images.dart';
 import '../../../shared/widgets/custom_list_tiles.dart';
-import '../../../shared/widgets/wrappers/auth_wrapper.dart';
 import '../feature_pages/menu/feature_perangkat_saya/perangkat_saya_screen.dart';
 import '../feature_pages/menu/feature_profile/profile_screen.dart';
-import '../feature_pages/menu/feature_inbox/chat/pesan_screen.dart';
+import '../feature_pages/menu/feature_inbox/chat/chat_home_screen.dart';
 import '../feature_pages/pengaturan/feature_bantuan/bantuan_screen.dart';
 
 class SideBarMenuScreen extends StatefulWidget {
   final PageController pageController;
+  final List<Device> devices;
 
-  const SideBarMenuScreen({super.key, required this.pageController}); // Accept controller
+  const SideBarMenuScreen({super.key, required this.pageController, required this.devices}); // Accept controller
 
   @override
   State<SideBarMenuScreen> createState() => _SideBarMenuScreenState();
@@ -110,16 +112,28 @@ class _SideBarMenuScreenState extends State<SideBarMenuScreen> {
                           },
                         ),
                         SMListTiles(
-                          image: CustomIcons.iconInbox,
-                          title: 'Inbox',
-                          onTap: () {
-                            Navigator.of(context).push(
-                              MaterialPageRoute(
-                                builder: (context) => const ChatHomeScreen(),
-                              ),
-                            );
-                          },
-                        ),
+                            image: CustomIcons.iconInbox,
+                            title: 'Inbox',
+                            onTap: () {
+                              if (widget.devices.length > 1) {
+                                debugPrint("More than one device: ${widget.devices.length}");
+
+                                Navigator.of(context).push(
+                                  MaterialPageRoute(
+                                    builder: (context) => InboxScreen(devices: widget.devices),
+                                  ),
+                                );
+                              } else {
+                                Navigator.of(context).push(
+                                  MaterialPageRoute(
+                                    builder: (context) => ChatHomeScreen(
+                                      pKey: widget.devices[0].pkey,
+                                      ifFromInbox: false,
+                                    ),
+                                  ),
+                                );
+                              }
+                            }),
                         SMListTiles(
                           image: CustomIcons.iconPesan,
                           title: 'Pesan',
@@ -171,7 +185,10 @@ class _SideBarMenuScreenState extends State<SideBarMenuScreen> {
                               {
                             Navigator.of(context).push(
                               MaterialPageRoute(
-                                builder: (context) => const ChatHomeScreen(),
+                                builder: (context) => const ChatHomeScreen(
+                                  pKey: '',
+                                  ifFromInbox: false,
+                                ),
                               ),
                             );
                           },

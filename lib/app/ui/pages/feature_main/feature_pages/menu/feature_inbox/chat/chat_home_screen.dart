@@ -8,9 +8,13 @@ import 'chats/chat_categories/bot_chat_screen.dart';
 import 'chats/chat_categories/close_chat_screen.dart';
 
 class ChatHomeScreen extends StatefulWidget {
-  static const routeName = '/pesan';
+  static const routeName = '/chatHome';
+
+  const ChatHomeScreen({super.key, this.initialPageIndex = 0, required this.pKey, required this.ifFromInbox});
+
   final int initialPageIndex;
-  const ChatHomeScreen({super.key, this.initialPageIndex = 0});
+  final String pKey;
+  final bool ifFromInbox;
 
   @override
   State<ChatHomeScreen> createState() => _ChatHomeScreenState();
@@ -22,6 +26,7 @@ class _ChatHomeScreenState extends State<ChatHomeScreen> with SingleTickerProvid
   int activeBadgeCount = 0; // Example badge counts
   int closedBadgeCount = 0;
   int openBadgeCount = 0;
+  String pKey = '';
 
   //int _selectedFilterIndex = 0; // Track the selected filter
 
@@ -53,13 +58,6 @@ class _ChatHomeScreenState extends State<ChatHomeScreen> with SingleTickerProvid
     _pageController.dispose();
     super.dispose();
   }
-
-  // Method to handle filter selection
-  // void _onFilterSelected(int index) {
-  //   setState(() {
-  //     _selectedFilterIndex = index;
-  //   });
-  // }
 
   // Method to handle page changes via swipes
   void _onPageChanged(int index) {
@@ -104,7 +102,11 @@ class _ChatHomeScreenState extends State<ChatHomeScreen> with SingleTickerProvid
         leading: IconButton(
           icon: Icon(Icons.arrow_back, color: Colors.black),
           onPressed: () {
-            NavService.jumpToPageID('/main');
+            if (widget.ifFromInbox) {
+              NavService.pop();
+            } else {
+              NavService.jumpToPageID('/main');
+            }
           },
         ),
         title: Row(
@@ -196,14 +198,6 @@ class _ChatHomeScreenState extends State<ChatHomeScreen> with SingleTickerProvid
                   const SizedBox(
                     height: 16,
                   ),
-                  // Container(
-                  //   color: Colors.blueGrey.shade50,
-                  //   height: 64,
-                  //   child: TabBarView(
-                  //     controller: _tabController,
-                  //     children: [],
-                  //   ),
-                  // ),
                 ],
               ),
             ),
@@ -216,12 +210,15 @@ class _ChatHomeScreenState extends State<ChatHomeScreen> with SingleTickerProvid
                 children: [
                   ActiveChatScreen(
                     onHandleTicket: () {},
+                    pKey: widget.pKey,
                   ),
                   ClosedChatScreen(
                     onHandleTicket: () {},
+                    pKey: widget.pKey,
                   ),
                   BotChatScreen(
                     onHandleTicket: onHandleTicket,
+                    pKey: widget.pKey,
                   ),
                 ],
               ),

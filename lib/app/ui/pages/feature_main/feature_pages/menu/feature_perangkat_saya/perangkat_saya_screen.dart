@@ -207,6 +207,7 @@ class _PerangkatSayaScreenState extends State<PerangkatSayaScreen> {
                             dueDate: DateTime.now().toString(),
                             devicePkey: device.pkey,
                             devicePhoneNumber: device.whatsappNumber,
+                            isInbox: false,
                           ),
                         ),
                       ),

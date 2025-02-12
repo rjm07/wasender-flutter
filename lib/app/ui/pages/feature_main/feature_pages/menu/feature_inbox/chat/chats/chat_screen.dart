@@ -18,7 +18,7 @@ import '../../../../../../../shared/widgets/custom_button.dart';
 import '../../../../../../../shared/widgets/handle_ticket.dart';
 import '../../../../../../../shared/widgets/msg_widget/other_msg_widget.dart';
 import '../../../../../../../shared/widgets/msg_widget/own_msg_widget.dart';
-import '../pesan_screen.dart';
+import '../chat_home_screen.dart';
 import 'chat_user_profile.dart';
 
 class ChatScreen extends StatefulWidget {
@@ -233,7 +233,10 @@ class _ChatScreenState extends State<ChatScreen> {
         await devices.assignTicket(widget.roomChat, widget.senderNumber);
         NavService.popUntilAndPush(
           popUntilRoute: '/main',
-          pushScreen: ChatHomeScreen(),
+          pushScreen: ChatHomeScreen(
+            pKey: '',
+            ifFromInbox: false,
+          ),
         );
       } catch (error) {
         // Close the dialog and show a SnackBar with the error message

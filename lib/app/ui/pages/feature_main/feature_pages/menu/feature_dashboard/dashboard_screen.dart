@@ -6,6 +6,7 @@ import 'package:wasender/app/ui/pages/feature_main/feature_pages/menu/feature_pr
 import 'package:wasender/app/ui/shared/widgets/dashboard_cards.dart';
 
 import '../../../../../../core/models/dashboard/dashboard_response.dart';
+import '../../../../../../core/models/perangkat_saya/device_list.dart';
 import '../../../../../../core/services/fcm.dart';
 import '../../../../../../core/services/perangkat_saya/perangkat_saya.dart';
 import '../../../../../../core/services/preferences.dart';
@@ -13,7 +14,9 @@ import '../../../../../../core/services/socket_io/socket.dart';
 import '../../../../../../utils/lang/images.dart';
 
 class DashboardScreen extends StatefulWidget {
-  const DashboardScreen({super.key});
+  const DashboardScreen({super.key, required this.devices});
+
+  final List<Device> devices;
 
   @override
   State<DashboardScreen> createState() => _DashboardScreenState();
