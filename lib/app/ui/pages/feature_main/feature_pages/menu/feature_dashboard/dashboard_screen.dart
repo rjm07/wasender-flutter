@@ -7,6 +7,7 @@ import 'package:wasender/app/ui/shared/widgets/dashboard_cards.dart';
 
 import '../../../../../../core/models/dashboard/dashboard_response.dart';
 import '../../../../../../core/models/perangkat_saya/device_list.dart';
+import '../../../../../../core/models/perangkat_saya/perangkat_saya.dart';
 import '../../../../../../core/services/fcm.dart';
 import '../../../../../../core/services/perangkat_saya/perangkat_saya.dart';
 import '../../../../../../core/services/preferences.dart';
@@ -14,9 +15,7 @@ import '../../../../../../core/services/socket_io/socket.dart';
 import '../../../../../../utils/lang/images.dart';
 
 class DashboardScreen extends StatefulWidget {
-  const DashboardScreen({super.key, required this.devices});
-
-  final List<Device> devices;
+  const DashboardScreen({super.key});
 
   @override
   State<DashboardScreen> createState() => _DashboardScreenState();
@@ -42,7 +41,7 @@ class _DashboardScreenState extends State<DashboardScreen> with WidgetsBindingOb
     getUserInfo();
     _dashboardFuture = getDashboardData();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      getDeviceList();
+      // getDeviceList();
       getAllDevices();
     });
     WidgetsBinding.instance.addObserver(this);
@@ -155,7 +154,6 @@ class _DashboardScreenState extends State<DashboardScreen> with WidgetsBindingOb
           return Scaffold(
             body: SingleChildScrollView(
               child: SizedBox(
-                height: MediaQuery.of(context).size.height - 100,
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.start,
                   crossAxisAlignment: CrossAxisAlignment.start,

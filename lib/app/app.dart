@@ -32,7 +32,7 @@ class WhatUpApp extends StatelessWidget {
         '/login': (context) => LoginScreen(),
         '/main': (context) => MainScreen(),
         '/change_password': (context) => ChangePasswordScreen(),
-        '/dashboard': (context) => DashboardScreen(devices: []),
+        '/dashboard': (context) => DashboardScreen(),
         '/chatHome': (context) => ChatHomeScreen(
               pKey: '',
               ifFromInbox: false,

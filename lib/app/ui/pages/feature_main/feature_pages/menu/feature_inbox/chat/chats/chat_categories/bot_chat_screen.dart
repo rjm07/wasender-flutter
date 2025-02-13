@@ -44,6 +44,7 @@ class _BotChatScreenState extends State<BotChatScreen> {
     final PesanServices devices = Provider.of<PesanServices>(context, listen: false);
     final String? tokenBearer = await LocalPrefs.getBearerToken();
     final String? deviceKey = await LocalPrefs.getDeviceKey();
+    final String? pKey = await LocalPrefs.getSelectedPKey();
     debugPrint("tokenBearer: $tokenBearer");
     debugPrint("deviceKey: $deviceKey");
     //pKey = deviceKey ?? '';
@@ -53,7 +54,7 @@ class _BotChatScreenState extends State<BotChatScreen> {
       await devices.updateChatBoxListFuture(
         'open',
         tokenBearer,
-        widget.pKey,
+        pKey ?? widget.pKey,
         showErrorSnackbar: (String errorMessage) {
           SnackbarUtil.showErrorSnackbar(context, errorMessage);
         },

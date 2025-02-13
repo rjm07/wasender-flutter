@@ -1,12 +1,13 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:wasender/app/core/models/perangkat_saya/perangkat_saya.dart';
 import 'package:wasender/app/core/services/preferences.dart';
 import 'package:wasender/app/ui/pages/feature_main/feature_pages/menu/feature_inbox/inbox_screen.dart';
 import 'package:wasender/app/ui/pages/feature_main/feature_pages/pengaturan/feature_paket/paket_screen.dart';
-import '../../../../core/models/perangkat_saya/device_list.dart';
 import '../../../../core/services/auth.dart';
 import '../../../../core/services/navigation/navigation.dart';
+import '../../../../core/services/perangkat_saya/perangkat_saya.dart';
 import '../../../../utils/lang/images.dart';
 import '../../../shared/widgets/custom_list_tiles.dart';
 import '../feature_pages/menu/feature_perangkat_saya/perangkat_saya_screen.dart';
@@ -16,9 +17,11 @@ import '../feature_pages/pengaturan/feature_bantuan/bantuan_screen.dart';
 
 class SideBarMenuScreen extends StatefulWidget {
   final PageController pageController;
-  final List<Device> devices;
 
-  const SideBarMenuScreen({super.key, required this.pageController, required this.devices}); // Accept controller
+  const SideBarMenuScreen({
+    super.key,
+    required this.pageController,
+  }); // Accept controller
 
   @override
   State<SideBarMenuScreen> createState() => _SideBarMenuScreenState();
@@ -28,11 +31,40 @@ class _SideBarMenuScreenState extends State<SideBarMenuScreen> {
   String userRole = ''; // Declare the userRole variable
   String bearerToken = '';
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+  ScaffoldMessengerState? scaffoldMessenger;
+  List<PerangkatSayaDataList> perangkatDevices = [];
 
   @override
   void initState() {
     super.initState();
+    getDeviceList();
     _getCredentialsFromPrefs(); // Fetch the role from SharedPreferences
+    _checkDevices(); // Check if there are any devices available
+  }
+
+  Future<void> getDeviceList() async {
+    final PerangkatSayaServices devices = Provider.of<PerangkatSayaServices>(context, listen: false);
+    final String? tokenBearer = await LocalPrefs.getBearerToken();
+    debugPrint("tokenBearer: $tokenBearer");
+    if (tokenBearer != null) {
+      await devices.updateDeviceListFuture(tokenBearer, showErrorSnackbar: (String errorMessage) {
+        final snackBar = SnackBar(
+          backgroundColor: Colors.red,
+          content: Text(
+            errorMessage.toString(),
+            style: const TextStyle(
+              color: Colors.white,
+            ),
+          ),
+        );
+        scaffoldMessenger?.showSnackBar(snackBar);
+      });
+      setState(() {
+        perangkatDevices = devices.perangkatSayaDataList;
+      });
+
+      debugPrint("Device list updated: ${perangkatDevices} items");
+    }
   }
 
   // Fetch userRole from LocalPrefs (SharedPreferences)
@@ -47,6 +79,8 @@ class _SideBarMenuScreenState extends State<SideBarMenuScreen> {
       debugPrint("Bearer Token: $bearerToken");
     });
   }
+
+  void _checkDevices() async {}
 
   void _onTileTap(int index) {
     NavService.pop();
@@ -112,28 +146,39 @@ class _SideBarMenuScreenState extends State<SideBarMenuScreen> {
                           },
                         ),
                         SMListTiles(
-                            image: CustomIcons.iconInbox,
-                            title: 'Inbox',
-                            onTap: () {
-                              if (widget.devices.length > 1) {
-                                debugPrint("More than one device: ${widget.devices.length}");
+                          image: CustomIcons.iconInbox,
+                          title: 'Inbox',
+                          onTap: () {
+                            if (perangkatDevices.isNotEmpty) {
+                              if (perangkatDevices.length == 1) {
+                                String singlePKey = perangkatDevices.first.pKey;
+                                debugPrint("Single device detected: $singlePKey");
 
                                 Navigator.of(context).push(
                                   MaterialPageRoute(
-                                    builder: (context) => InboxScreen(devices: widget.devices),
-                                  ),
-                                );
-                              } else {
-                                Navigator.of(context).push(
-                                  MaterialPageRoute(
                                     builder: (context) => ChatHomeScreen(
-                                      pKey: widget.devices[0].pkey,
+                                      pKey: singlePKey,
                                       ifFromInbox: false,
                                     ),
                                   ),
                                 );
+                              } else {
+                                debugPrint("Multiple devices detected: ${perangkatDevices.length}");
+
+                                Navigator.of(context).push(
+                                  MaterialPageRoute(
+                                    builder: (context) => InboxScreen(),
+                                  ),
+                                );
                               }
-                            }),
+                            } else {
+                              debugPrint("No devices found.");
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(content: Text("No devices available")),
+                              );
+                            }
+                          },
+                        ),
                         SMListTiles(
                           image: CustomIcons.iconPesan,
                           title: 'Pesan',
@@ -183,14 +228,36 @@ class _SideBarMenuScreenState extends State<SideBarMenuScreen> {
                           title: 'Inbox',
                           onTap: () //=> _onTileTap(2),
                               {
-                            Navigator.of(context).push(
-                              MaterialPageRoute(
-                                builder: (context) => const ChatHomeScreen(
-                                  pKey: '',
-                                  ifFromInbox: false,
-                                ),
-                              ),
-                            );
+                            if (perangkatDevices.isNotEmpty) {
+                              if (perangkatDevices.length == 1) {
+                                String singlePKey = perangkatDevices.first.pKey;
+                                LocalPrefs.saveSelectedPKey(singlePKey);
+                                debugPrint("Single device detected: $singlePKey");
+
+                                Navigator.of(context).push(
+                                  MaterialPageRoute(
+                                    builder: (context) => ChatHomeScreen(
+                                      pKey: singlePKey,
+                                      ifFromInbox: false,
+                                    ),
+                                  ),
+                                );
+                              } else {
+                                debugPrint("Multiple devices detected: ${perangkatDevices.length}");
+
+                                Navigator.of(context).push(
+                                  MaterialPageRoute(
+                                    builder: (context) => InboxScreen(),
+                                  ),
+                                );
+                              }
+                            } else {
+                              debugPrint("No devices found.");
+                              debugPrint("Devices: ${perangkatDevices}");
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(content: Text("No devices available")),
+                              );
+                            }
                           },
                         ),
                         SMListTiles(

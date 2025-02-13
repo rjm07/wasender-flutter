@@ -128,7 +128,7 @@ class Messages {
     return Messages(
       agentId: json['agent_id'],
       agentName: json['agent_name'],
-      broadcast: json['broadcast'] ?? false,
+      broadcast: json['broadcast'] is bool ? json['broadcast'] : false,
       category: json['category'],
       chat: json['chat'],
       fromMe: json['from_me'],

@@ -125,6 +125,7 @@ class Auth extends ChangeNotifier {
         await LocalPrefs.clearImage();
         await LocalPrefs.clearPassBySystem();
         await LocalPrefs.clearDeviceKey();
+        await LocalPrefs.clearSelectedPKey();
         await LocalPrefs.clearFullName();
 
         if (kDebugMode) {

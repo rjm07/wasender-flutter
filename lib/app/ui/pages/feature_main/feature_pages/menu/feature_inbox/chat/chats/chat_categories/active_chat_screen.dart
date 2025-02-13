@@ -41,8 +41,10 @@ class _ActiveChatScreenState extends State<ActiveChatScreen> {
     final PesanServices devices = Provider.of<PesanServices>(context, listen: false);
     final String? tokenBearer = await LocalPrefs.getBearerToken();
     final String? deviceKey = await LocalPrefs.getDeviceKey();
+    final String? pKey = await LocalPrefs.getSelectedPKey();
     debugPrint("tokenBearer: $tokenBearer");
     debugPrint("deviceKey: $deviceKey");
+    debugPrint("pKey: $pKey");
     //pKey = deviceKey ?? '';
 
     if (tokenBearer != null) {
@@ -51,7 +53,7 @@ class _ActiveChatScreenState extends State<ActiveChatScreen> {
         await devices.updateChatBoxListFuture(
           'active',
           tokenBearer,
-          widget.pKey,
+          pKey ?? widget.pKey,
           showErrorSnackbar: (String errorMessage) {
             // Ensure the widget is still active
             SnackbarUtil.showErrorSnackbar(context, errorMessage);
