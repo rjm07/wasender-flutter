@@ -63,7 +63,7 @@ class _PerangkatSayaScreenState extends State<PerangkatSayaScreen> {
       });
       final PerangkatSayaServices devices = Provider.of<PerangkatSayaServices>(context, listen: false);
 
-      if (devices.perangkatSayaDataDetails.isNotEmpty) {
+      if (devices.perangkatSayaDataList.isNotEmpty) {
         final previousPage = devices.page;
         devices.incrementPage();
 
@@ -76,8 +76,8 @@ class _PerangkatSayaScreenState extends State<PerangkatSayaScreen> {
               SnackbarUtil.showErrorSnackbar(context, errorMessage);
             },
           ).then((_) {
-            if (devices.perangkatSayaDataDetails.isEmpty ||
-                devices.perangkatSayaDataDetails.length <= previousPage * devices.perPage) {
+            if (devices.perangkatSayaDataList.isEmpty ||
+                devices.perangkatSayaDataList.length <= previousPage * devices.perPage) {
               devices.page = previousPage; // Revert the page increment if no new data
               _showNoMoreDataAlert();
             }
@@ -157,10 +157,10 @@ class _PerangkatSayaScreenState extends State<PerangkatSayaScreen> {
       body: SafeArea(
         child: Consumer<PerangkatSayaServices>(
           builder: (context, devices, child) {
-            if (devices.isLoading && devices.perangkatSayaDataDetails.isEmpty) {
+            if (devices.isLoading && devices.perangkatSayaDataList.isEmpty) {
               return const Center(child: CircularProgressIndicator());
             }
-            if (devices.perangkatSayaDataDetails.isEmpty) {
+            if (devices.perangkatSayaDataList.isEmpty) {
               return const Center(
                   child: Text("No devices connected at the moment",
                       style: TextStyle(fontSize: 14, color: Colors.black38)));

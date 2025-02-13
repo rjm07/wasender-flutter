@@ -87,6 +87,7 @@ class LocalPrefs {
     prefs.remove(_LocalPrefKeys.userRole);
   }
 
+  ///GET DEVICE KEY
   static Future<String?> getDeviceKey() async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     return prefs.getString(_LocalPrefKeys.deviceKey); // pkey on device list primary device
@@ -102,6 +103,23 @@ class LocalPrefs {
     prefs.remove(_LocalPrefKeys.deviceKey);
   }
 
+  ///GET PKEY
+  static Future<String?> getSelectedPKey() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    return prefs.getString(_LocalPrefKeys.selectedPKey); // pkey on device list primary device
+  }
+
+  static Future<void> saveSelectedPKey(String pKey) async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.setString(_LocalPrefKeys.selectedPKey, pKey);
+  }
+
+  static Future<void> clearSelectedPKey() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.remove(_LocalPrefKeys.selectedPKey);
+  }
+
+  ///GET FK USER ID
   static Future<String?> getFKUserID() async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     return prefs.getString(_LocalPrefKeys.whatsappNumber);
@@ -155,6 +173,7 @@ class _LocalPrefKeys {
   static String image = "IMAGE";
   static String bearerToken = "Bearer $token";
   static String deviceKey = "DEVICE_KEY";
+  static String selectedPKey = "SELECTED_PKEY";
   static String fkUserID = "FK_USER_ID";
   static String whatsappNumber = "WHATSAPP_NUMBER";
   static String fcmToken = "FCM_TOKEN";

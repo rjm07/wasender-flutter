@@ -1,15 +1,12 @@
 import 'dart:io' show Platform;
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:provider/provider.dart';
+import 'package:wasender/app/core/models/perangkat_saya/perangkat_saya.dart';
 import 'package:wasender/app/ui/pages/feature_main/feature_pages/menu/feature_kontak/kontak_screen.dart';
 import 'package:wasender/app/ui/pages/feature_main/feature_pages/menu/feature_pembayaran/pembayaran_screen.dart';
 import 'package:wasender/app/ui/pages/feature_main/feature_pages/menu/feature_pengguna/pengguna_screen.dart';
 import 'package:wasender/app/ui/pages/feature_main/feature_pages/menu/feature_perangkat_saya/perangkat_saya_screen.dart';
-import 'package:wasender/app/ui/pages/feature_main/feature_pages/menu/feature_inbox/chat/chat_home_screen.dart';
 import 'package:wasender/app/ui/pages/feature_main/menu/sidebar_menu_screen.dart';
-import '../../../core/models/perangkat_saya/device_list.dart';
 import '../../../core/services/perangkat_saya/perangkat_saya.dart';
 import '../../../core/services/preferences.dart';
 import '../../../utils/lang/colors.dart';
@@ -34,12 +31,11 @@ class _MainScreenState extends State<MainScreen> {
   bool showOptions = false;
   ScaffoldMessengerState? scaffoldMessenger;
   String userRole = '';
-  List<Device> devices = [];
 
   @override
   void initState() {
     super.initState();
-    getAllDevices();
+    //getDeviceList();
     _getUserRoleFromPrefs(); // Fetch the role from SharedPreferences
   }
 
@@ -52,21 +48,6 @@ class _MainScreenState extends State<MainScreen> {
     });
   }
 
-  Future<void> getAllDevices() async {
-    final PerangkatSayaServices deviceService = Provider.of<PerangkatSayaServices>(context, listen: false);
-    final String? tokenBearer = await LocalPrefs.getBearerToken();
-    debugPrint("tokenBearer: $tokenBearer");
-    debugPrint("Getting all devices");
-
-    if (tokenBearer != null) {
-      List<Device> fetchedDevices = await deviceService.getAllDeviceList(tokenBearer, 0, 10);
-
-      setState(() {
-        devices = fetchedDevices;
-      });
-    }
-  }
-
   void toggleOptions() {
     setState(() {
       showOptions = !showOptions; // Toggle visibility of additional options
@@ -75,9 +56,9 @@ class _MainScreenState extends State<MainScreen> {
 
   // List of pages for easy management
   List<Widget> get _adminPages => [
-        DashboardScreen(devices: devices), // Now it accesses the latest value
+        DashboardScreen(), // Now it accesses the latest value
         PerangkatSayaScreen(),
-        InboxScreen(devices: devices),
+        InboxScreen(),
         PesanScreen(),
         KontakScreen(),
         PenggunaScreen(),
@@ -86,9 +67,9 @@ class _MainScreenState extends State<MainScreen> {
       ];
 
   List<Widget> get _agentPages => [
-        DashboardScreen(devices: devices), // Access latest devices
+        DashboardScreen(), // Access latest devices
         ProfileScreen(),
-        InboxScreen(devices: devices),
+        InboxScreen(),
         PesanScreen(),
         KontakScreen(),
         BantuanScreen(),
@@ -169,7 +150,6 @@ class _MainScreenState extends State<MainScreen> {
           ? null
           : SideBarMenuScreen(
               pageController: _pageController,
-              devices: devices,
             ),
       // Conditionally display BottomNavigationBar for iOS
       bottomNavigationBar: isIOS

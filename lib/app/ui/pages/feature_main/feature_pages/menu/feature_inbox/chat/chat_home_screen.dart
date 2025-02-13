@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../../../../../../core/services/navigation/navigation.dart';
+import '../../../../../../../core/services/preferences.dart';
 import '../../../../../../../utils/lang/colors.dart';
 import '../../../../../../../utils/lang/images.dart';
 import 'chats/chat_categories/active_chat_screen.dart';
@@ -33,6 +34,8 @@ class _ChatHomeScreenState extends State<ChatHomeScreen> with SingleTickerProvid
   @override
   void initState() {
     super.initState();
+
+    debugPrint("The pKey is ${widget.pKey}");
     _tabController = TabController(length: 3, vsync: this);
     _pageController = PageController();
 
@@ -102,6 +105,7 @@ class _ChatHomeScreenState extends State<ChatHomeScreen> with SingleTickerProvid
         leading: IconButton(
           icon: Icon(Icons.arrow_back, color: Colors.black),
           onPressed: () {
+            LocalPrefs.clearSelectedPKey();
             if (widget.ifFromInbox) {
               NavService.pop();
             } else {

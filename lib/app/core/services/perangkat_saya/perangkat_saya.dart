@@ -16,7 +16,7 @@ class PerangkatSayaServices extends ChangeNotifier {
   int page = 1;
   int perPage = 10;
   bool isLoading = false;
-  List<PerangkatSayaDataList> perangkatSayaDataDetails = [];
+  List<PerangkatSayaDataList> perangkatSayaDataList = [];
   List<Device> perangkatSayaTerhubungDataDetails = [];
 
   void incrementPage() {
@@ -43,9 +43,9 @@ class PerangkatSayaServices extends ChangeNotifier {
       );
 
       if (isPagination) {
-        perangkatSayaDataDetails.addAll(newDevices);
+        perangkatSayaDataList.addAll(newDevices);
       } else {
-        perangkatSayaDataDetails = newDevices;
+        perangkatSayaDataList = newDevices;
       }
 
       notifyListeners();
@@ -116,10 +116,10 @@ class PerangkatSayaServices extends ChangeNotifier {
           final PerangkatSayaData data = PerangkatSayaData.fromJson(psResponse.messageData);
           final List<PerangkatSayaDataList> devices = data.data;
 
-          if (devices.isNotEmpty) {
-            await LocalPrefs.saveDeviceKey(devices[0].pKey);
-            await LocalPrefs.saveWhatsappNumber(devices[0].whatsappNumber);
-          }
+          // if (devices.isNotEmpty) {
+          //   await LocalPrefs.saveDeviceKey(devices[0].pKey);
+          //   await LocalPrefs.saveWhatsappNumber(devices[0].whatsappNumber);
+          // }
 
           return devices;
         } else {

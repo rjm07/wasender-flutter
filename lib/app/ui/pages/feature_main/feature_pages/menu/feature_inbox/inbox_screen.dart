@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:wasender/app/core/models/perangkat_saya/perangkat_saya.dart';
 import 'package:wasender/app/core/services/perangkat_saya/perangkat_saya.dart';
 import 'package:wasender/app/ui/pages/feature_main/feature_pages/menu/feature_perangkat_saya/perangkat_saya_detail_screen.dart';
 import 'package:wasender/app/ui/shared/widgets/perangkat_saya_cards.dart';
@@ -12,9 +13,9 @@ import '../../../../../../utils/snackbar/snackbar.dart';
 import 'chat/chat_home_screen.dart';
 
 class InboxScreen extends StatefulWidget {
-  const InboxScreen({super.key, required this.devices});
-
-  final List<Device> devices;
+  const InboxScreen({
+    super.key,
+  });
 
   @override
   State<InboxScreen> createState() => _InboxScreenState();
@@ -64,7 +65,7 @@ class _InboxScreenState extends State<InboxScreen> {
       });
       final PerangkatSayaServices devices = Provider.of<PerangkatSayaServices>(context, listen: false);
 
-      if (devices.perangkatSayaDataDetails.isNotEmpty) {
+      if (devices.perangkatSayaDataList.isNotEmpty) {
         final previousPage = devices.page;
         devices.incrementPage();
 
@@ -77,8 +78,8 @@ class _InboxScreenState extends State<InboxScreen> {
               SnackbarUtil.showErrorSnackbar(context, errorMessage);
             },
           ).then((_) {
-            if (devices.perangkatSayaDataDetails.isEmpty ||
-                devices.perangkatSayaDataDetails.length <= previousPage * devices.perPage) {
+            if (devices.perangkatSayaDataList.isEmpty ||
+                devices.perangkatSayaDataList.length <= previousPage * devices.perPage) {
               devices.page = previousPage; // Revert the page increment if no new data
               _showNoMoreDataAlert();
             }
@@ -143,10 +144,10 @@ class _InboxScreenState extends State<InboxScreen> {
       body: SafeArea(
         child: Consumer<PerangkatSayaServices>(
           builder: (context, devices, child) {
-            if (devices.isLoading && devices.perangkatSayaDataDetails.isEmpty) {
+            if (devices.isLoading && devices.perangkatSayaDataList.isEmpty) {
               return const Center(child: CircularProgressIndicator());
             }
-            if (devices.perangkatSayaDataDetails.isEmpty) {
+            if (devices.perangkatSayaDataList.isEmpty) {
               return const Center(
                   child: Text("No devices connected at the moment",
                       style: TextStyle(fontSize: 14, color: Colors.black38)));
@@ -175,6 +176,7 @@ class _InboxScreenState extends State<InboxScreen> {
                         ),
                         child: GestureDetector(
                           onTap: () {
+                            LocalPrefs.saveSelectedPKey(device.pkey);
                             Navigator.of(context).push(
                               MaterialPageRoute(
                                 builder: (context) => ChatHomeScreen(
